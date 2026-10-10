@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Pages carry <meta name="robots" content="noindex">.
+# Crawling stays allowed so crawlers can read that tag.
