@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="An interactive site about how companies sell the past again.">
+<meta name="description" content="An interactive site about how companies sell the past again, with a browser darkroom that makes your photo look old.">
 <title>Then, Again</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -365,6 +365,66 @@ label.btn{display:inline-block}
 .mview,.mctl{min-width:0}
 .mframe{overflow:hidden}
 @media (max-width:860px){.mpre b{font-size:15px}.mpre button{padding:10px 2px}.mach .pager .btn{padding:10px 12px}}
+
+/* ---------- the darkroom workspace ---------- */
+.page.dk{background:#0b0d16;color:#e9ecf5;overflow:auto}
+.dkgrid{display:grid;grid-template-columns:320px minmax(0,1fr);min-height:100%}
+.dkrail{padding:74px 20px 24px;border-right:1px solid #262a3a;display:flex;flex-direction:column;gap:16px;background:#10131f}
+.dkrail h1{font-size:30px;color:#fff}
+.dkrail .eyebrow{color:var(--lime)}
+.dkgroup{display:grid;gap:2px;border-top:1px solid #262a3a;padding-top:12px}
+.dkgroup>.lab{color:#8f96ad;margin-bottom:4px}
+.dkrow{display:grid;grid-template-columns:92px minmax(0,1fr) 40px;align-items:center;gap:10px;font-size:13.5px;min-height:32px}
+.dkrow input[type=range]{width:100%;accent-color:var(--lime);height:22px}
+.dkrow output{font-family:var(--mono);font-size:11px;color:#8f96ad;text-align:right;font-variant-numeric:tabular-nums}
+.dkrow select,.dkrow input[type=text]{grid-column:2/4;background:#0b0d16;color:#e9ecf5;border:1px solid #3a4057;border-radius:6px;padding:7px 8px;font:inherit;font-size:13.5px;min-width:0}
+.dkrow input[type=checkbox]{width:20px;height:20px;accent-color:var(--lime);justify-self:start}
+.dkbtns{display:flex;gap:8px;flex-wrap:wrap}
+.dk .btn{background:#1a1e2e;color:#e9ecf5;border-color:#3a4057;padding:9px 13px;font-size:12px}
+.dk .btn:hover{background:#262b40}
+.dk .btn.solid{background:var(--lime);border-color:var(--lime);color:var(--ink)}
+.dk .btn[aria-pressed="true"]{background:var(--lime);border-color:var(--lime);color:var(--ink)}
+.dk .btn[disabled]{opacity:.5}
+#dkHist{width:100%;height:72px;background:#0b0d16;border:1px solid #262a3a;border-radius:6px}
+.dknote{margin:0;font-family:var(--mono);font-size:11px;color:#8f96ad;line-height:1.5}
+.dkmain{display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;min-width:0;min-height:100vh}
+.dkbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 190px 12px 64px;border-bottom:1px solid #262a3a}
+.dksp{flex:1}
+.dkinfo{font-family:var(--mono);font-size:11px;color:#8f96ad}
+.dkstage{position:relative;display:grid;place-items:center;padding:clamp(14px,2.4vw,34px);min-height:320px;overflow:hidden;
+  background:radial-gradient(#1a1e2e 1px,transparent 1.4px) 0 0/18px 18px,#0b0d16}
+#dkCanvas{display:block;max-width:100%;max-height:min(62vh,720px);width:auto;height:auto;filter:drop-shadow(0 18px 40px rgba(0,0,0,.6));touch-action:none}
+.dksplit{position:absolute;width:2px;margin-left:-1px;background:#fff;pointer-events:none}
+.dksplit i{position:absolute;top:50%;left:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:var(--lime);box-shadow:0 2px 10px rgba(0,0,0,.5)}
+.dksplit i::before{content:"\2194";position:absolute;inset:0;display:grid;place-items:center;color:var(--ink);font-size:18px}
+.dkcap{margin:0;padding:12px clamp(14px,2.4vw,34px);font-size:15.5px;line-height:1.5;color:#c9cfe0;border-top:1px solid #262a3a;max-width:none}
+.dkstrip{display:flex;gap:10px;overflow-x:auto;padding:12px clamp(14px,2.4vw,34px) 18px;border-top:1px solid #262a3a;background:#10131f}
+.dkstrip button{flex:none;width:132px;background:none;border:2px solid transparent;border-radius:8px;padding:4px;cursor:pointer;color:#c9cfe0;display:grid;gap:6px;text-align:left}
+.dkstrip button[aria-pressed="true"]{border-color:var(--lime);background:#1a1e2e}
+.dkstrip canvas.th{width:100%;height:auto;display:block;border-radius:4px}
+.dkstrip span{font-size:11.5px;line-height:1.25;display:grid}
+.dkstrip b{font-family:var(--display);font-size:17px;letter-spacing:-.02em;color:#fff}
+@media (max-width:900px){
+  .dkgrid{grid-template-columns:1fr}
+  .dkmain{order:1;min-height:0}
+  .dkrail{order:2;padding-top:20px;border-right:0;border-top:1px solid #262a3a}
+  .dkbar{padding:64px 14px 12px}
+  #dkCanvas{max-height:48vh}
+}
+
+/* each case hands off to the darkroom */
+.trylook{display:grid;grid-template-columns:118px 1fr auto;gap:14px;align-items:center;background:var(--ink);color:#fff!important;text-decoration:none;padding:10px 14px 10px 10px}
+.trylook:hover{background:var(--blue)}
+.tl-img{display:grid;place-items:center;min-height:70px}
+.tl-img canvas{max-width:118px;max-height:96px;width:auto;height:auto;display:block}
+.tl-txt{display:grid;gap:3px;font-size:14px;line-height:1.35}
+.tl-txt b{font-family:var(--display);font-size:17px;letter-spacing:-.01em;color:var(--lime)}
+.tl-go{font-family:var(--mono);font-size:22px;color:var(--lime)}
+.dkcap{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between}
+.dkcap p{margin:0;flex:1;min-width:260px}
+.dkcases{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8f96ad}
+.dkcases a{font-family:var(--body);font-size:13px;letter-spacing:0;text-transform:none;color:var(--ink);background:var(--lime);border-radius:999px;padding:5px 11px;text-decoration:none}
+.dkcases a:hover{background:#fff}
 </style>
 </head>
 <body>
@@ -409,7 +469,7 @@ label.btn{display:inline-block}
 <div id="menu" hidden>
   <nav class="mnav" aria-label="Pages">
     <a href="#shelf"><small>01</small>Objects</a>
-    <a href="#machine"><small>02</small>The machine</a>
+    <a href="#machine"><small>02</small>The darkroom</a>
     <a href="#timeline"><small>03</small>Timeline</a>
     <a href="#pattern"><small>04</small>The pattern</a>
     <a href="#argument"><small>05</small>The argument</a>
@@ -428,17 +488,18 @@ label.btn{display:inline-block}
   <div class="gate">
     <div class="eyebrow">CDM 002 &middot; Fall 2026</div>
     <h2 id="introTitle" aria-label="Then, Again"></h2>
-    <p>Eight old objects, each one sold again. Turn them over, then make a photo of your own look old.</p>
+    <p>Eight old objects, each one sold again. Turn them over, then put a photo of your own through the same years in the darkroom.</p>
     <div class="pager">
       <button class="btn solid" id="enterMusic">Enter with music</button>
       <button class="btn" id="enterQuiet">Enter</button>
     </div>
+    <button class="skiplink" id="enterDark">Go straight to the darkroom</button>
   </div>
 </div>
 
 <a class="gamebar" id="gamebar" href="#machine" hidden>
   <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="5.5" width="15" height="11" rx="2"/><circle cx="10" cy="11" r="3.2"/><path d="M6.5 5.5l1.2-2h4.6l1.2 2"/></svg>
-  <span>Make your photo look old</span>
+  <span>Open the darkroom</span>
 </a>
 
 <main id="shelf" aria-label="Eight objects. Each one opens a case."></main>
@@ -473,6 +534,11 @@ label.btn{display:inline-block}
         <p id="sP"></p>
         <dl class="glance" id="sG"></dl>
       </div>
+      <a class="trylook" id="tryLook" href="#machine">
+        <span class="tl-img" id="tryImg"></span>
+        <span class="tl-txt"><b>Do this to your own photo</b><span id="trySub"></span></span>
+        <span class="tl-go" aria-hidden="true">&rarr;</span>
+      </a>
       <div class="after" id="after">
         <details name="more"><summary>Look closer</summary><p id="pLook"></p></details>
         <details name="more"><summary>The reading</summary><p id="p3"></p></details>
@@ -487,27 +553,37 @@ label.btn{display:inline-block}
   </div>
 </section>
 
-<section class="page" id="machine" hidden>
-  <div class="sheet wide mach">
-    <div class="mview">
-      <div class="mframe" id="mFrame"><canvas id="mCanvas" width="960" height="720" aria-label="Your photo with the chosen year applied"></canvas></div>
-      <p class="note2" id="mHold">Press and hold the picture to see it without the effect.</p>
-    </div>
-    <div class="mctl">
-      <div class="eyebrow">The machine</div>
+<section class="page dk" id="machine" hidden>
+  <div class="dkgrid">
+    <aside class="dkrail" aria-label="Darkroom controls">
+      <div class="eyebrow">The darkroom</div>
       <h1>Make it look old</h1>
-      <p class="lede2">Pick a year. The machine adds what the cameras and screens of that year could not avoid.</p>
-      <div class="mpre" id="mPre" role="group" aria-label="Year"></div>
-      <label class="mrow" for="mK"><span>Strength</span><input type="range" id="mK" min="0" max="100" value="85"></label>
-      <label class="mrow chk" for="mStamp"><span>Date stamp</span><input type="checkbox" id="mStamp" checked></label>
-      <div class="pager">
-        <label class="btn solid" for="mFile" tabindex="0" id="mPick">Use your own photo</label>
-        <input type="file" id="mFile" accept="image/*" hidden>
-        <button class="btn" id="mShuffle">Shuffle</button>
-        <button class="btn" id="mSave">Save picture</button>
+      <div class="dkgroup"><div class="lab">Film and print</div><div id="dkFilm"></div></div>
+      <div class="dkgroup"><div class="lab">Faults</div><div id="dkFault"></div></div>
+      <div class="dkgroup"><div class="lab">Frame</div>
+        <label class="dkrow" for="dkFmt"><span>Film edge</span><select id="dkFmt"></select></label>
+        <label class="dkrow" for="dkDateOn"><span>Date back</span><input type="checkbox" id="dkDateOn"></label>
+        <label class="dkrow" for="dkDate"><span>Date</span><input type="text" id="dkDate" maxlength="16" spellcheck="false"></label>
       </div>
-      <p class="mcap" id="mCap"></p>
-      <p class="note2">Your photo stays in this browser. Nothing is uploaded.</p>
+      <div class="dkbtns">
+        <button class="btn" id="dkReset">Reset look</button>
+        <button class="btn" id="dkShuffle">Shuffle</button>
+      </div>
+      <canvas id="dkHist" width="256" height="72" aria-label="Brightness histogram"></canvas>
+      <p class="dknote">Your photo stays in this browser. Nothing is uploaded.</p>
+    </aside>
+    <div class="dkmain">
+      <div class="dkbar">
+        <label class="btn solid" for="dkFile" tabindex="0" id="dkPick">Open photo</label>
+        <input type="file" id="dkFile" accept="image/*" hidden>
+        <button class="btn" id="dkCmp" aria-pressed="false">Compare</button>
+        <span class="dksp"></span>
+        <span class="dkinfo" id="dkInfo"></span>
+        <button class="btn" id="dkSave">Export JPG</button>
+      </div>
+      <div class="dkstage" id="dkStage"><canvas id="dkCanvas" width="1000" height="667" aria-label="Your photo with the chosen look applied"></canvas><div class="dksplit" id="dkSplit" hidden><i></i></div></div>
+      <div class="dkcap"><p id="dkCap"></p><div class="dkcases" id="dkCases"></div></div>
+      <div class="dkstrip" id="dkStrip" role="group" aria-label="Looks by year"></div>
     </div>
   </div>
 </section>
@@ -596,7 +672,7 @@ label.btn{display:inline-block}
     <p>Katherine Liao and <a href="../then-again.html">Haoyuan Luo</a>. CDM 002 A04, Professor Finn Brunton, UC Davis, Fall 2026.</p>
     <p>Photos were cut out and recoloured for this site. Where a photo carries a share-alike licence, our changed version is offered under the same licence.</p>
     <h2>How it was built</h2>
-    <p>One page of HTML, CSS and JavaScript with no framework. The machine changes your photo pixel by pixel on a canvas, in your own browser. The globe and the marbled ground are drawn on canvas. Sound uses the Web Audio API, and the halos follow the volume of the recording. The site works with a keyboard and respects the reduced motion setting.</p>
+    <p>One page of HTML, CSS and JavaScript with no framework. The darkroom changes your photo pixel by pixel on a canvas, in your own browser. Its two steps, film first and then the print, follow the idea behind <a href="https://github.com/andreavolpato/spektrafilm">spektrafilm</a> by Andrea Volpato and the <a href="https://github.com/JamesQiu2005/SpektraLab">SpektraLab</a> app. No code or film data from either project is used, and the looks are approximations, not measured film stocks. The globe and the marbled ground are drawn on canvas. Sound uses the Web Audio API, and the halos follow the volume of the recording. The site works with a keyboard and respects the reduced motion setting.</p>
     <nav class="pager"><a class="btn solid" href="#shelf">All objects</a></nav>
   </div>
 </section>
@@ -654,35 +730,35 @@ const CASES = [
   p3:'Jameson writes that companies need goods that seem new (56). The folding screen is new technology. Motorola still sold it inside a 2004 shape, because the old name made people look.'}
 ];
 const EXTRA = {
- 'console':{co:'Nintendo',d:[{f:'The 1985 shape',k:'look',r:'keep',w:'Nintendo sold it as a small copy of the old box.'},{f:'Cartridges',k:'works',r:'change',w:'The 30 games are built in. Nothing slots in.'}],n1:1985,n2:2016,
+ 'console':{lk:'1985',co:'Nintendo',d:[{f:'The 1985 shape',k:'look',r:'keep',w:'Nintendo sold it as a small copy of the old box.'},{f:'Cartridges',k:'works',r:'change',w:'The 30 games are built in. Nothing slots in.'}],n1:1985,n2:2016,
   g:[['Games','One cartridge at a time','30 built in'],['Size','Sits under the TV','Fits in one hand'],['Sold','From 1985','November 2016, $59.99']],
   look:'Turn the card and the shape stays the same while the size shrinks. The new box takes no cartridges, so the 1985 shape does no work. It is there because buyers expect it.',
   q:'If the games are the same, what are people paying for?'},
- 'camera':{co:'a photo app maker',d:[{f:'The orange date and the light leaks',k:'look',r:'keep',w:'They are the whole product.'},{f:'The film',k:'works',r:'change',w:'The app needs no film at all.'}],n1:1995,n2:2018,
+ 'camera':{lk:'1998',co:'a photo app maker',d:[{f:'The orange date and the light leaks',k:'look',r:'keep',w:'They are the whole product.'},{f:'The film',k:'works',r:'change',w:'The app needs no film at all.'}],n1:1995,n2:2018,
   g:[['The date','A record of when','A decoration'],['Grain and light leaks','Faults to avoid','Added on purpose'],['The wait','Until the film came back','None']],
   look:'The app sets its date to 1998 by default, not to today. That one setting shows the stamp no longer tells time. It tells style.',
   q:'Can a fault still be a fault if people add it on purpose?'},
- 'tomorrow':{co:'Disneyland',d:[{f:'The name Tomorrowland',k:'look',r:'keep',w:'The sign stayed. What stood behind it changed.'},{f:'Guessing the real future',k:'works',r:'change',w:'The park stopped guessing and borrowed a future from old novels.'}],n1:1955,n2:1998,
+ 'tomorrow':{lk:'1955',co:'Disneyland',d:[{f:'The name Tomorrowland',k:'look',r:'keep',w:'The sign stayed. What stood behind it changed.'},{f:'Guessing the real future',k:'works',r:'change',w:'The park stopped guessing and borrowed a future from old novels.'}],n1:1955,n2:1998,
   g:[['Date','Opened July 1955','Rebuilt 1998'],['It shows','The year 1986','A future from old novels'],['The look','Rockets and new machines','Bronze and gold']],
   look:'The 1955 land promised something that had not happened yet. The 1998 land promised nothing. It asked visitors to enjoy how earlier people pictured the future.',
   q:'What does a park do when the year it predicted has already passed?'},
- 'television':{co:'a TV network',d:[{f:'The 1950s setting',k:'look',r:'keep',w:'The show was made in 1974 and dressed as the 1950s.'}],n1:1955,n2:1974,
+ 'television':{lk:'1985',co:'a TV network',d:[{f:'The 1950s setting',k:'look',r:'keep',w:'The show was made in 1974 and dressed as the 1950s.'}],n1:1955,n2:1974,
   g:[['When','The 1950s','1974 to 1984'],['What it was','Daily life','A TV show about that life'],['Who it reached','Teenagers in a diner','Viewers at home, twenty years on']],
   look:'Our other cases bring back an object. This one brings back a whole decade. It also shows that 1974 was already selling the past, long before retro photo apps.',
   q:'Is it still nostalgia if you never lived through that time?'},
- 'flying-car':{co:'a poster company',d:[{f:'The drawing',k:'look',r:'keep',w:'The picture is the part people still want.'},{f:'The car itself',k:'works',r:'change',w:'Nobody sold the car. Only the picture is for sale.'}],n1:1955,n2:null,
+ 'flying-car':{lk:'1955',co:'a poster company',d:[{f:'The drawing',k:'look',r:'keep',w:'The picture is the part people still want.'},{f:'The car itself',k:'works',r:'change',w:'Nobody sold the car. Only the picture is for sale.'}],n1:1955,n2:null,
   g:[['What it was','A plan','A picture'],['Where you find it','Magazines about the future','Posters and toy shelves'],['What it tells you','What will happen','What people once hoped']],
   look:'This is the only case where ordinary buyers never got the old object. There is nothing to reissue except the drawing. So the drawing became the product.',
   q:'Why do we keep a picture of a future we no longer expect?'},
- 'record':{co:'a record label',d:[{f:'The vinyl disc and its sleeve',k:'look',r:'keep',w:'The old object is what buyers pay extra for.'},{f:'The music pressed on it',k:'works',r:'change',w:'The best sellers were new pop albums.'}],n1:1975,n2:2022,
+ 'record':{lk:'1972',co:'a record label',d:[{f:'The vinyl disc and its sleeve',k:'look',r:'keep',w:'The old object is what buyers pay extra for.'},{f:'The music pressed on it',k:'works',r:'change',w:'The best sellers were new pop albums.'}],n1:1975,n2:2022,
   g:[['Its role','The normal way to own music','One choice among many'],['U.S. sales','Ahead of CDs until 1987','41 million albums in 2022'],['What is pressed on it','That year’s music','Still that year’s music']],
   look:'The format is old but the albums are new. That makes the record different from the NES Classic, which sells old games. Here the past is only the container.',
   q:'Does an old format change how new music feels?'},
- 'instant':{co:'Polaroid Originals',d:[{f:'The 1977 shape',k:'look',r:'keep',w:'The new camera was made as a successor to the first OneStep.'},{f:'Instant film',k:'works',r:'keep',w:'This is the exception. Here the old working part is the point.'}],n1:1977,n2:2017,
+ 'instant':{lk:'1977',co:'Polaroid Originals',d:[{f:'The 1977 shape',k:'look',r:'keep',w:'The new camera was made as a successor to the first OneStep.'},{f:'Instant film',k:'works',r:'keep',w:'This is the exception. Here the old working part is the point.'}],n1:1977,n2:2017,
   g:[['Came out','1977','2017'],['Maker','Polaroid','Polaroid Originals, once the Impossible Project'],['The photo','Slides out and develops in your hand','The same']],
   look:'The new camera does what the old one did. What changed is everything around it. In 1977 this was the fast way to get a photo. In 2017 it is the slow way, and the slowness is what is for sale.',
   q:'When did waiting for a photo become something to pay for?'},
- 'flip-phone':{co:'Motorola',d:[{f:'The flip shape',k:'look',r:'keep',w:'It opens and closes like the 2004 phone.'},{f:'The keypad',k:'works',r:'change',w:'One folding screen took its place.'}],n1:2004,n2:2019,
+ 'flip-phone':{lk:'2004',co:'Motorola',d:[{f:'The flip shape',k:'look',r:'keep',w:'It opens and closes like the 2004 phone.'},{f:'The keypad',k:'works',r:'change',w:'One folding screen took its place.'}],n1:2004,n2:2019,
   g:[['Launched','2004','November 2019'],['Inside','A keypad and a small screen','One 6.2-inch folding screen'],['Hidden extra','None','A mode that imitates the 2004 keypad']],
   look:'The newest technology on this site sits inside one of the oldest shapes. Motorola could have sold a folding screen under a new name. It chose the name people already missed.',
   q:'Would the folding screen have sold without the old name?'}
@@ -825,6 +901,7 @@ function leave(mode,withMusic){ if(!introOn) return; introOn=false; S.mode=mode;
   try{sessionStorage.setItem('ta-in','1');}catch(e){}
   intro.classList.add('out'); shelf.classList.add('arrive'); lastTouch=performance.now()+1500; hud(); syncPeek();
   setTimeout(()=>{intro.hidden=true;},reduce?0:1150); setTimeout(()=>shelf.classList.remove('arrive'),2600); }
+$('enterDark').addEventListener('click',()=>{ leave('browse',false); location.hash='machine'; });
 $('enterMusic').addEventListener('click',()=>leave('browse',true)); $('enterQuiet').addEventListener('click',()=>leave('browse',false));
 
 function drawGlobe(g,S_,R,rot,nowSide,lw){
@@ -889,7 +966,7 @@ function creditLine(c){ const one=s=>{ const p=ph(c,s); return p?`${p.author}, $
 function openCase(i){ cur=CASES[i];
   $('aThen').innerHTML=faceThen(cur); $('aNow').innerHTML=faceNow(cur);
   $('yThen').textContent=cur.y1; $('cNum').textContent=`Case ${String(i+1).padStart(2,'0')} of ${String(N).padStart(2,'0')}`;
-  $('cTitle').textContent=cur.title; $('pLook').textContent=cur.look; $('p3').textContent=cur.p3; $('pQ').textContent=cur.q; document.querySelectorAll('#after details').forEach(d=>d.open=false);
+  $('cTitle').textContent=cur.title; $('pLook').textContent=cur.look; $('p3').textContent=cur.p3; $('pQ').textContent=cur.q; document.querySelectorAll('#after details').forEach(d=>d.open=false); tryPaint(cur);
   $('prev').href='#'+CASES[(i-1+N)%N].id; $('next').href='#'+CASES[(i+1)%N].id;
   pick=[];
   paintLock(); ang=reduce?0:-70; target=0; setFace(0,true); $('case').scrollTop=0; $('cTitle').focus({preventScroll:true}); }
@@ -950,90 +1027,162 @@ $('rgrid').innerHTML=READINGS.map(r=>`<article class="rcard"><h2>${r.who}</h2><p
 const cell=(c,s)=>{ const p=ph(c,s); return p?`<a href="${esc(p.url)}">${esc(p.title)}</a><br>${esc(p.author)}. ${esc(p.lic)}.`:'Drawing made for this site.'; };
 $('credits').innerHTML='<tr><th>Object</th><th>Then</th><th>Now</th></tr>'+CASES.map(c=>`<tr><td>${c.title}</td><td>${cell(c,'then')}</td><td>${cell(c,'now')}</td></tr>`).join('');
 
-/* ---------- the machine: make a new photo look old ---------- */
-const MP=[
- {id:'2026',name:'Phone',cap:'This is how the photo left the phone. Nothing is missing, so nothing looks old.'},
- {id:'1998',name:'Disposable camera',stamp:"'98 11 12",cap:'Grain and light leaks were faults of cheap film. The orange date was a record of the day. Phone apps now add all three on purpose.'},
- {id:'1985',name:'Video tape',stamp:'PLAY ▶  0:00:12',cap:'Scan lines were how a TV drew a picture. Nobody chose them. Today they are a style you can switch on.'},
- {id:'1977',name:'Instant print',stamp:'11 · 12 · 77',cap:'The white frame was the print itself, with the chemicals stored in the wide bottom edge. The faded colour came with age.'},
- {id:'1955',name:'Newspaper',cap:'A press could only print dots of one ink. Small dots read as light grey and big dots as dark.'}
+/* ---------- the darkroom: film, then print, then the frame ---------- */
+const DKS=[ // sliders: key, label, min, max, step, group
+ ['exp','Exposure',-2,2,.05,'dkFilm'],['con','Contrast',.5,1.7,.01,'dkFilm'],['warm','Warmth',-1,1,.01,'dkFilm'],['sat','Colour',0,1.7,.01,'dkFilm'],
+ ['grain','Grain',0,1,.01,'dkFault'],['hal','Halation',0,1,.01,'dkFault'],['fade','Fade',0,1,.01,'dkFault'],['leak','Light leak',0,1,.01,'dkFault'],['vig','Vignette',0,1,.01,'dkFault']];
+const DKF=[['none','None'],['135','35mm'],['xpan','Panoramic'],['66','6 × 6'],['67','6 × 7'],['instant','Instant print']];
+const LOOKS=[
+ {id:'2026',name:'Phone',post:'bypass',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},sh:[0,0,0],hi:[0,0,0],
+  cap:'This is how the photo left the phone. Nothing is missing, so nothing looks old.'},
+ {id:'2004',name:'Camera phone',post:'phone',fmt:'none',dateOn:false,date:'',p:{exp:.1,con:.92,warm:-.18,sat:.9,grain:.5,hal:.15,fade:.22,leak:0,vig:.2},sh:[-.01,.01,.04],hi:[-.01,.01,.02],
+  cap:'The first camera phones took small, noisy pictures. People kept them anyway, because the phone was always in the pocket.'},
+ {id:'1998',name:'Disposable camera',fmt:'135',dateOn:true,date:"'98 11 12",p:{exp:.25,con:1.22,warm:.2,sat:1.32,grain:.55,hal:.5,fade:.1,leak:.6,vig:.55},sh:[-.02,.03,.05],hi:[.045,.01,-.05],
+  cap:'Grain and light leaks were faults of cheap film. The orange date was a record of the day. Phone apps now add all three on purpose.'},
+ {id:'1985',name:'TV screen',post:'crt',fmt:'none',dateOn:true,date:'PLAY ▶  0:00:12',p:{exp:.1,con:.95,warm:-.08,sat:1.25,grain:.2,hal:.35,fade:.12,leak:0,vig:.35},sh:[0,0,.02],hi:[0,0,0],
+  cap:'Scan lines were how a TV drew a picture. Nobody chose them. Today they are a style you can switch on.'},
+ {id:'1977',name:'Instant print',fmt:'instant',dateOn:false,date:'11 · 12 · 77',p:{exp:.1,con:.88,warm:.3,sat:.82,grain:.12,hal:.25,fade:.62,leak:0,vig:.4},sh:[.02,.03,-.015],hi:[.03,.02,-.06],
+  cap:'The white frame was the print itself, with the chemicals stored in the wide bottom edge. The faded colour came with age.'},
+ {id:'1972',name:'Black and white',bw:true,fmt:'66',dateOn:false,date:'',p:{exp:.05,con:1.3,warm:0,sat:0,grain:.72,hal:.3,fade:.05,leak:0,vig:.3},sh:[0,0,.008],hi:[.012,.008,0],
+  cap:'Black and white film shows its grain most in the grey middle tones. Photographers used to fight it. Now it is a look.'},
+ {id:'1955',name:'Newspaper',post:'halftone',bw:true,fmt:'none',dateOn:false,date:'',p:{exp:.1,con:1.25,warm:0,sat:0,grain:.3,hal:0,fade:0,leak:0,vig:0},sh:[0,0,0],hi:[0,0,0],
+  cap:'A press could only print dots of one ink. Small dots read as light grey and big dots as dark.'}
 ];
-const M={src:null,own:false,preset:'1998',k:.85,stamp:true,seed:7,hold:false,ready:false};
-const mc=$('mCanvas'), mx=mc.getContext('2d',{willReadFrequently:true});
-function mSample(){ const c=document.createElement('canvas'); c.width=1200; c.height=900; const x=c.getContext('2d');
-  let g=x.createLinearGradient(0,0,0,900); g.addColorStop(0,'#2f6f9f'); g.addColorStop(.5,'#f0b48c'); g.addColorStop(.74,'#ee7f5e'); x.fillStyle=g; x.fillRect(0,0,1200,900);
-  x.fillStyle='#ffe6b0'; x.beginPath(); x.arc(820,470,92,0,7); x.fill();
-  x.fillStyle='#2b5d66'; x.beginPath(); x.moveTo(0,640); x.bezierCurveTo(260,520,420,600,640,640); x.bezierCurveTo(860,680,1000,560,1200,610); x.lineTo(1200,900); x.lineTo(0,900); x.fill();
-  x.fillStyle='#183f47'; x.beginPath(); x.moveTo(0,760); x.bezierCurveTo(300,690,520,790,760,740); x.bezierCurveTo(960,700,1080,770,1200,740); x.lineTo(1200,900); x.lineTo(0,900); x.fill();
-  x.fillStyle='#0e2a30'; for(const [px,h] of [[150,170],[230,120],[980,150]]){ x.fillRect(px,760-h,10,h); x.beginPath(); x.moveTo(px-46,760-h+50); x.lineTo(px+5,760-h-70); x.lineTo(px+56,760-h+50); x.fill(); }
-  x.fillStyle='rgba(255,255,255,.75)'; for(const [a,b,r] of [[240,180,60],[310,170,44],[640,120,50],[700,128,36]]){ x.beginPath(); x.ellipse(a,b,r*1.6,r*.5,0,0,7); x.fill(); }
+const DK={src:null,look:LOOKS[2],p:{},fmt:'135',dateOn:true,date:'',seed:7,cmp:false,split:.5,ready:false,after:null,before:null};
+const dkc=$('dkCanvas'), dkx=dkc.getContext('2d');
+const S2L=new Float32Array(256); for(let i=0;i<256;i++){ const v=i/255; S2L[i]=v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4); }
+function dkSample(){ const c=document.createElement('canvas'); c.width=1500; c.height=1000; const x=c.getContext('2d');
+  let g=x.createLinearGradient(0,0,0,1000); g.addColorStop(0,'#2f6f9f'); g.addColorStop(.5,'#f0b48c'); g.addColorStop(.74,'#ee7f5e'); x.fillStyle=g; x.fillRect(0,0,1500,1000);
+  x.fillStyle='#fff3d0'; x.beginPath(); x.arc(1010,520,96,0,7); x.fill();
+  x.fillStyle='#2b5d66'; x.beginPath(); x.moveTo(0,700); x.bezierCurveTo(320,570,520,660,800,700); x.bezierCurveTo(1080,744,1250,610,1500,670); x.lineTo(1500,1000); x.lineTo(0,1000); x.fill();
+  x.fillStyle='#183f47'; x.beginPath(); x.moveTo(0,840); x.bezierCurveTo(380,760,650,870,950,820); x.bezierCurveTo(1200,776,1350,850,1500,820); x.lineTo(1500,1000); x.lineTo(0,1000); x.fill();
+  x.fillStyle='#0e2a30'; for(const [px,h] of [[190,190],[290,130],[1230,170]]){ x.fillRect(px,840-h,12,h); x.beginPath(); x.moveTo(px-52,840-h+56); x.lineTo(px+6,840-h-80); x.lineTo(px+64,840-h+56); x.fill(); }
+  x.fillStyle='rgba(255,255,255,.78)'; for(const [a,b,r] of [[300,200,66],[380,190,48],[800,130,56],[876,140,40]]){ x.beginPath(); x.ellipse(a,b,r*1.6,r*.5,0,0,7); x.fill(); }
   return c; }
-function mRand(seed){ let s=seed*9301+49297; return ()=>(s=(s*16807)%2147483647)/2147483647; }
-function mBase(sq){ const s=M.src, L=960; let sw=s.width, sh=s.height, sx=0, sy=0;
-  if(sq){ const d=Math.min(sw,sh); sx=(sw-d)/2; sy=(sh-d)/2; sw=sh=d; }
-  const f=Math.min(1,L/Math.max(sw,sh)), w=Math.max(2,Math.round(sw*f)), h=Math.max(2,Math.round(sh*f));
+const dkRand=seed=>{ let s=(seed*9301+49297)%2147483647; return ()=>(s=(s*16807)%2147483647)/2147483647; };
+const DKA={'135':3/2,'xpan':65/24,'66':1,'67':70/56,'instant':1};
+/* crop the source to the frame's shape and scale it; portrait photos keep their orientation */
+function dkBase(fmt,L){ const s=DK.src, sw0=s.width, sh0=s.height, port=sh0>sw0; let ar=DKA[fmt]||sw0/sh0; if(DKA[fmt]&&port&&ar!==1) ar=1/ar;
+  let sw=sw0, sh=sh0; if(sw/sh>ar) sw=sh*ar; else sh=sw/ar; const sx=(sw0-sw)/2, sy=(sh0-sh)/2;
+  const f=Math.min(1,L/Math.max(sw,sh)), w=Math.max(8,Math.round(sw*f)), h=Math.max(8,Math.round(sh*f));
   const c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d',{willReadFrequently:true}).drawImage(s,sx,sy,sw,sh,0,0,w,h); return c; }
-function mStampText(x,txt,px,py,size,col,glow,align){ x.save(); x.font=`500 ${size}px "IBM Plex Mono",monospace`; x.textAlign=align; x.textBaseline='alphabetic';
-  if(glow){ x.shadowColor=glow; x.shadowBlur=size*.35; } x.fillStyle=col; x.fillText(txt,px,py); x.restore(); }
-function mRender(){ if(!M.ready) return; const P=M.hold?'2026':M.preset, k=M.k, rnd=mRand(M.seed), def=MP.find(p=>p.id===P);
-  if(P==='1977'){ const b=mBase(true), w=b.width, bx=b.getContext('2d',{willReadFrequently:true}), im=bx.getImageData(0,0,w,w), d=im.data;
-    for(let i=0;i<d.length;i+=4){ const y=((i/4)/w|0)/w-.5, xx=((i/4)%w)/w-.5, v=1-.5*k*(xx*xx+y*y)*1.6;
-      let r=d[i],g=d[i+1],bl=d[i+2]; const l=(r+g+bl)/3; let R=(r*.85+l*.15)*.8+44, G=(g*.85+l*.15)*.8+40, B=(bl*.85+l*.15)*.68+34;
-      d[i]=(r+(R*v-r)*k); d[i+1]=(g+(G*v-g)*k); d[i+2]=(bl+(B*v-bl)*k); }
-    bx.putImageData(im,0,0); const m=Math.round(w*.07*k), bot=Math.round(w*.26*k);
-    mc.width=w+m*2; mc.height=w+m+Math.max(m,bot); mx.fillStyle='#f5f1e6'; mx.fillRect(0,0,mc.width,mc.height);
-    mx.filter=`blur(${(1.1*k).toFixed(2)}px)`; mx.drawImage(b,m,m); mx.filter='none'; mx.strokeStyle='rgba(0,0,0,.12)'; mx.strokeRect(m+.5,m+.5,w-1,w-1);
-    if(M.stamp&&k>.35) mStampText(mx,def.stamp,mc.width/2,w+m+bot*.62,w*.05,'#27324f',null,'center'); return; }
-  const b=mBase(false), w=b.width, h=b.height; mc.width=w; mc.height=h;
-  if(P==='2026'){ mx.drawImage(b,0,0); return; }
-  if(P==='1955'){ const bx=b.getContext('2d',{willReadFrequently:true}), d=bx.getImageData(0,0,w,h).data, cell=Math.max(4,Math.round(w/150));
-    mx.fillStyle='#ece3cf'; mx.fillRect(0,0,w,h); mx.globalAlpha=1-k; mx.drawImage(b,0,0); mx.globalAlpha=1;
-    mx.fillStyle='#1b1815'; mx.beginPath();
-    for(let y=0;y<h;y+=cell) for(let x=((y/cell)%2)*cell/2;x<w;x+=cell){ const cx=Math.min(w-1,x+cell/2|0), cy=Math.min(h-1,y+cell/2|0), i=(cy*w+cx)*4;
-        const l=(d[i]*.3+d[i+1]*.59+d[i+2]*.11)/255, r=cell*.72*Math.sqrt(1-l)*k; if(r>.4){ mx.moveTo(x+cell/2+r,y+cell/2); mx.arc(x+cell/2,y+cell/2,r,0,6.3); } }
-    mx.fill(); const im=mx.getImageData(0,0,w,h), o=im.data; for(let i=0;i<o.length;i+=4){ const n=(rnd()-.5)*22*k; o[i]+=n; o[i+1]+=n; o[i+2]+=n; } mx.putImageData(im,0,0); return; }
-  if(P==='1985'){ const s=document.createElement('canvas'), q=Math.max(1,Math.round(1+3*k)); s.width=Math.max(2,w/q|0); s.height=Math.max(2,h/q|0); s.getContext('2d').drawImage(b,0,0,s.width,s.height);
-    mx.imageSmoothingEnabled=false; mx.drawImage(s,0,0,w,h); mx.imageSmoothingEnabled=true;
-    const im=mx.getImageData(0,0,w,h), d=im.data;
-    for(let y=0;y<h;y++){ const line=(y%4>=2)?1-.42*k:1, wob=1+.04*k*Math.sin(y*.9+M.seed);
-      for(let x=0;x<w;x++){ const i=(y*w+x)*4, m=x%3, xx=x/w-.5, yy=y/h-.5, v=(1-1.5*k*(xx*xx*xx*xx+yy*yy*yy*yy)*6)*line*wob, n=(rnd()-.5)*26*k;
-        d[i]=(d[i]*(m===0?1+.22*k:1-.1*k)*1.06+n)*v; d[i+1]=(d[i+1]*(m===1?1+.22*k:1-.1*k)*1.08+n)*v; d[i+2]=(d[i+2]*(m===2?1+.22*k:1-.1*k)*1.04+n)*v; } }
-    mx.putImageData(im,0,0); mx.globalCompositeOperation='lighter'; mx.globalAlpha=.22*k; mx.filter='blur(5px)'; mx.drawImage(mc,0,0); mx.filter='none'; mx.globalAlpha=1; mx.globalCompositeOperation='source-over';
-    if(M.stamp&&k>.35) mStampText(mx,def.stamp,w*.05,h*.1,h*.05,'#f4f6ff','#ffffff','left'); return; }
-  /* 1998 */
-  mx.drawImage(b,0,0); const im=mx.getImageData(0,0,w,h), d=im.data;
-  for(let y=0;y<h;y++) for(let x=0;x<w;x++){ const i=(y*w+x)*4, r=d[i],g=d[i+1],bl=d[i+2], l=(r*.3+g*.59+bl*.11), t=l/255;
-      let R=(r-128)*1.2+128, G=(g-128)*1.2+128, B=(bl-128)*1.2+128; const L2=(R+G+B)/3; R=L2+(R-L2)*1.3; G=L2+(G-L2)*1.3; B=L2+(B-L2)*1.3;
-      R+=12*t; B-=16*t; G+=9*(1-t); B+=12*(1-t);
-      const xx=x/w-.5, yy=y/h-.5, v=1-.9*(xx*xx+yy*yy), n=(rnd()-.5)*40;
-      d[i]=r+((R+n)*v-r)*k; d[i+1]=g+((G+n)*v-g)*k; d[i+2]=bl+((B+n)*v-bl)*k; }
-  mx.putImageData(im,0,0);
-  const side=rnd()<.5?0:1, ly=h*(.2+rnd()*.6), gr=mx.createRadialGradient(side*w,ly,0,side*w,ly,w*(.45+rnd()*.3));
-  gr.addColorStop(0,`rgba(255,70,10,${.85*k})`); gr.addColorStop(.45,`rgba(255,150,30,${.35*k})`); gr.addColorStop(1,'rgba(255,150,30,0)');
-  mx.globalCompositeOperation='screen'; mx.fillStyle=gr; mx.fillRect(0,0,w,h); mx.globalCompositeOperation='source-over';
-  if(M.stamp&&k>.35) mStampText(mx,def.stamp,w*.95,h*.94,h*.05,'#ffa238','#ff5a00','right');
-}
-let mRaf=0; const mDraw=()=>{ cancelAnimationFrame(mRaf); mRaf=requestAnimationFrame(mRender); };
-function mUI(){ $('mPre').innerHTML=MP.map(p=>`<button type="button" data-p="${p.id}" aria-pressed="${p.id===M.preset}"><b>${p.id}</b><span>${p.name}</span></button>`).join('');
-  const def=MP.find(p=>p.id===M.preset); $('mCap').textContent=def.cap; $('mStamp').disabled=!def.stamp; $('mStamp').closest('label').classList.toggle('off',!def.stamp);
-  $('mFrame').dataset.p=M.preset; }
-function mOpen(){ if(!M.src){ M.src=mSample(); } M.ready=true; mUI(); mDraw(); }
-$('mPre').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; M.preset=b.dataset.p; blip(330+MP.findIndex(p=>p.id===M.preset)*90,.14); mUI(); mDraw(); });
-$('mK').addEventListener('input',e=>{ M.k=e.target.value/100; mDraw(); });
-$('mStamp').addEventListener('change',e=>{ M.stamp=e.target.checked; mDraw(); });
-$('mShuffle').addEventListener('click',()=>{ M.seed=1+Math.floor(Math.random()*9999); blip(660,.1); mDraw(); });
-$('mPick').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('mFile').click(); } });
-function mLoad(file){ if(!file||!/^image\//.test(file.type)) return; const url=URL.createObjectURL(file), img=new Image();
-  img.onload=()=>{ M.src=img; M.own=true; mDraw(); blip(523,.16); setTimeout(()=>blip(784,.2),90); }; img.onerror=()=>{ URL.revokeObjectURL(url); $('mCap').textContent='That file could not be read as a picture. Try a JPG or PNG.'; }; img.src=url; }
-$('mFile').addEventListener('change',e=>mLoad(e.target.files[0]));
-const mf=$('mFrame'); mf.addEventListener('dragover',e=>e.preventDefault()); mf.addEventListener('drop',e=>{ e.preventDefault(); mLoad(e.dataTransfer.files[0]); });
-const mHold=on=>{ if(M.hold===on) return; M.hold=on; mDraw(); };
-mc.addEventListener('pointerdown',()=>mHold(true)); addEventListener('pointerup',()=>mHold(false)); mc.addEventListener('pointerleave',()=>mHold(false));
-$('mSave').addEventListener('click',()=>{ mc.toBlob(async bl=>{ if(!bl) return; const name=`then-again-${M.preset}.png`;
-    let dl=null; try{ dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null; }catch(e){}
-    if(dl){ try{ await dl.save({filename:name,data:bl}); }catch(e){} return; }
-    const a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
-  },'image/png'); });
+function dkStamp(x,txt,px,py,size,col,glow,align){ if(!txt) return; x.save(); x.font=`500 ${size}px "IBM Plex Mono",monospace`; x.textAlign=align; x.textBaseline='alphabetic';
+  if(glow){ x.shadowColor=glow; x.shadowBlur=size*.4; } x.fillStyle=col; x.fillText(txt,px,py); if(glow) x.fillText(txt,px,py); x.restore(); }
+/* the picture itself: exposure, halation, a film-and-print curve, grain, then the special looks */
+function dkProcess(b,look,p,o){ const w=b.width, h=b.height, bx=b.getContext('2d',{willReadFrequently:true});
+  if(look.post==='bypass'){ if(o.dateOn) dkStamp(bx,o.date,w*.95,h*.94,h*.045,'#ffa238','#ff5a00','right'); return b; }
+  const im=bx.getImageData(0,0,w,h), d=im.data, rnd=dkRand(o.seed), fine=(o.fmt==='66'||o.fmt==='67')?.6:1;
+  // halation: bright areas spread as a red glow, as light bouncing off the film base did
+  let H=null, hw=0; if(p.hal>.01){ const q=4; hw=Math.max(2,w/q|0); const hh=Math.max(2,h/q|0), a=document.createElement('canvas'); a.width=hw; a.height=hh;
+    const ax=a.getContext('2d',{willReadFrequently:true}); ax.drawImage(b,0,0,hw,hh); const m=ax.getImageData(0,0,hw,hh), md=m.data;
+    for(let i=0;i<md.length;i+=4){ const l=md[i]*.3+md[i+1]*.59+md[i+2]*.11, v=Math.max(0,l-168)*2.9; md[i]=md[i+1]=md[i+2]=v>255?255:v; }
+    ax.putImageData(m,0,0); const c2=document.createElement('canvas'); c2.width=hw; c2.height=hh; const cx=c2.getContext('2d',{willReadFrequently:true});
+    cx.filter=`blur(${Math.max(1,(hw*.022*fine)).toFixed(1)}px)`; cx.drawImage(a,0,0); const hd=cx.getImageData(0,0,hw,hh).data; H=new Float32Array(hw*hh); for(let i=0;i<H.length;i++) H[i]=hd[i*4]/255; H.q=q; H.hh=hh; }
+  // grain: clumps whose size depends on the film format
+  const T=256, G=new Float32Array(T*T); { const n=document.createElement('canvas'); n.width=n.height=T; const nx=n.getContext('2d',{willReadFrequently:true}), ni=nx.createImageData(T,T);
+    for(let i=0;i<T*T;i++){ const v=(rnd()+rnd()+rnd())/3*255; ni.data[i*4]=ni.data[i*4+1]=ni.data[i*4+2]=v; ni.data[i*4+3]=255; } nx.putImageData(ni,0,0);
+    const n2=document.createElement('canvas'); n2.width=n2.height=T; const n2x=n2.getContext('2d',{willReadFrequently:true}); n2x.filter=`blur(${(.45+w/1000*.55*fine*(look.bw?1.25:1)).toFixed(2)}px)`; n2x.drawImage(n,0,0);
+    const gd=n2x.getImageData(0,0,T,T).data; let mean=0; for(let i=0;i<T*T;i++){ G[i]=gd[i*4]; mean+=G[i]; } mean/=T*T; let sd=0; for(let i=0;i<T*T;i++){ G[i]-=mean; sd+=G[i]*G[i]; } sd=Math.sqrt(sd/(T*T))||1; for(let i=0;i<T*T;i++) G[i]/=sd; }
+  // one curve per colour layer: film then print, folded into a single S shape
+  const N=1024, LUT=[0,1,2].map(ch=>{ const t=new Float32Array(N), lift=p.fade*.15; for(let i=0;i<N;i++){ const c=(i/(N-1))*(i/(N-1))*6, x=Math.log2(Math.max(c,1e-5)/.18), s=1/(1+Math.exp(-1.25*p.con*x));
+      t[i]=lift+s*(1-lift-p.fade*.09)+look.sh[ch]*(1-s)*(1-s)+look.hi[ch]*s*s; } return t; });
+  const ex=Math.pow(2,p.exp), wr=ex*(1+p.warm*.22), wg=ex, wb=ex*(1-p.warm*.22), gs=p.grain*.13, bw=!!look.bw, sat=p.sat, cx0=w/2, cy0=h/2, inv=1/(cx0*cx0+cy0*cy0);
+  for(let y=0;y<h;y++){ const gy=(y%T)*T, dy=y-cy0; for(let x=0;x<w;x++){ const i=(y*w+x)*4; let r=S2L[d[i]]*wr, g=S2L[d[i+1]]*wg, bl=S2L[d[i+2]]*wb;
+      if(H){ const hv=H[Math.min(H.hh-1,y/H.q|0)*hw+Math.min(hw-1,x/H.q|0)]*p.hal; r+=hv*.85; g+=hv*.22; bl+=hv*.04; }
+      const l=.2126*r+.7152*g+.0722*bl; if(bw){ r=g=bl=l; } else { r=l+(r-l)*sat; g=l+(g-l)*sat; bl=l+(bl-l)*sat; if(r<0)r=0; if(g<0)g=0; if(bl<0)bl=0; }
+      let R=LUT[0][Math.min(N-1,Math.sqrt(r/6)*(N-1)|0)], Gn=LUT[1][Math.min(N-1,Math.sqrt(g/6)*(N-1)|0)], B=LUT[2][Math.min(N-1,Math.sqrt(bl/6)*(N-1)|0)];
+      if(gs>0){ const n0=G[gy+(x%T)], m=(4*Gn*(1-Gn)+.25)*gs; if(bw){ R+=n0*m; Gn+=n0*m; B+=n0*m; } else { R+=(n0*.7+G[gy+((x+71)%T)]*.5)*m; Gn+=(n0*.7+G[gy+((x+149)%T)]*.5)*m; B+=(n0*.7+G[gy+((x+211)%T)]*.6)*m; } }
+      const dx=x-cx0, v=1-p.vig*.75*(dx*dx+dy*dy)*inv; d[i]=R*v*255; d[i+1]=Gn*v*255; d[i+2]=B*v*255; } }
+  bx.putImageData(im,0,0);
+  if(p.leak>.01){ const side=rnd()<.5?0:1, ly=h*(.2+rnd()*.6), gr=bx.createRadialGradient(side*w,ly,0,side*w,ly,w*(.4+rnd()*.35));
+    gr.addColorStop(0,`rgba(255,70,10,${.9*p.leak})`); gr.addColorStop(.45,`rgba(255,150,30,${.4*p.leak})`); gr.addColorStop(1,'rgba(255,150,30,0)');
+    bx.globalCompositeOperation='screen'; bx.fillStyle=gr; bx.fillRect(0,0,w,h); bx.globalCompositeOperation='source-over'; }
+  if(look.post==='halftone'){ const src=bx.getImageData(0,0,w,h).data, cell=Math.max(4,Math.round(w/150)); bx.fillStyle='#ece3cf'; bx.fillRect(0,0,w,h); bx.fillStyle='#1b1815'; bx.beginPath();
+    for(let y=0;y<h;y+=cell) for(let x=((y/cell)%2)*cell/2;x<w;x+=cell){ const px=Math.min(w-1,x+cell/2|0), py=Math.min(h-1,y+cell/2|0), i=(py*w+px)*4, l=(src[i]*.3+src[i+1]*.59+src[i+2]*.11)/255, r=cell*.72*Math.sqrt(1-l);
+        if(r>.4){ bx.moveTo(x+cell/2+r,y+cell/2); bx.arc(x+cell/2,y+cell/2,r,0,6.3); } } bx.fill(); }
+  if(look.post==='phone'){ const s=document.createElement('canvas'); s.width=Math.min(w,240); s.height=Math.max(2,Math.round(h*s.width/w)); s.getContext('2d').drawImage(b,0,0,s.width,s.height); bx.drawImage(s,0,0,w,h); }
+  if(look.post==='crt'){ const q=Math.max(2,Math.round(w/320)), s=document.createElement('canvas'); s.width=Math.max(2,w/q|0); s.height=Math.max(2,h/q|0); s.getContext('2d').drawImage(b,0,0,s.width,s.height);
+    bx.imageSmoothingEnabled=false; bx.drawImage(s,0,0,w,h); bx.imageSmoothingEnabled=true; const i2=bx.getImageData(0,0,w,h), e=i2.data, lh=Math.max(2,Math.round(h/240))*2;
+    for(let y=0;y<h;y++){ const line=(y%lh>=lh/2)?.6:1, wob=1+.035*Math.sin(y*.9+o.seed); for(let x=0;x<w;x++){ const i=(y*w+x)*4, m=x%3, k=line*wob; e[i]*=(m===0?1.2:.9)*k; e[i+1]*=(m===1?1.2:.9)*k; e[i+2]*=(m===2?1.2:.9)*k; } }
+    bx.putImageData(i2,0,0); bx.globalCompositeOperation='lighter'; bx.globalAlpha=.2; bx.filter=`blur(${Math.max(2,w/200)}px)`; bx.drawImage(b,0,0); bx.filter='none'; bx.globalAlpha=1; bx.globalCompositeOperation='source-over';
+    if(o.dateOn) dkStamp(bx,o.date,w*.05,h*.1,h*.05,'#f4f6ff','#ffffff','left'); return b; }
+  if(o.dateOn&&o.fmt!=='instant') dkStamp(bx,o.date,w*.95,h*.94,Math.max(10,h*.045),look.post==='halftone'?'#1b1815':'#ffa238',look.post==='halftone'?null:'#ff5a00','right');
+  return b; }
+/* the frame: film base, perforations, edge print and frame numbers, or the instant print's white border */
+function dkFrame(img,fmt,o){ const w=img.width, h=img.height;
+  if(fmt==='none') return img;
+  if(fmt==='instant'){ const m=Math.round(w*.07), bot=Math.round(w*.27), c=document.createElement('canvas'); c.width=w+m*2; c.height=h+m+bot; const x=c.getContext('2d');
+    x.fillStyle='#f5f1e6'; x.fillRect(0,0,c.width,c.height); x.drawImage(img,m,m); x.strokeStyle='rgba(0,0,0,.14)'; x.strokeRect(m+.5,m+.5,w-1,h-1);
+    if(o.dateOn) dkStamp(x,o.date,c.width/2,h+m+bot*.6,w*.05,'#27324f',null,'center'); return c; }
+  const port=h>w, L=port?h:w, Sd=port?w:h, roll=fmt==='66'||fmt==='67', mm=roll?Sd/56:Sd/24, filmH=(roll?61.5:35)*mm, top=(filmH-Sd)/2, pad=(roll?6:7)*mm;
+  const c=document.createElement('canvas'); c.width=Math.round(L+pad*2); c.height=Math.round(filmH); const x=c.getContext('2d');
+  x.fillStyle='#0e0c0b'; x.fillRect(0,0,c.width,c.height); x.fillStyle='#171311'; const gap=(roll?4:2)*mm; x.fillRect(0,top,pad-gap,Sd); x.fillRect(pad+L+gap,top,pad,Sd);
+  x.save(); if(port){ x.translate(pad,top+Sd); x.rotate(-Math.PI/2); x.drawImage(img,0,0); } else x.drawImage(img,pad,top); x.restore();
+  const amber='#f2a53a', ts=(roll?1.7:1.15)*mm, n=1+Math.floor(dkRand(o.seed)()*(roll?10:34));
+  x.font=`500 ${ts}px "IBM Plex Mono",monospace`; x.fillStyle=amber; x.textBaseline='middle';
+  if(roll){ x.textAlign='left'; x.fillText(`THEN AGAIN 160`,pad+L*.08,top/2); x.fillText(`▸ ${n}`,pad+L*.62,top/2); x.fillText(`${n}`,pad+L*.08,filmH-top/2); x.fillText('▸▸▸',pad+L*.5,filmH-top/2); }
+  else { const pw=2.8*mm, phh=1.98*mm, pitch=4.75*mm, py1=2.01*mm, py2=filmH-2.01*mm-phh; x.globalCompositeOperation='destination-out';
+    for(let px=-pitch*.3;px<c.width;px+=pitch){ for(const py of [py1,py2]){ x.beginPath(); if(x.roundRect) x.roundRect(px,py,pw,phh,.45*mm); else x.rect(px,py,pw,phh); x.fill(); } }
+    x.globalCompositeOperation='source-over'; const band1=(py1+phh+top)/2, band2=(top+Sd+py2)/2; x.textAlign='left';
+    x.fillText('THEN AGAIN 400',pad+L*.3,band1); x.fillText(`${n}`,pad+L*.06,band1); x.fillText(`▸ ${n}A`,pad+L*.56,band2); x.fillText(`▸ ${n}`,pad+L*.04,band2);
+    for(let k=0;k<14;k++){ if(dkRand(o.seed+k)()>.45) x.fillRect(pad+L*.74+k*.7*mm,band1-ts*.45,.38*mm,ts*.9); } }
+  if(!port) return c; const r=document.createElement('canvas'); r.width=c.height; r.height=c.width; const rx=r.getContext('2d'); rx.translate(r.width,0); rx.rotate(Math.PI/2); rx.drawImage(c,0,0); return r; }
+const dkOpts=()=>({fmt:DK.fmt,dateOn:DK.dateOn,date:DK.date,seed:DK.seed});
+function dkBuild(L){ const o=dkOpts(); return dkFrame(dkProcess(dkBase(DK.fmt,L),DK.look,DK.p,o),DK.fmt,o); }
+function dkBefore(L){ const o=Object.assign(dkOpts(),{dateOn:false}); return dkFrame(dkBase(DK.fmt,L),DK.fmt,o); }
+function dkPaint(){ const a=DK.after; if(!a) return; dkc.width=a.width; dkc.height=a.height; dkx.clearRect(0,0,a.width,a.height); dkx.drawImage(a,0,0);
+  const sp=$('dkSplit'); sp.hidden=!DK.cmp; if(DK.cmp&&DK.before){ const sx=Math.round(a.width*DK.split); dkx.save(); dkx.beginPath(); dkx.rect(0,0,sx,a.height); dkx.clip(); dkx.clearRect(0,0,sx,a.height); dkx.drawImage(DK.before,0,0,a.width,a.height); dkx.restore();
+    const r=dkc.getBoundingClientRect(), st=$('dkStage').getBoundingClientRect(); sp.style.left=(r.left-st.left+r.width*DK.split)+'px'; sp.style.top=(r.top-st.top)+'px'; sp.style.height=r.height+'px'; } }
+function dkHist(){ const a=DK.after; if(!a) return; const hc=$('dkHist'), hx=hc.getContext('2d'), s=document.createElement('canvas'); s.width=160; s.height=Math.max(2,Math.round(160*a.height/a.width));
+  const sx=s.getContext('2d',{willReadFrequently:true}); sx.drawImage(a,0,0,s.width,s.height); const d=sx.getImageData(0,0,s.width,s.height).data, B=[new Uint32Array(64),new Uint32Array(64),new Uint32Array(64)];
+  for(let i=0;i<d.length;i+=4){ if(d[i+3]<200) continue; B[0][d[i]>>2]++; B[1][d[i+1]>>2]++; B[2][d[i+2]>>2]++; }
+  let mx=1; for(const b of B) for(let i=1;i<63;i++) if(b[i]>mx) mx=b[i]; hx.clearRect(0,0,256,72); hx.globalCompositeOperation='lighter';
+  ['#ff5a4a','#5fe07a','#5a8cff'].forEach((col,k)=>{ hx.fillStyle=col; hx.globalAlpha=.75; hx.beginPath(); hx.moveTo(0,72); for(let i=0;i<64;i++) hx.lineTo(i*4+2,72-Math.min(1,B[k][i]/mx)*68); hx.lineTo(256,72); hx.fill(); }); hx.globalAlpha=1; hx.globalCompositeOperation='source-over'; }
+let dkRaf=0; function dkDraw(){ cancelAnimationFrame(dkRaf); dkRaf=requestAnimationFrame(()=>{ if(!DK.ready) return; DK.after=dkBuild(1000); if(DK.cmp) DK.before=dkBefore(1000); dkPaint(); dkHist();
+    $('dkInfo').textContent=`${DK.src.naturalWidth||DK.src.width} × ${DK.src.naturalHeight||DK.src.height}`; }); }
+function dkThumbs(){ $('dkStrip').innerHTML=''; LOOKS.forEach(l=>{ const b=document.createElement('button'); b.type='button'; b.dataset.l=l.id; b.setAttribute('aria-pressed',l===DK.look);
+    const t=dkProcess(dkBase('135',150),l,l.p,{fmt:'none',dateOn:false,date:'',seed:3}); t.className='th'; b.appendChild(t); const s=document.createElement('span'); s.innerHTML=`<b>${l.id}</b>${l.name}`; b.appendChild(s); $('dkStrip').appendChild(b); }); }
+function dkSyncUI(){ DKS.forEach(([k])=>{ const el=$('dk_'+k); el.value=DK.p[k]; el.nextElementSibling.textContent=(+DK.p[k]).toFixed(2); });
+  $('dkFmt').value=DK.fmt; $('dkDateOn').checked=DK.dateOn; $('dkDate').value=DK.date; $('dkCap').textContent=DK.look.cap;
+  const rel=CASES.filter(c=>c.lk===DK.look.id); $('dkCases').innerHTML=rel.length?'<span>The story behind it</span>'+rel.map(c=>`<a href="#${c.id}">${c.title}</a>`).join(''):'';
+  [...$('dkStrip').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===DK.look.id)); }
+function dkSetLook(l){ DK.look=l; DK.p=Object.assign({},l.p); DK.fmt=l.fmt; DK.dateOn=l.dateOn; DK.date=l.date; dkSyncUI(); dkDraw(); }
+DKS.forEach(([k,label,min,max,step,grp])=>{ const row=document.createElement('label'); row.className='dkrow'; row.htmlFor='dk_'+k;
+  row.innerHTML=`<span>${label}</span><input type="range" id="dk_${k}" min="${min}" max="${max}" step="${step}"><output></output>`; $(grp).appendChild(row);
+  const el=row.querySelector('input'); el.addEventListener('input',()=>{ DK.p[k]=+el.value; el.nextElementSibling.textContent=(+el.value).toFixed(2); dkDraw(); });
+  el.addEventListener('dblclick',()=>{ DK.p[k]=DK.look.p[k]; dkSyncUI(); dkDraw(); }); });
+$('dkFmt').innerHTML=DKF.map(([v,n])=>`<option value="${v}">${n}</option>`).join('');
+$('dkFmt').addEventListener('change',e=>{ DK.fmt=e.target.value; dkDraw(); });
+$('dkDateOn').addEventListener('change',e=>{ DK.dateOn=e.target.checked; dkDraw(); });
+$('dkDate').addEventListener('input',e=>{ DK.date=e.target.value; dkDraw(); });
+$('dkStrip').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; const l=LOOKS.find(x=>x.id===b.dataset.l); blip(300+LOOKS.indexOf(l)*70,.14); dkSetLook(l); });
+$('dkReset').addEventListener('click',()=>dkSetLook(DK.look));
+$('dkShuffle').addEventListener('click',()=>{ DK.seed=1+Math.floor(Math.random()*9999); blip(660,.1); dkDraw(); });
+$('dkCmp').addEventListener('click',()=>{ DK.cmp=!DK.cmp; $('dkCmp').setAttribute('aria-pressed',DK.cmp); dkDraw(); });
+{ let drag=false; const mv=e=>{ const r=dkc.getBoundingClientRect(); DK.split=Math.max(.02,Math.min(.98,(e.clientX-r.left)/r.width)); dkPaint(); };
+  dkc.addEventListener('pointerdown',e=>{ if(!DK.cmp) return; drag=true; dkc.setPointerCapture(e.pointerId); mv(e); }); dkc.addEventListener('pointermove',e=>{ if(drag) mv(e); });
+  dkc.addEventListener('pointerup',()=>drag=false); dkc.addEventListener('pointercancel',()=>drag=false); }
+$('dkPick').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('dkFile').click(); } });
+function dkLoad(file){ if(!file||!/^image\//.test(file.type)) return; const url=URL.createObjectURL(file), img=new Image();
+  img.onload=()=>{ DK.src=img; DK.own=true; dkThumbs(); dkSyncUI(); dkDraw(); blip(523,.16); setTimeout(()=>blip(784,.2),90); };
+  img.onerror=()=>{ URL.revokeObjectURL(url); $('dkCap').textContent='That file could not be read as a picture. Try a JPG or PNG.'; }; img.src=url; }
+$('dkFile').addEventListener('change',e=>dkLoad(e.target.files[0]));
+{ const st=$('dkStage'); st.addEventListener('dragover',e=>e.preventDefault()); st.addEventListener('drop',e=>{ e.preventDefault(); dkLoad(e.dataTransfer.files[0]); }); }
+$('dkSave').addEventListener('click',()=>{ const btn=$('dkSave'), old=btn.textContent; btn.textContent='Rendering'; btn.disabled=true;
+  setTimeout(()=>{ let out; try{ out=dkBuild(Math.min(2800,Math.max(DK.src.naturalWidth||DK.src.width,DK.src.naturalHeight||DK.src.height))); }catch(e){ btn.textContent=old; btn.disabled=false; return; }
+    const flat=document.createElement('canvas'); flat.width=out.width; flat.height=out.height; const fx=flat.getContext('2d'); fx.fillStyle='#ffffff'; fx.fillRect(0,0,flat.width,flat.height); fx.drawImage(out,0,0);
+    flat.toBlob(async bl=>{ btn.textContent=old; btn.disabled=false; if(!bl) return; const name=`then-again-${DK.look.id}.jpg`;
+      let dl=null; try{ dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null; }catch(e){}
+      if(dl){ try{ await dl.save({filename:name,data:bl}); }catch(e){} return; }
+      const a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); },'image/jpeg',.92); },30); });
+const dkEnsure=()=>{ if(!DK.src) DK.src=dkSample(); };
+function mOpen(){ dkEnsure(); if(!DK.ready){ DK.ready=true; dkThumbs(); dkSetLook(DK.look); } else { dkSyncUI(); dkDraw(); } }
+/* every case hands its own year to the darkroom */
+const lookOf=c=>LOOKS.find(l=>l.id===c.lk)||LOOKS[2];
+function tryPaint(c){ dkEnsure(); const l=lookOf(c), o={fmt:l.fmt,dateOn:l.dateOn,date:l.date,seed:5}; const t=dkFrame(dkProcess(dkBase(l.fmt,230),l,l.p,o),l.fmt,o);
+  const box=$('tryImg'); box.innerHTML=''; box.appendChild(t); $('trySub').textContent=`The darkroom has this look ready: ${l.id}, ${l.name.toLowerCase()}.`; }
+$('tryLook').addEventListener('click',()=>{ if(!cur) return; const l=lookOf(cur); if(DK.ready) dkSetLook(l); else DK.look=l; blip(523,.14); });
+addEventListener('resize',()=>{ if(DK.cmp&&!$('machine').hidden) dkPaint(); });
 
 /* ---------- router ---------- */
 const PAGES=['machine','timeline','pattern','argument','readings','sources'];

@@ -38,3 +38,22 @@ Left as is, on purpose
 
 Not verified
 - `Save picture` was not exercised in a real browser. Inside the claude.ai artifact frame downloads are blocked, so it only works on the GitHub Pages copy.
+
+## 2026-11-11 (night) · then-again/: darkroom workspace, linked from every case
+
+Reviewed with `ocr delegate` (workspace mode). Covered `then-again/index.html`, `then-again.html`, `projects.html`.
+
+Changed
+- The first filter machine was replaced by a darkroom workspace: a float pipeline (exposure, halation, one film-and-print S curve per colour layer, format-scaled grain, vignette), seven looks by year, film edges for 35mm, panoramic, 6x6, 6x7 and instant, date back, split compare, histogram, and JPG export up to 2800 px.
+- Every case page now renders a small preview of its own look and opens the darkroom with that look selected. The darkroom links back to the related cases.
+
+Found and fixed during review
+- High, correctness: the new per-case key `look` collided with the existing `look` field that holds the "Look closer" paragraph, so every hand-off resolved to no look and threw. Renamed the key to `lk` and added a fallback look.
+
+Checked and found fine
+- Structure follows the film-then-print idea of spektrafilm and SpektraLab (GPL-3.0). No code, profiles or LUTs from either were copied, so the licence does not attach. Credit is given on the Sources page.
+- Preview render of a 1000 px frame measured at about 60 ms in headless Chrome.
+
+Not verified
+- Export at full size from a large phone photo was not timed. The test image was only 960 px wide.
+- No real-browser check of the split-compare drag on touch screens.
