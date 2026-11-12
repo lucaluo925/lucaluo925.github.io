@@ -337,6 +337,34 @@ img.ph{width:100%;height:100%;object-fit:contain;display:block;-webkit-user-drag
 .pill.change{background:var(--lime)}
 .pill.miss{opacity:.45;text-decoration:line-through}
 @media (max-width:700px){.bars{grid-template-columns:1fr}}
+
+/* the machine */
+a.gamebar{padding:0 18px 0 14px;text-decoration:none;gap:10px}
+a.gamebar svg{width:20px;height:20px;fill:none;stroke:var(--lime);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+a.gamebar:hover{background:var(--blue)}
+.mach{display:grid!important;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(18px,3vw,40px)!important;align-items:start;max-width:1180px!important}
+.mview{display:grid;gap:10px;position:sticky;top:20px}
+.mframe{background:var(--ink);padding:clamp(10px,1.6vw,22px);display:grid;place-items:center;min-height:300px}
+.mframe canvas{display:block;max-width:100%;max-height:66vh;width:auto;height:auto;cursor:pointer;touch-action:none;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.mframe[data-p="1985"] canvas{border-radius:18px/14px}
+.mctl{display:grid;gap:16px}
+.mpre{display:grid;grid-template-columns:repeat(5,1fr);border:1.5px solid var(--ink)}
+.mpre button{border:0;border-right:1.5px solid var(--ink);background:#fff;padding:10px 4px 9px;cursor:pointer;display:grid;gap:3px;justify-items:center;color:var(--ink)}
+.mpre button:last-child{border-right:0}
+.mpre b{font-family:var(--display);font-weight:800;font-size:clamp(17px,1.7vw,24px);letter-spacing:-.02em;line-height:1}
+.mpre span{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;line-height:1.15;text-align:center}
+.mpre button[aria-pressed="true"]{background:var(--lime)}
+.mpre button:hover{background:#e9ffc9}
+.mrow{display:flex;align-items:center;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;border-top:1px dashed rgba(13,16,32,.35);padding-top:12px}
+.mrow input[type=range]{flex:1;max-width:260px;accent-color:var(--blue);height:26px}
+.mrow input[type=checkbox]{width:22px;height:22px;accent-color:var(--blue)}
+.mrow.off{opacity:.35}
+.mcap{font-size:17px!important;line-height:1.5!important;border-left:5px solid var(--blue);padding-left:14px}
+label.btn{display:inline-block}
+@media (max-width:860px){.mach{grid-template-columns:1fr}.mview{position:static}.mframe canvas{max-height:52vh}.mpre span{display:none}}
+.mview,.mctl{min-width:0}
+.mframe{overflow:hidden}
+@media (max-width:860px){.mpre b{font-size:15px}.mpre button{padding:10px 2px}.mach .pager .btn{padding:10px 12px}}
 </style>
 </head>
 <body>
@@ -381,16 +409,16 @@ img.ph{width:100%;height:100%;object-fit:contain;display:block;-webkit-user-drag
 <div id="menu" hidden>
   <nav class="mnav" aria-label="Pages">
     <a href="#shelf"><small>01</small>Objects</a>
-    <a href="#timeline"><small>02</small>Timeline</a>
-    <a href="#pattern"><small>03</small>The pattern</a>
-    <a href="#argument"><small>04</small>The argument</a>
-    <a href="#readings"><small>05</small>Three readings</a>
-    <a href="#sources"><small>06</small>Sources and credits</a>
+    <a href="#machine"><small>02</small>The machine</a>
+    <a href="#timeline"><small>03</small>Timeline</a>
+    <a href="#pattern"><small>04</small>The pattern</a>
+    <a href="#argument"><small>05</small>The argument</a>
+    <a href="#readings"><small>06</small>Three readings</a>
+    <a href="#sources"><small>07</small>Sources and credits</a>
   </nav>
   <div class="mside">
     <div class="lab">Cases</div>
     <div id="mcases"></div>
-    <div class="pager" style="margin-top:18px"><button class="btn" id="gameReset">Start the game over</button></div>
   </div>
 </div>
 
@@ -400,19 +428,18 @@ img.ph{width:100%;height:100%;object-fit:contain;display:block;-webkit-user-drag
   <div class="gate">
     <div class="eyebrow">CDM 002 &middot; Fall 2026</div>
     <h2 id="introTitle" aria-label="Then, Again"></h2>
-    <p>Eight old objects. Each one came back as something to buy. You run the company. Decide what to keep, then turn it over.</p>
+    <p>Eight old objects, each one sold again. Turn them over, then make a photo of your own look old.</p>
     <div class="pager">
-      <button class="btn solid" id="enterMusic">Play with music</button>
-      <button class="btn" id="enterQuiet">Play</button>
+      <button class="btn solid" id="enterMusic">Enter with music</button>
+      <button class="btn" id="enterQuiet">Enter</button>
     </div>
-    <button class="skiplink" id="enterBrowse">Skip the game and browse</button>
   </div>
 </div>
 
-<div class="gamebar" id="gamebar" hidden>
-  <button class="sw" id="gameSwitch" role="switch" aria-checked="true" aria-label="Guessing game"><i></i></button>
-  <span class="gl">Game</span><span class="gs" id="gbScore"></span>
-</div>
+<a class="gamebar" id="gamebar" href="#machine" hidden>
+  <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="5.5" width="15" height="11" rx="2"/><circle cx="10" cy="11" r="3.2"/><path d="M6.5 5.5l1.2-2h4.6l1.2 2"/></svg>
+  <span>Make your photo look old</span>
+</a>
 
 <main id="shelf" aria-label="Eight objects. Each one opens a case."></main>
 
@@ -457,6 +484,31 @@ img.ph{width:100%;height:100%;object-fit:contain;display:block;-webkit-user-drag
         <a class="btn" href="#shelf">All objects</a>
       </nav>
     </article>
+  </div>
+</section>
+
+<section class="page" id="machine" hidden>
+  <div class="sheet wide mach">
+    <div class="mview">
+      <div class="mframe" id="mFrame"><canvas id="mCanvas" width="960" height="720" aria-label="Your photo with the chosen year applied"></canvas></div>
+      <p class="note2" id="mHold">Press and hold the picture to see it without the effect.</p>
+    </div>
+    <div class="mctl">
+      <div class="eyebrow">The machine</div>
+      <h1>Make it look old</h1>
+      <p class="lede2">Pick a year. The machine adds what the cameras and screens of that year could not avoid.</p>
+      <div class="mpre" id="mPre" role="group" aria-label="Year"></div>
+      <label class="mrow" for="mK"><span>Strength</span><input type="range" id="mK" min="0" max="100" value="85"></label>
+      <label class="mrow chk" for="mStamp"><span>Date stamp</span><input type="checkbox" id="mStamp" checked></label>
+      <div class="pager">
+        <label class="btn solid" for="mFile" tabindex="0" id="mPick">Use your own photo</label>
+        <input type="file" id="mFile" accept="image/*" hidden>
+        <button class="btn" id="mShuffle">Shuffle</button>
+        <button class="btn" id="mSave">Save picture</button>
+      </div>
+      <p class="mcap" id="mCap"></p>
+      <p class="note2">Your photo stays in this browser. Nothing is uploaded.</p>
+    </div>
   </div>
 </section>
 
@@ -544,7 +596,7 @@ img.ph{width:100%;height:100%;object-fit:contain;display:block;-webkit-user-drag
     <p>Katherine Liao and <a href="../then-again.html">Haoyuan Luo</a>. CDM 002 A04, Professor Finn Brunton, UC Davis, Fall 2026.</p>
     <p>Photos were cut out and recoloured for this site. Where a photo carries a share-alike licence, our changed version is offered under the same licence.</p>
     <h2>How it was built</h2>
-    <p>One page of HTML, CSS and JavaScript with no framework. The globe and the marbled ground are drawn on canvas. Sound uses the Web Audio API, and the halos follow the volume of the recording. The site works with a keyboard and respects the reduced motion setting.</p>
+    <p>One page of HTML, CSS and JavaScript with no framework. The machine changes your photo pixel by pixel on a canvas, in your own browser. The globe and the marbled ground are drawn on canvas. Sound uses the Web Audio API, and the halos follow the volume of the recording. The site works with a keyboard and respects the reduced motion setting.</p>
     <nav class="pager"><a class="btn solid" href="#shelf">All objects</a></nav>
   </div>
 </section>
@@ -701,16 +753,13 @@ const STAR='<svg viewBox="-10 -10 20 20"><path d="M0-10C1.2-3 3-1.2 10 0 3 1.2 1
 let S={mode:'play',g:{}};
 try{ const raw=localStorage.getItem('ta-game2'); if(raw){ const p=JSON.parse(raw); if(p&&p.g) S=p; } }catch(e){}
 const save=()=>{ try{localStorage.setItem('ta-game2',JSON.stringify(S));}catch(e){} };
-const playing=()=>S.mode==='play';
+const playing=()=>false;   /* the quiz game was removed; the page is a browse-and-play exhibit */
 const done=c=>!!S.g[c.id];
 const unlocked=c=>!playing()||done(c);
 const score=()=>CASES.reduce((a,c)=>a+((S.g[c.id]&&S.g[c.id].m)||0),0);
 const turned=()=>CASES.filter(done).length;
 const MAXS=CASES.reduce((a,c)=>a+c.d.length,0);
-function hud(){ const h=$('hud'), onShelf=!shelf.hidden; h.hidden=!playing()||introOn||onShelf;
-  const gb=$('gamebar'); gb.hidden=!onShelf||introOn; $('gameSwitch').setAttribute('aria-checked',playing()); $('gbScore').textContent=playing()?`${turned()} / ${N} launched`:'off'; $('hudScore').textContent=score(); $('hudCount').textContent=`of ${MAXS} matched`;
-  objs.forEach((o,i)=>o.classList.toggle('done',playing()&&done(CASES[i])));
- }
+function hud(){ $('hud').hidden=true; $('gamebar').hidden=shelf.hidden||introOn; }
 
 /* ---------- shelf ---------- */
 const shelf=$('shelf');
@@ -772,12 +821,11 @@ function level(){ if(analyser&&!track.paused){ analyser.getByteFrequencyData(fbu
 const intro=$('intro'), ig=$('introGlobe').getContext('2d'); let introOn=false, ispin=0;
 function openIntro(){ introOn=true; intro.hidden=false; $('introHalo').innerHTML=burst(56,58,40,20);
   let k=0; $('introTitle').innerHTML=['Then,','Again'].map((w,wi)=>`<span class="${wi?'again':''}">`+[...w].map(ch=>`<span style="--k:${k++}">${ch}</span>`).join('')+'</span>').join('<br>'); }
-function leave(mode,withMusic){ if(!introOn) return; introOn=false; S.mode=mode; save(); if(withMusic) setMusic(true); if(mode==='play') setSnd(true);
+function leave(mode,withMusic){ if(!introOn) return; introOn=false; S.mode=mode; save(); if(withMusic) setMusic(true); setSnd(true);
   try{sessionStorage.setItem('ta-in','1');}catch(e){}
   intro.classList.add('out'); shelf.classList.add('arrive'); lastTouch=performance.now()+1500; hud(); syncPeek();
   setTimeout(()=>{intro.hidden=true;},reduce?0:1150); setTimeout(()=>shelf.classList.remove('arrive'),2600); }
-$('enterMusic').addEventListener('click',()=>leave('play',true)); $('enterQuiet').addEventListener('click',()=>leave('play',false));
-$('enterBrowse').addEventListener('click',()=>leave('browse',false));
+$('enterMusic').addEventListener('click',()=>leave('browse',true)); $('enterQuiet').addEventListener('click',()=>leave('browse',false));
 
 function drawGlobe(g,S_,R,rot,nowSide,lw){
   g.clearRect(0,0,S_,S_); g.lineWidth=lw; const tilt=.38, ct=Math.cos(tilt), st=Math.sin(tilt), c=S_/2;
@@ -864,8 +912,6 @@ function toggleMenu(on){ const m=$('menu'); m.hidden=!on; $('menuBtn').setAttrib
 $('menuBtn').addEventListener('click',()=>toggleMenu($('menu').hidden));
 $('menu').addEventListener('click',e=>{ if(e.target.closest('a')) toggleMenu(false); });
 $('mcases').innerHTML=CASES.map(c=>`<a href="#${c.id}">${c.title}</a>`).join('');
-$('gameSwitch').addEventListener('click',()=>{ S.mode=playing()?'browse':'play'; save(); hud(); syncPeek(); blip(playing()?659:330,.14); });
-$('gameReset').addEventListener('click',()=>{ S.g={}; S.mode='play'; save(); hud(); syncPeek(); toggleMenu(false); location.hash='shelf'; show(); });
 
 /* ---------- timeline ---------- */
 const T0=1950, T1=2026, pct=y=>((y-T0)/(T1-T0)*100).toFixed(2)+'%';
@@ -904,15 +950,96 @@ $('rgrid').innerHTML=READINGS.map(r=>`<article class="rcard"><h2>${r.who}</h2><p
 const cell=(c,s)=>{ const p=ph(c,s); return p?`<a href="${esc(p.url)}">${esc(p.title)}</a><br>${esc(p.author)}. ${esc(p.lic)}.`:'Drawing made for this site.'; };
 $('credits').innerHTML='<tr><th>Object</th><th>Then</th><th>Now</th></tr>'+CASES.map(c=>`<tr><td>${c.title}</td><td>${cell(c,'then')}</td><td>${cell(c,'now')}</td></tr>`).join('');
 
+/* ---------- the machine: make a new photo look old ---------- */
+const MP=[
+ {id:'2026',name:'Phone',cap:'This is how the photo left the phone. Nothing is missing, so nothing looks old.'},
+ {id:'1998',name:'Disposable camera',stamp:"'98 11 12",cap:'Grain and light leaks were faults of cheap film. The orange date was a record of the day. Phone apps now add all three on purpose.'},
+ {id:'1985',name:'Video tape',stamp:'PLAY ▶  0:00:12',cap:'Scan lines were how a TV drew a picture. Nobody chose them. Today they are a style you can switch on.'},
+ {id:'1977',name:'Instant print',stamp:'11 · 12 · 77',cap:'The white frame was the print itself, with the chemicals stored in the wide bottom edge. The faded colour came with age.'},
+ {id:'1955',name:'Newspaper',cap:'A press could only print dots of one ink. Small dots read as light grey and big dots as dark.'}
+];
+const M={src:null,own:false,preset:'1998',k:.85,stamp:true,seed:7,hold:false,ready:false};
+const mc=$('mCanvas'), mx=mc.getContext('2d',{willReadFrequently:true});
+function mSample(){ const c=document.createElement('canvas'); c.width=1200; c.height=900; const x=c.getContext('2d');
+  let g=x.createLinearGradient(0,0,0,900); g.addColorStop(0,'#2f6f9f'); g.addColorStop(.5,'#f0b48c'); g.addColorStop(.74,'#ee7f5e'); x.fillStyle=g; x.fillRect(0,0,1200,900);
+  x.fillStyle='#ffe6b0'; x.beginPath(); x.arc(820,470,92,0,7); x.fill();
+  x.fillStyle='#2b5d66'; x.beginPath(); x.moveTo(0,640); x.bezierCurveTo(260,520,420,600,640,640); x.bezierCurveTo(860,680,1000,560,1200,610); x.lineTo(1200,900); x.lineTo(0,900); x.fill();
+  x.fillStyle='#183f47'; x.beginPath(); x.moveTo(0,760); x.bezierCurveTo(300,690,520,790,760,740); x.bezierCurveTo(960,700,1080,770,1200,740); x.lineTo(1200,900); x.lineTo(0,900); x.fill();
+  x.fillStyle='#0e2a30'; for(const [px,h] of [[150,170],[230,120],[980,150]]){ x.fillRect(px,760-h,10,h); x.beginPath(); x.moveTo(px-46,760-h+50); x.lineTo(px+5,760-h-70); x.lineTo(px+56,760-h+50); x.fill(); }
+  x.fillStyle='rgba(255,255,255,.75)'; for(const [a,b,r] of [[240,180,60],[310,170,44],[640,120,50],[700,128,36]]){ x.beginPath(); x.ellipse(a,b,r*1.6,r*.5,0,0,7); x.fill(); }
+  return c; }
+function mRand(seed){ let s=seed*9301+49297; return ()=>(s=(s*16807)%2147483647)/2147483647; }
+function mBase(sq){ const s=M.src, L=960; let sw=s.width, sh=s.height, sx=0, sy=0;
+  if(sq){ const d=Math.min(sw,sh); sx=(sw-d)/2; sy=(sh-d)/2; sw=sh=d; }
+  const f=Math.min(1,L/Math.max(sw,sh)), w=Math.max(2,Math.round(sw*f)), h=Math.max(2,Math.round(sh*f));
+  const c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d',{willReadFrequently:true}).drawImage(s,sx,sy,sw,sh,0,0,w,h); return c; }
+function mStampText(x,txt,px,py,size,col,glow,align){ x.save(); x.font=`500 ${size}px "IBM Plex Mono",monospace`; x.textAlign=align; x.textBaseline='alphabetic';
+  if(glow){ x.shadowColor=glow; x.shadowBlur=size*.35; } x.fillStyle=col; x.fillText(txt,px,py); x.restore(); }
+function mRender(){ if(!M.ready) return; const P=M.hold?'2026':M.preset, k=M.k, rnd=mRand(M.seed), def=MP.find(p=>p.id===P);
+  if(P==='1977'){ const b=mBase(true), w=b.width, bx=b.getContext('2d',{willReadFrequently:true}), im=bx.getImageData(0,0,w,w), d=im.data;
+    for(let i=0;i<d.length;i+=4){ const y=((i/4)/w|0)/w-.5, xx=((i/4)%w)/w-.5, v=1-.5*k*(xx*xx+y*y)*1.6;
+      let r=d[i],g=d[i+1],bl=d[i+2]; const l=(r+g+bl)/3; let R=(r*.85+l*.15)*.8+44, G=(g*.85+l*.15)*.8+40, B=(bl*.85+l*.15)*.68+34;
+      d[i]=(r+(R*v-r)*k); d[i+1]=(g+(G*v-g)*k); d[i+2]=(bl+(B*v-bl)*k); }
+    bx.putImageData(im,0,0); const m=Math.round(w*.07*k), bot=Math.round(w*.26*k);
+    mc.width=w+m*2; mc.height=w+m+Math.max(m,bot); mx.fillStyle='#f5f1e6'; mx.fillRect(0,0,mc.width,mc.height);
+    mx.filter=`blur(${(1.1*k).toFixed(2)}px)`; mx.drawImage(b,m,m); mx.filter='none'; mx.strokeStyle='rgba(0,0,0,.12)'; mx.strokeRect(m+.5,m+.5,w-1,w-1);
+    if(M.stamp&&k>.35) mStampText(mx,def.stamp,mc.width/2,w+m+bot*.62,w*.05,'#27324f',null,'center'); return; }
+  const b=mBase(false), w=b.width, h=b.height; mc.width=w; mc.height=h;
+  if(P==='2026'){ mx.drawImage(b,0,0); return; }
+  if(P==='1955'){ const bx=b.getContext('2d',{willReadFrequently:true}), d=bx.getImageData(0,0,w,h).data, cell=Math.max(4,Math.round(w/150));
+    mx.fillStyle='#ece3cf'; mx.fillRect(0,0,w,h); mx.globalAlpha=1-k; mx.drawImage(b,0,0); mx.globalAlpha=1;
+    mx.fillStyle='#1b1815'; mx.beginPath();
+    for(let y=0;y<h;y+=cell) for(let x=((y/cell)%2)*cell/2;x<w;x+=cell){ const cx=Math.min(w-1,x+cell/2|0), cy=Math.min(h-1,y+cell/2|0), i=(cy*w+cx)*4;
+        const l=(d[i]*.3+d[i+1]*.59+d[i+2]*.11)/255, r=cell*.72*Math.sqrt(1-l)*k; if(r>.4){ mx.moveTo(x+cell/2+r,y+cell/2); mx.arc(x+cell/2,y+cell/2,r,0,6.3); } }
+    mx.fill(); const im=mx.getImageData(0,0,w,h), o=im.data; for(let i=0;i<o.length;i+=4){ const n=(rnd()-.5)*22*k; o[i]+=n; o[i+1]+=n; o[i+2]+=n; } mx.putImageData(im,0,0); return; }
+  if(P==='1985'){ const s=document.createElement('canvas'), q=Math.max(1,Math.round(1+3*k)); s.width=Math.max(2,w/q|0); s.height=Math.max(2,h/q|0); s.getContext('2d').drawImage(b,0,0,s.width,s.height);
+    mx.imageSmoothingEnabled=false; mx.drawImage(s,0,0,w,h); mx.imageSmoothingEnabled=true;
+    const im=mx.getImageData(0,0,w,h), d=im.data;
+    for(let y=0;y<h;y++){ const line=(y%4>=2)?1-.42*k:1, wob=1+.04*k*Math.sin(y*.9+M.seed);
+      for(let x=0;x<w;x++){ const i=(y*w+x)*4, m=x%3, xx=x/w-.5, yy=y/h-.5, v=(1-1.5*k*(xx*xx*xx*xx+yy*yy*yy*yy)*6)*line*wob, n=(rnd()-.5)*26*k;
+        d[i]=(d[i]*(m===0?1+.22*k:1-.1*k)*1.06+n)*v; d[i+1]=(d[i+1]*(m===1?1+.22*k:1-.1*k)*1.08+n)*v; d[i+2]=(d[i+2]*(m===2?1+.22*k:1-.1*k)*1.04+n)*v; } }
+    mx.putImageData(im,0,0); mx.globalCompositeOperation='lighter'; mx.globalAlpha=.22*k; mx.filter='blur(5px)'; mx.drawImage(mc,0,0); mx.filter='none'; mx.globalAlpha=1; mx.globalCompositeOperation='source-over';
+    if(M.stamp&&k>.35) mStampText(mx,def.stamp,w*.05,h*.1,h*.05,'#f4f6ff','#ffffff','left'); return; }
+  /* 1998 */
+  mx.drawImage(b,0,0); const im=mx.getImageData(0,0,w,h), d=im.data;
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){ const i=(y*w+x)*4, r=d[i],g=d[i+1],bl=d[i+2], l=(r*.3+g*.59+bl*.11), t=l/255;
+      let R=(r-128)*1.2+128, G=(g-128)*1.2+128, B=(bl-128)*1.2+128; const L2=(R+G+B)/3; R=L2+(R-L2)*1.3; G=L2+(G-L2)*1.3; B=L2+(B-L2)*1.3;
+      R+=12*t; B-=16*t; G+=9*(1-t); B+=12*(1-t);
+      const xx=x/w-.5, yy=y/h-.5, v=1-.9*(xx*xx+yy*yy), n=(rnd()-.5)*40;
+      d[i]=r+((R+n)*v-r)*k; d[i+1]=g+((G+n)*v-g)*k; d[i+2]=bl+((B+n)*v-bl)*k; }
+  mx.putImageData(im,0,0);
+  const side=rnd()<.5?0:1, ly=h*(.2+rnd()*.6), gr=mx.createRadialGradient(side*w,ly,0,side*w,ly,w*(.45+rnd()*.3));
+  gr.addColorStop(0,`rgba(255,70,10,${.85*k})`); gr.addColorStop(.45,`rgba(255,150,30,${.35*k})`); gr.addColorStop(1,'rgba(255,150,30,0)');
+  mx.globalCompositeOperation='screen'; mx.fillStyle=gr; mx.fillRect(0,0,w,h); mx.globalCompositeOperation='source-over';
+  if(M.stamp&&k>.35) mStampText(mx,def.stamp,w*.95,h*.94,h*.05,'#ffa238','#ff5a00','right');
+}
+let mRaf=0; const mDraw=()=>{ cancelAnimationFrame(mRaf); mRaf=requestAnimationFrame(mRender); };
+function mUI(){ $('mPre').innerHTML=MP.map(p=>`<button type="button" data-p="${p.id}" aria-pressed="${p.id===M.preset}"><b>${p.id}</b><span>${p.name}</span></button>`).join('');
+  const def=MP.find(p=>p.id===M.preset); $('mCap').textContent=def.cap; $('mStamp').disabled=!def.stamp; $('mStamp').closest('label').classList.toggle('off',!def.stamp);
+  $('mFrame').dataset.p=M.preset; }
+function mOpen(){ if(!M.src){ M.src=mSample(); } M.ready=true; mUI(); mDraw(); }
+$('mPre').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; M.preset=b.dataset.p; blip(330+MP.findIndex(p=>p.id===M.preset)*90,.14); mUI(); mDraw(); });
+$('mK').addEventListener('input',e=>{ M.k=e.target.value/100; mDraw(); });
+$('mStamp').addEventListener('change',e=>{ M.stamp=e.target.checked; mDraw(); });
+$('mShuffle').addEventListener('click',()=>{ M.seed=1+Math.floor(Math.random()*9999); blip(660,.1); mDraw(); });
+$('mPick').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('mFile').click(); } });
+function mLoad(file){ if(!file||!/^image\//.test(file.type)) return; const url=URL.createObjectURL(file), img=new Image();
+  img.onload=()=>{ M.src=img; M.own=true; mDraw(); blip(523,.16); setTimeout(()=>blip(784,.2),90); }; img.onerror=()=>{ URL.revokeObjectURL(url); $('mCap').textContent='That file could not be read as a picture. Try a JPG or PNG.'; }; img.src=url; }
+$('mFile').addEventListener('change',e=>mLoad(e.target.files[0]));
+const mf=$('mFrame'); mf.addEventListener('dragover',e=>e.preventDefault()); mf.addEventListener('drop',e=>{ e.preventDefault(); mLoad(e.dataTransfer.files[0]); });
+const mHold=on=>{ if(M.hold===on) return; M.hold=on; mDraw(); };
+mc.addEventListener('pointerdown',()=>mHold(true)); addEventListener('pointerup',()=>mHold(false)); mc.addEventListener('pointerleave',()=>mHold(false));
+$('mSave').addEventListener('click',()=>{ try{ mc.toBlob(bl=>{ if(!bl) return; const a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download=`then-again-${M.preset}.png`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); },'image/png'); }catch(e){} });
+
 /* ---------- router ---------- */
-const PAGES=['timeline','pattern','argument','readings','sources'];
+const PAGES=['machine','timeline','pattern','argument','readings','sources'];
 function show(){
   let h=location.hash.slice(1); if(h==='about') h='sources';
   const i=CASES.findIndex(c=>c.id===h), isCase=i>=0, page=PAGES.includes(h)?h:null;
   shelf.hidden=isCase||!!page; $('case').hidden=!isCase; PAGES.forEach(p=>$(p).hidden=p!==page); $('home').hidden=!(isCase||page);
   shelf.classList.remove('leaving'); objs.forEach(o=>{o.classList.remove('chosen');o.style.translate='';});
   if(isCase) openCase(i); else cur=null;
-  if(page){ $(page).scrollTop=0; if(page==='timeline') drawTimeline(); if(page==='pattern') drawPattern(); }
+  if(page){ $(page).scrollTop=0; if(page==='timeline') drawTimeline(); if(page==='pattern') drawPattern(); if(page==='machine') mOpen(); }
   hud(); syncPeek(); lastTouch=performance.now();
 }
 addEventListener('hashchange',show);
