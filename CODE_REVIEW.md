@@ -105,3 +105,31 @@ Not verified
 - HP5 and Tri-X have no grain or halation data of their own. They use the generic spektrafilm values.
 - The assumed print width for the newspaper screen (3.75 in) and the 30 mm disposable lens are our reading of typical cases.
 - No comparison against real ntsc-rs or spektrafilm output.
+
+## 2026-11-12 · then-again/: cases and darkroom joined, all sixteen faces are photographs
+
+Reviewed with `ocr delegate` (workspace mode). Covered 1 of 1 reviewable file: `then-again/index.html`. Images are outside what the tool reviews.
+
+Changed
+- Each case now has two looks, one for each side of the card. Turning the card changes the hand-off below it, so "Today" shows today's phone look and no longer the 1955 one.
+- The hand-off shows the object's own unedited photograph with that look applied. Clicking it opens the darkroom on that photograph, with the credit shown under the caption. "My photo" returns to an uploaded picture.
+- The darkroom has a panel that lists what the chosen look is made of and a tone curve measured by sending a grey ramp through the engine. Both change with every preset and slider.
+- Looks have their own address (`#machine/1972`). The default picture is a CC0 market photograph instead of a drawn sunset.
+- The six faces that were drawings are now Wikimedia Commons photographs, credited on the Sources page.
+- Each case question has a short answer. The hand-off card is no longer a black block.
+
+Found and fixed
+- Medium: the histogram counted the black film border, which put a false spike at the dark end. It now reads the picture before the frame is added.
+- Medium: the canvas blocked page scrolling on touch screens at all times. It now blocks it only in compare mode.
+- Medium: returning to the darkroom reset any slider changes. It now resets only when the look changes.
+- Low: "VHS" was lowercased in the hand-off text. The home button text wrapped on narrow phones. The VHS counter was white on white.
+
+Checked and found fine
+- Credit text placed with `innerHTML` comes only from the site's own photo list, never from user input.
+- `history.replaceState` is wrapped, so a sandboxed frame cannot break look changes.
+- Sixteen case sides tested on desktop and phone sizes with no console errors.
+
+Not verified
+- "The way 1955 recorded it" applies a look to a modern photograph of the object. It is not a period photograph.
+- The camera's "now" photo shows a person from behind at a museum (CC0 on Commons). Katherine and Haoyuan should confirm they are comfortable using it.
+- The Moonliner photo is the later rebuilt rocket, standing in for the 1955 original.

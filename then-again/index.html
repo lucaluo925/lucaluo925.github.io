@@ -428,6 +428,34 @@ label.btn{display:inline-block}
 
 .dkgl{flex:none;align-self:stretch;display:grid;place-items:center;writing-mode:vertical-rl;rotate:180deg;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8f96ad;border-left:1px solid #262a3a;padding:0 6px}
 .dkstrip b{font-size:15px}
+
+/* v9: hand-off card sits in the page instead of a black block, darkroom data panel */
+.trylook{background:none;color:var(--ink)!important;border:1.5px solid var(--ink);padding:10px 14px 10px 10px;grid-template-columns:132px 1fr auto;transition:background .15s}
+.trylook:hover{background:var(--lime)}
+.tl-img canvas{max-width:132px;max-height:104px;box-shadow:0 2px 8px rgba(13,16,32,.25)}
+.tl-txt b{color:var(--blue);font-size:16px;line-height:1.2}
+.trylook:hover .tl-txt b{color:var(--ink)}
+.tl-go{color:var(--ink)}
+.gamebar{white-space:nowrap}
+#dkCanvas{touch-action:pan-y}
+#dkCanvas.cmp{touch-action:none;cursor:ew-resize}
+.dkcap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px 28px;align-items:start}
+.dkcap-l{display:grid;gap:8px;min-width:0}
+.dkcap p{min-width:0}
+.dkcredit{font-family:var(--mono);font-size:11px;line-height:1.5;color:#8f96ad}
+.dkcredit a{color:#c9cfe0}
+.dkcredit:empty{display:none}
+.dkdata .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#8f96ad;margin-bottom:8px}
+.dkdata-in{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start}
+#dkCurve{width:112px;height:112px;background:#0b0d16;border-radius:6px}
+#dkSpec{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+#dkSpec div{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px;padding:4px 0;border-bottom:1px dashed #262a3a;font-size:12.5px;line-height:1.35}
+#dkSpec dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#8f96ad;padding-top:1px}
+#dkSpec dd{margin:0;color:#e6e9f4;font-variant-numeric:tabular-nums}
+@media (max-width:1100px){.dkcap{grid-template-columns:1fr}}
+@media (max-width:560px){#dkSpec{grid-template-columns:1fr}.trylook{grid-template-columns:96px 1fr auto}.tl-img canvas{max-width:96px}}
+.ans{margin:10px 0 0;display:grid;gap:4px;font-size:15px;line-height:1.5}
+.ans b{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
 </style>
 </head>
 <body>
@@ -539,13 +567,13 @@ label.btn{display:inline-block}
       </div>
       <a class="trylook" id="tryLook" href="#machine">
         <span class="tl-img" id="tryImg"></span>
-        <span class="tl-txt"><b>Do this to your own photo</b><span id="trySub"></span></span>
+        <span class="tl-txt"><b id="tryTitle"></b><span id="trySub"></span></span>
         <span class="tl-go" aria-hidden="true">&rarr;</span>
       </a>
       <div class="after" id="after">
         <details name="more"><summary>Look closer</summary><p id="pLook"></p></details>
         <details name="more"><summary>The reading</summary><p id="p3"></p></details>
-        <details name="more"><summary>A question</summary><p class="ask" id="pQ"></p></details>
+        <details name="more"><summary>A question, and one answer</summary><p class="ask" id="pQ"></p><p class="ans"><b>One answer</b><span id="pA"></span></p></details>
       </div>
       <nav class="pager" aria-label="Cases">
         <a class="btn" id="prev" href="#shelf">Previous</a>
@@ -579,13 +607,17 @@ label.btn{display:inline-block}
       <div class="dkbar">
         <label class="btn solid" for="dkFile" tabindex="0" id="dkPick">Open photo</label>
         <input type="file" id="dkFile" accept="image/*" hidden>
+        <button class="btn" id="dkMine" hidden>My photo</button>
         <button class="btn" id="dkCmp" aria-pressed="false">Compare</button>
         <span class="dksp"></span>
         <span class="dkinfo" id="dkInfo"></span>
         <button class="btn" id="dkSave">Export JPG</button>
       </div>
       <div class="dkstage" id="dkStage"><canvas id="dkCanvas" width="1000" height="667" aria-label="Your photo with the chosen look applied"></canvas><div class="dksplit" id="dkSplit" hidden><i></i></div></div>
-      <div class="dkcap"><p id="dkCap"></p><div class="dkcases" id="dkCases"></div></div>
+      <div class="dkcap">
+        <div class="dkcap-l"><p id="dkCap"></p><p class="dkcredit" id="dkCredit"></p><div class="dkcases" id="dkCases"></div></div>
+        <div class="dkdata"><div class="lab">What this look is made of</div><div class="dkdata-in"><canvas id="dkCurve" width="150" height="150" aria-label="Tone curve of this look"></canvas><dl id="dkSpec"></dl></div></div>
+      </div>
       <div class="dkstrip" id="dkStrip" role="group" aria-label="Looks by year"></div>
     </div>
   </div>
@@ -735,38 +767,46 @@ const CASES = [
   p3:'Jameson writes that companies need goods that seem new (56). The folding screen is new technology. Motorola still sold it inside a 2004 shape, because the old name made people look.'}
 ];
 const EXTRA = {
- 'console':{lk:'1985',co:'Nintendo',d:[{f:'The 1985 shape',k:'look',r:'keep',w:'Nintendo sold it as a small copy of the old box.'},{f:'Cartridges',k:'works',r:'change',w:'The 30 games are built in. Nothing slots in.'}],n1:1985,n2:2016,
+ 'console':{lk:'1985',lk2:'2026',co:'Nintendo',d:[{f:'The 1985 shape',k:'look',r:'keep',w:'Nintendo sold it as a small copy of the old box.'},{f:'Cartridges',k:'works',r:'change',w:'The 30 games are built in. Nothing slots in.'}],n1:1985,n2:2016,
   g:[['Games','One cartridge at a time','30 built in'],['Size','Sits under the TV','Fits in one hand'],['Sold','From 1985','November 2016, $59.99']],
   look:'Turn the card and the shape stays the same while the size shrinks. The new box takes no cartridges, so the 1985 shape does no work. It is there because buyers expect it.',
-  q:'If the games are the same, what are people paying for?'},
- 'camera':{lk:'1998',co:'a photo app maker',d:[{f:'The orange date and the light leaks',k:'look',r:'keep',w:'They are the whole product.'},{f:'The film',k:'works',r:'change',w:'The app needs no film at all.'}],n1:1995,n2:2018,
+  q:'If the games are the same, what are people paying for?',
+  qa:"The games were already easy to find. People paid for the grey box on the shelf and the feeling of plugging it in. The shape is the product."},
+ 'camera':{lk:'1998',lk2:'2026',co:'a photo app maker',d:[{f:'The orange date and the light leaks',k:'look',r:'keep',w:'They are the whole product.'},{f:'The film',k:'works',r:'change',w:'The app needs no film at all.'}],n1:1995,n2:2018,
   g:[['The date','A record of when','A decoration'],['Grain and light leaks','Faults to avoid','Added on purpose'],['The wait','Until the film came back','None']],
   look:'The app sets its date to 1998 by default, not to today. That one setting shows the stamp no longer tells time. It tells style.',
-  q:'Can a fault still be a fault if people add it on purpose?'},
- 'tomorrow':{lk:'1955',co:'Disneyland',d:[{f:'The name Tomorrowland',k:'look',r:'keep',w:'The sign stayed. What stood behind it changed.'},{f:'Guessing the real future',k:'works',r:'change',w:'The park stopped guessing and borrowed a future from old novels.'}],n1:1955,n2:1998,
+  q:'Can a fault still be a fault if people add it on purpose?',
+  qa:"No. A fault is something you did not choose. Once an app adds the leak on purpose it has become decoration, and all that is left of the fault is how it looks."},
+ 'tomorrow':{lk:'1955',lk2:'1998',co:'Disneyland',d:[{f:'The name Tomorrowland',k:'look',r:'keep',w:'The sign stayed. What stood behind it changed.'},{f:'Guessing the real future',k:'works',r:'change',w:'The park stopped guessing and borrowed a future from old novels.'}],n1:1955,n2:1998,
   g:[['Date','Opened July 1955','Rebuilt 1998'],['It shows','The year 1986','A future from old novels'],['The look','Rockets and new machines','Bronze and gold']],
   look:'The 1955 land promised something that had not happened yet. The 1998 land promised nothing. It asked visitors to enjoy how earlier people pictured the future.',
-  q:'What does a park do when the year it predicted has already passed?'},
- 'television':{lk:'1985',co:'a TV network',d:[{f:'The 1950s setting',k:'look',r:'keep',w:'The show was made in 1974 and dressed as the 1950s.'}],n1:1955,n2:1974,
+  q:'What does a park do when the year it predicted has already passed?',
+  qa:"It stops guessing. The rebuilt land took its look from old science fiction, so it could not go out of date a second time. A future that is already old is safe to sell."},
+ 'television':{lk:'1968',lk2:'1985',co:'a TV network',d:[{f:'The 1950s setting',k:'look',r:'keep',w:'The show was made in 1974 and dressed as the 1950s.'}],n1:1955,n2:1974,
   g:[['When','The 1950s','1974 to 1984'],['What it was','Daily life','A TV show about that life'],['Who it reached','Teenagers in a diner','Viewers at home, twenty years on']],
   look:'Our other cases bring back an object. This one brings back a whole decade. It also shows that 1974 was already selling the past, long before retro photo apps.',
-  q:'Is it still nostalgia if you never lived through that time?'},
- 'flying-car':{lk:'1955',co:'a poster company',d:[{f:'The drawing',k:'look',r:'keep',w:'The picture is the part people still want.'},{f:'The car itself',k:'works',r:'change',w:'Nobody sold the car. Only the picture is for sale.'}],n1:1955,n2:null,
+  q:'Is it still nostalgia if you never lived through that time?',
+  qa:"Yes, and it may be the most common kind. The show gave viewers a 1950s without the hard parts. People who were never there got the same warm picture as people who were."},
+ 'flying-car':{lk:'1955',lk2:'2026',co:'a poster company',d:[{f:'The drawing',k:'look',r:'keep',w:'The picture is the part people still want.'},{f:'The car itself',k:'works',r:'change',w:'Nobody sold the car. Only the picture is for sale.'}],n1:1955,n2:null,
   g:[['What it was','A plan','A picture'],['Where you find it','Magazines about the future','Posters and toy shelves'],['What it tells you','What will happen','What people once hoped']],
   look:'This is the only case where ordinary buyers never got the old object. There is nothing to reissue except the drawing. So the drawing became the product.',
-  q:'Why do we keep a picture of a future we no longer expect?'},
- 'record':{lk:'1972',co:'a record label',d:[{f:'The vinyl disc and its sleeve',k:'look',r:'keep',w:'The old object is what buyers pay extra for.'},{f:'The music pressed on it',k:'works',r:'change',w:'The best sellers were new pop albums.'}],n1:1975,n2:2022,
+  q:'Why do we keep a picture of a future we no longer expect?',
+  qa:"Because the picture still shows what people wanted. Nobody buys the poster as a plan. They buy it as a record of hope, and hope is easier to hang on a wall than a forecast."},
+ 'record':{lk:'1972',lk2:'2026',co:'a record label',d:[{f:'The vinyl disc and its sleeve',k:'look',r:'keep',w:'The old object is what buyers pay extra for.'},{f:'The music pressed on it',k:'works',r:'change',w:'The best sellers were new pop albums.'}],n1:1975,n2:2022,
   g:[['Its role','The normal way to own music','One choice among many'],['U.S. sales','Ahead of CDs until 1987','41 million albums in 2022'],['What is pressed on it','That year’s music','Still that year’s music']],
   look:'The format is old but the albums are new. That makes the record different from the NES Classic, which sells old games. Here the past is only the container.',
-  q:'Does an old format change how new music feels?'},
- 'instant':{lk:'1977',co:'Polaroid Originals',d:[{f:'The 1977 shape',k:'look',r:'keep',w:'The new camera was made as a successor to the first OneStep.'},{f:'Instant film',k:'works',r:'keep',w:'This is the exception. Here the old working part is the point.'}],n1:1977,n2:2017,
+  q:'Does an old format change how new music feels?',
+  qa:"It changes how people listen more than how the music sounds. A record asks you to stay in the room and turn it over halfway. Buyers are paying for that slower habit."},
+ 'instant':{lk:'1977',lk2:'2026',co:'Polaroid Originals',d:[{f:'The 1977 shape',k:'look',r:'keep',w:'The new camera was made as a successor to the first OneStep.'},{f:'Instant film',k:'works',r:'keep',w:'This is the exception. Here the old working part is the point.'}],n1:1977,n2:2017,
   g:[['Came out','1977','2017'],['Maker','Polaroid','Polaroid Originals, once the Impossible Project'],['The photo','Slides out and develops in your hand','The same']],
   look:'The new camera does what the old one did. What changed is everything around it. In 1977 this was the fast way to get a photo. In 2017 it is the slow way, and the slowness is what is for sale.',
-  q:'When did waiting for a photo become something to pay for?'},
- 'flip-phone':{lk:'2004',co:'Motorola',d:[{f:'The flip shape',k:'look',r:'keep',w:'It opens and closes like the 2004 phone.'},{f:'The keypad',k:'works',r:'change',w:'One folding screen took its place.'}],n1:2004,n2:2019,
+  q:'When did waiting for a photo become something to pay for?',
+  qa:"When photos became free. Once every phone could show a picture at once, the wait turned into the rare part. The new camera sells the minute you spend watching the print appear."},
+ 'flip-phone':{lk:'2004',lk2:'2026',co:'Motorola',d:[{f:'The flip shape',k:'look',r:'keep',w:'It opens and closes like the 2004 phone.'},{f:'The keypad',k:'works',r:'change',w:'One folding screen took its place.'}],n1:2004,n2:2019,
   g:[['Launched','2004','November 2019'],['Inside','A keypad and a small screen','One 6.2-inch folding screen'],['Hidden extra','None','A mode that imitates the 2004 keypad']],
   look:'The newest technology on this site sits inside one of the oldest shapes. Motorola could have sold a folding screen under a new name. It chose the name people already missed.',
-  q:'Would the folding screen have sold without the old name?'}
+  q:'Would the folding screen have sold without the old name?',
+  qa:"Probably not as well. A folding screen was a new and costly idea, and the old name told buyers what it was for before they read anything. The name did the explaining."}
 };
 const READINGS = [
  {who:'Fredric Jameson', work:'Postmodernism, or, The Cultural Logic of Late Capitalism',
@@ -780,7 +820,7 @@ const READINGS = [
   cases:['console','instant','television']}
 ];
 
-const PHOTOS = {"console": {"then": {"file": "console-then.webp", "title": "NES-Console-Set", "author": "Evan-Amos", "lic": "Public domain", "url": "https://commons.wikimedia.org/wiki/File:NES-Console-Set.png"}, "now": {"file": "console-now.webp", "title": "NES Classic Edition front right corner view", "author": "DemonDays64", "lic": "CC BY 4.0", "url": "https://commons.wikimedia.org/wiki/File:NES_Classic_Edition_front_right_corner_view.jpg"}}, "tomorrow": {"now": {"file": "tomorrow-now.webp", "title": "Astro Orbiter", "author": "SolarSurfer", "lic": "Public domain", "url": "https://commons.wikimedia.org/wiki/File:Astro_Orbiter.JPG"}}, "television": {"then": {"file": "television-then.webp", "title": "Mister Donut \u014chori shop The Wurlitzer jukebox \u014chorik\u014den Ch\u016b\u014d-ku Fukuok", "author": "Hirho", "lic": "CC BY 4.0", "url": "https://commons.wikimedia.org/wiki/File:Mister_Donut_%C5%8Chori_shop_The_Wurlitzer_jukebox_%C5%8Chorik%C5%8Den_Ch%C5%AB%C5%8D-ku_Fukuoka_20260629_170529.jpg"}, "now": {"file": "television-now.webp", "title": "Philco-Ford Orange Retro TV (1970s)", "author": "Housing Works Thrift Shops", "lic": "CC BY-SA 2.0", "url": "https://commons.wikimedia.org/wiki/File:Philco-Ford_Orange_Retro_TV_(1970s).jpg"}}, "flying-car": {"then": {"file": "flying-car-then.webp", "title": "Aerocar 2024", "author": "Cullen328", "lic": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:Aerocar_2024.jpg"}}, "record": {"then": {"file": "record-then.webp", "title": "Technics SL-1200MK2-2", "author": "32bitmaschine", "lic": "CC BY-SA 2.5", "url": "https://commons.wikimedia.org/wiki/File:Technics_SL-1200MK2-2.jpg"}}, "instant": {"then": {"file": "instant-then.webp", "title": "2023 Aparat Polaroid Land Camera Supercolor 1000 (3)", "author": "Jacek Halicki", "lic": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:2023_Aparat_Polaroid_Land_Camera_Supercolor_1000_(3).jpg"}}, "flip-phone": {"then": {"file": "flip-phone-then.webp", "title": "Motorola RAZR V3-4900", "author": "Raimond Spekking", "lic": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:Motorola_RAZR_V3-4900.jpg"}, "now": {"file": "flip-phone-now.webp", "title": "Moto Razr 2020", "author": "Booredatwork.com", "lic": "CC BY 3.0", "url": "https://commons.wikimedia.org/wiki/File:Moto_Razr_2020.png"}}};
+const PHOTOS = {"console": {"then": {"file": "console-then.webp", "title": "NES-Console-Set", "author": "Evan-Amos", "lic": "Public domain", "url": "https://commons.wikimedia.org/wiki/File:NES-Console-Set.png", "raw": "raw-console-then.webp"}, "now": {"file": "console-now.webp", "title": "NES Classic Edition front right corner view", "author": "DemonDays64", "lic": "CC BY 4.0", "url": "https://commons.wikimedia.org/wiki/File:NES_Classic_Edition_front_right_corner_view.jpg", "raw": "raw-console-now.webp"}}, "tomorrow": {"now": {"file": "tomorrow-now.webp", "title": "Astro Orbiter", "author": "SolarSurfer", "lic": "Public domain", "url": "https://commons.wikimedia.org/wiki/File:Astro_Orbiter.JPG", "raw": "raw-tomorrow-now.webp"}, "then": {"file": "tomorrow-then.webp", "title": "Moonliner, the 1955 rocket rebuilt", "author": "HarshLight from San Jose, CA, USA", "lic": "CC BY 2.0", "url": "https://commons.wikimedia.org/wiki/File:Moonliner_(7492778336).jpg", "raw": "raw-tomorrow-then.webp"}}, "television": {"then": {"file": "television-then.webp", "title": "Mister Donut \u014chori shop The Wurlitzer jukebox \u014chorik\u014den Ch\u016b\u014d-ku Fukuok", "author": "Hirho", "lic": "CC BY 4.0", "url": "https://commons.wikimedia.org/wiki/File:Mister_Donut_%C5%8Chori_shop_The_Wurlitzer_jukebox_%C5%8Chorik%C5%8Den_Ch%C5%AB%C5%8D-ku_Fukuoka_20260629_170529.jpg", "raw": "raw-television-then.webp"}, "now": {"file": "television-now.webp", "title": "Philco-Ford Orange Retro TV (1970s)", "author": "Housing Works Thrift Shops", "lic": "CC BY-SA 2.0", "url": "https://commons.wikimedia.org/wiki/File:Philco-Ford_Orange_Retro_TV_(1970s).jpg", "raw": "raw-television-now.webp"}}, "flying-car": {"then": {"file": "flying-car-then.webp", "title": "Aerocar 2024", "author": "Cullen328", "lic": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:Aerocar_2024.jpg", "raw": "raw-flying-car-then.webp"}, "now": {"file": "flying-car-now.webp", "title": "Tin toy flying jet car (24826488783)", "author": "Thomas Quine", "lic": "CC BY 2.0", "url": "https://commons.wikimedia.org/wiki/File:Tin_toy_flying_jet_car_(24826488783).jpg", "raw": "raw-flying-car-now.webp"}}, "record": {"then": {"file": "record-then.webp", "title": "Technics SL-1200MK2-2", "author": "32bitmaschine", "lic": "CC BY-SA 2.5", "url": "https://commons.wikimedia.org/wiki/File:Technics_SL-1200MK2-2.jpg", "raw": "raw-record-then.webp"}, "now": {"file": "record-now.webp", "title": "Audio-Technica turntable playing coloured vinyl", "author": "M. Johnson", "lic": "CC BY 2.0", "url": "https://commons.wikimedia.org/wiki/File:Audio-Technica_turntable_playing_coloured_vinyl.jpg", "raw": "raw-record-now.webp"}}, "instant": {"then": {"file": "instant-then.webp", "title": "2023 Aparat Polaroid Land Camera Supercolor 1000 (3)", "author": "Jacek Halicki", "lic": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:2023_Aparat_Polaroid_Land_Camera_Supercolor_1000_(3).jpg", "raw": "raw-instant-then.webp"}, "now": {"file": "instant-now.webp", "title": "Polaroid Now Gen 3 Black Camera", "author": "TaurusEmerald", "lic": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:Polaroid_Now_Gen_3_Black_Camera.jpg", "raw": "raw-instant-now.webp"}}, "flip-phone": {"then": {"file": "flip-phone-then.webp", "title": "Motorola RAZR V3-4900", "author": "Raimond Spekking", "lic": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:Motorola_RAZR_V3-4900.jpg", "raw": "raw-flip-phone-then.webp"}, "now": {"file": "flip-phone-now.webp", "title": "Moto Razr 2020", "author": "Booredatwork.com", "lic": "CC BY 3.0", "url": "https://commons.wikimedia.org/wiki/File:Moto_Razr_2020.png", "raw": "raw-flip-phone-now.webp"}}, "camera": {"then": {"file": "camera-then.webp", "title": "Kodak disposable camera, front view - IMG 0992", "author": "Rept0n1x", "lic": "CC BY-SA 3.0", "url": "https://commons.wikimedia.org/wiki/File:Kodak_disposable_camera,_front_view_-_IMG_0992.JPG", "raw": "raw-camera-then.webp"}, "now": {"file": "camera-now.webp", "title": "Lady taking photo with smartphone, Shenzhen Art Museum", "author": "TANNMY NAISZE Wanguo", "lic": "CC0", "url": "https://commons.wikimedia.org/wiki/File:SZ_%E6%B7%B1%E5%9C%B3_Shenzhen_%E9%BE%8D%E8%8F%AF_Longhua_%E6%B7%B1%E5%9C%B3%E7%BE%8E%E8%A1%93%E9%A4%A8_Shenzhen_Art_Museum_lady_taking_photo_with_smartphone_May_2024_R12S_01.jpg", "raw": "raw-camera-now.webp"}}};
 const $ = id => document.getElementById(id);
 const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 const N = CASES.length;
@@ -925,7 +965,7 @@ let cur=null, ang=0, target=0, face=0, dragging=false, sx=0, sa=0, moved=0, tilt
 function paintSide(){ if(!cur) return; const f=face;
   $('sDot').className='dot'+(f?' n':''); $('sLab').textContent=f?cur.l2:cur.l1; $('sP').textContent=f?cur.p2:cur.p1;
   $('sG').innerHTML=cur.g.map(r=>`<div><dt>${r[0]}</dt><dd>${r[f?2:1]}</dd></div>`).join('');
-  const s=$('side'); s.classList.remove('swap'); void s.offsetWidth; s.classList.add('swap'); }
+  const s=$('side'); s.classList.remove('swap'); void s.offsetWidth; s.classList.add('swap'); tryPaint(cur); }
 function setFace(f,quiet){ if(f===face&&!quiet) return; face=f; rig.classList.toggle('is-now',f===1);
   $('yThen').setAttribute('aria-pressed',f===0); $('yNow').setAttribute('aria-pressed',f===1); paintSide();
   if(quiet) return; blip(f?784:330,.16,'sine',.07);
@@ -971,7 +1011,7 @@ function creditLine(c){ const one=s=>{ const p=ph(c,s); return p?`${p.author}, $
 function openCase(i){ cur=CASES[i];
   $('aThen').innerHTML=faceThen(cur); $('aNow').innerHTML=faceNow(cur);
   $('yThen').textContent=cur.y1; $('cNum').textContent=`Case ${String(i+1).padStart(2,'0')} of ${String(N).padStart(2,'0')}`;
-  $('cTitle').textContent=cur.title; $('pLook').textContent=cur.look; $('p3').textContent=cur.p3; $('pQ').textContent=cur.q; document.querySelectorAll('#after details').forEach(d=>d.open=false); tryPaint(cur);
+  $('cTitle').textContent=cur.title; $('pLook').textContent=cur.look; $('p3').textContent=cur.p3; $('pQ').textContent=cur.q; $('pA').textContent=cur.qa||''; document.querySelectorAll('#after details').forEach(d=>d.open=false);
   $('prev').href='#'+CASES[(i-1+N)%N].id; $('next').href='#'+CASES[(i+1)%N].id;
   pick=[];
   paintLock(); ang=reduce?0:-70; target=0; setFace(0,true); $('case').scrollTop=0; $('cTitle').focus({preventScroll:true}); }
@@ -1045,7 +1085,7 @@ const LOOKS=[
  {id:'1998',tag:'1998',grp:'year',name:'Disposable camera',lut:'gold200_edge',fl:30,fmt:'135',dateOn:true,date:"'98 11 12",p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:1},
   cap:'Kodak Gold 200 printed on Ektacolor Edge paper. The dark corners follow the light falloff of a 30mm plastic lens, and the orange date came from the camera back.'},
  {id:'1985',tag:'1985',grp:'year',name:'VHS tape',post:'vhs',fmt:'none',dateOn:true,date:'PLAY ▶  0:00:12',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
-  cap:'A VHS tape kept about 240 lines of detail across the picture and far less for colour, so colours smear sideways. The signal numbers come from the ntsc-rs project.'},
+  cap:'A VHS tape kept about 250 lines of detail across the picture and far less for colour, so colours smear sideways. The signal numbers come from the ntsc-rs project.'},
  {id:'1977',tag:'1977',grp:'year',name:'Instant print',lut:'hald_polaroid_669',enc:'srgb',fmt:'instant',dateOn:false,date:'11 · 12 · 77',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
   cap:'The white frame was the print itself, with the chemicals stored in the wide bottom edge. The colours use a table measured for Polaroid 669 film, from the RawTherapee film collection.'},
  {id:'1972',tag:'1972',grp:'year',name:'Black and white',lut:'hald_trix400',enc:'srgb',bw:true,fmt:'66',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
@@ -1096,7 +1136,7 @@ function dkLoadLuts(done){ if(dkLutState===2){ done&&done(); return; } if(dkLutS
   names.forEach(n=>{ const im=new Image(); im.onload=()=>{ try{ const c=document.createElement('canvas'); c.width=1089; c.height=33; const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(im,0,0);
         const d=x.getImageData(0,0,1089,33).data, a=new Uint8Array(1089*33*3); for(let i=0,j=0;i<d.length;i+=4){ a[j++]=d[i]; a[j++]=d[i+1]; a[j++]=d[i+2]; } DKL[n]=a; }catch(e){} fin(); };
     im.onerror=fin; im.src='lut/'+n+'.png'; }); }
-const DK={src:null,look:LOOKS[2],p:{},fmt:'135',dateOn:true,date:'',seed:7,cmp:false,split:.5,ready:false,after:null,before:null};
+const DK={sample:null,ownImg:null,from:null,thSrc:null,inner:null,src:null,look:LOOKS[2],p:{},fmt:'135',dateOn:true,date:'',seed:7,cmp:false,split:.5,ready:false,after:null,before:null};
 const dkc=$('dkCanvas'), dkx=dkc.getContext('2d');
 const S2L=new Float32Array(256); for(let i=0;i<256;i++){ const v=i/255; S2L[i]=v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4); }
 function dkSample(){ const c=document.createElement('canvas'); c.width=1500; c.height=1000; const x=c.getContext('2d');
@@ -1192,7 +1232,7 @@ function dkProcess(b,look,p,o){ const w=b.width, h=b.height, bx=b.getContext('2d
     for(let row=0, y=0;y<h+sp;row++, y=row*sp/2) for(let x=(row%2)*sp/2;x<w+sp;x+=sp){ const px=Math.min(w-1,x|0), py=Math.min(h-1,y|0), i=(py*w+px)*4, l=.2126*S2L[src[i]]+.7152*S2L[src[i+1]]+.0722*S2L[src[i+2]], r=Math.min(pt*.75,pt*Math.sqrt((1-l)/Math.PI));
         if(r>.25){ bx.moveTo(x+r,y); bx.arc(x,y,r,0,6.3); } } bx.fill(); }
   if(look.post==='phone') dkJpeg(b);
-  if(look.post==='vhs'){ dkVhs(b,o.seed); if(o.dateOn) dkStamp(bx,o.date,w*.05,h*.1,h*.05,'#f4f6ff','#ffffff','left'); return b; }
+  if(look.post==='vhs'){ dkVhs(b,o.seed); if(o.dateOn) dkStamp(bx,o.date,w*.05,h*.1,h*.05,'#f4f6ff','#000000','left'); return b; }
   if(o.dateOn&&o.fmt!=='instant') dkStamp(bx,o.date,w*.95,h*.94,Math.max(10,h*.045),look.post==='halftone'?'#1b1815':'#ffa238',look.post==='halftone'?null:'#ff5a00','right');
   return b; }
 /* the frame: film base, perforations, edge print and frame numbers, or the instant print's white border */
@@ -1227,22 +1267,45 @@ function dkBefore(L){ const o=Object.assign(dkOpts(),{dateOn:false}); return dkF
 function dkPaint(){ const a=DK.after; if(!a) return; dkc.width=a.width; dkc.height=a.height; dkx.clearRect(0,0,a.width,a.height); dkx.drawImage(a,0,0);
   const sp=$('dkSplit'); sp.hidden=!DK.cmp; if(DK.cmp&&DK.before){ const sx=Math.round(a.width*DK.split); dkx.save(); dkx.beginPath(); dkx.rect(0,0,sx,a.height); dkx.clip(); dkx.clearRect(0,0,sx,a.height); dkx.drawImage(DK.before,0,0,a.width,a.height); dkx.restore();
     const r=dkc.getBoundingClientRect(), st=$('dkStage').getBoundingClientRect(); sp.style.left=(r.left-st.left+r.width*DK.split)+'px'; sp.style.top=(r.top-st.top)+'px'; sp.style.height=r.height+'px'; } }
-function dkHist(){ const a=DK.after; if(!a) return; const hc=$('dkHist'), hx=hc.getContext('2d'), s=document.createElement('canvas'); s.width=160; s.height=Math.max(2,Math.round(160*a.height/a.width));
+function dkHist(){ const a=DK.inner||DK.after; if(!a) return; const hc=$('dkHist'), hx=hc.getContext('2d'), s=document.createElement('canvas'); s.width=160; s.height=Math.max(2,Math.round(160*a.height/a.width));
   const sx=s.getContext('2d',{willReadFrequently:true}); sx.drawImage(a,0,0,s.width,s.height); const d=sx.getImageData(0,0,s.width,s.height).data, B=[new Uint32Array(64),new Uint32Array(64),new Uint32Array(64)];
   for(let i=0;i<d.length;i+=4){ if(d[i+3]<200) continue; B[0][d[i]>>2]++; B[1][d[i+1]>>2]++; B[2][d[i+2]>>2]++; }
   let mx=1; for(const b of B) for(let i=1;i<63;i++) if(b[i]>mx) mx=b[i]; hx.clearRect(0,0,256,72); hx.globalCompositeOperation='lighter';
   ['#ff5a4a','#5fe07a','#5a8cff'].forEach((col,k)=>{ hx.fillStyle=col; hx.globalAlpha=.75; hx.beginPath(); hx.moveTo(0,72); for(let i=0;i<64;i++) hx.lineTo(i*4+2,72-Math.min(1,B[k][i]/mx)*68); hx.lineTo(256,72); hx.fill(); }); hx.globalAlpha=1; hx.globalCompositeOperation='source-over'; }
-let dkRaf=0; function dkDraw(){ cancelAnimationFrame(dkRaf); dkRaf=requestAnimationFrame(()=>{ if(!DK.ready) return; DK.after=dkBuild(1000); if(DK.cmp) DK.before=dkBefore(1000); dkPaint(); dkHist();
+let dkRaf=0; function dkDraw(){ cancelAnimationFrame(dkRaf); dkRaf=requestAnimationFrame(()=>{ if(!DK.ready) return; const o=dkOpts(); DK.inner=dkProcess(dkBase(DK.fmt,1000),DK.look,DK.p,o);
+    { const k=document.createElement('canvas'); k.width=160; k.height=Math.max(2,Math.round(160*DK.inner.height/DK.inner.width)); k.getContext('2d').drawImage(DK.inner,0,0,k.width,k.height); DK.inner=k; }
+    DK.after=dkBuild(1000); if(DK.cmp) DK.before=dkBefore(1000); dkPaint(); dkHist(); dkSpecPaint(); dkCurve();
     $('dkInfo').textContent=`${DK.src.naturalWidth||DK.src.width} × ${DK.src.naturalHeight||DK.src.height}`; }); }
-function dkThumbs(){ const st=$('dkStrip'); st.innerHTML=''; let grp='';
+/* what the chosen look is made of: the numbers behind it, read from the same constants the engine uses */
+function dkSpec(l){ const F=FILM[l.lut], fm=FMT_MM[DK.fmt]||FMT_MM['135'], um=fm[0], r=[];
+  if(l.post==='bypass') return [['Source','Your photo, unchanged'],['Colour table','None'],['Grain','None'],['Detail','Every pixel kept']];
+  if(l.post==='phone') return [['Frame','640 × 480, 0.3 megapixels'],['File','JPEG, 8 × 8 blocks'],['Tables','ITU-T T.81 Annex K'],['Colour detail','Half in each direction'],['First table values','16 11 10 16 24 40'],['Grain','None by default']];
+  if(l.post==='vhs') return [['Picture','480 lines, standard play'],['Brightness','2.4 MHz, about 250 lines across'],['Colour','320 kHz, about 34 lines across'],['Colour delay','4 samples'],['Noise','1% brightness, 10% colour'],['Numbers from','ntsc-rs']];
+  if(l.post==='halftone') return [['Screen','65 lines per inch'],['Angle','45°'],['Printed width','3.75 in, two columns'],['Dots across','244'],['Dot area','1 − tone'],['Ink','One, black']];
+  r.push(['Colour table',F?'33³, from the spektrafilm profile':'33³, RawTherapee collection']);
+  if(F){ r.push(['Film type',F.g<0?'Slide':'Negative, then print'+(F.cine?' film':'')]); r.push(['Curve slope',Math.abs(F.g).toFixed(2)]); r.push(['Density',`${F.d0.toFixed(2)} at mid grey, ${F.dm.toFixed(2)} at most`]); }
+  else r.push(['Film type',l.bw?'Black and white negative':'Instant print']);
+  const G=F||FILM0, h=HAL[G.ah]; r.push(['Halation',DK.p.hal>.01?`${(h[0]*100*DK.p.hal).toFixed(1)}% red, ${(h[1]*100*DK.p.hal).toFixed(1)}% green, ${HAL_UM[G.cine?1:0]} µm`:'Off']);
+  r.push(['Grain',DK.p.grain>.01?`${(GR_AREA*DK.p.grain).toFixed(2)} µm² particles${F?'':', general values'}`:'Off']);
+  r.push(['Frame',`${um} mm wide`]); if(DK.p.vig>0){ const tn=l.fl?21.6/l.fl:fm[1]/fm[2], c=1/Math.pow(1+tn*tn,2); r.push(['Lens',`${l.fl||fm[2]} mm, corners at ${Math.round((1-DK.p.vig*(1-c))*100)}%`]); }
+  return r; }
+function dkSpecPaint(){ $('dkSpec').innerHTML=dkSpec(DK.look).map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join(''); }
+/* the tone curve of the look, measured by sending a grey ramp through the engine */
+function dkCurve(){ const cv=$('dkCurve'), x=cv.getContext('2d'), W=cv.width, H=cv.height, m=10, r=document.createElement('canvas'); r.width=256; r.height=8; const rx=r.getContext('2d',{willReadFrequently:true}), id=rx.createImageData(256,8);
+  for(let y=0;y<8;y++) for(let i=0;i<256;i++){ const j=(y*256+i)*4; id.data[j]=id.data[j+1]=id.data[j+2]=i; id.data[j+3]=255; } rx.putImageData(id,0,0);
+  const L=Object.assign({},DK.look,{post:DK.look.post==='bypass'?'bypass':null,fl:null}), P=Object.assign({},DK.p,{grain:0,hal:0,vig:0,leak:0}); let d;
+  try{ d=dkProcess(r,L,P,{fmt:'none',dateOn:false,date:'',seed:1}).getContext('2d').getImageData(0,4,256,1).data; }catch(e){ return; }
+  x.clearRect(0,0,W,H); x.strokeStyle='#262a3a'; x.lineWidth=1; x.strokeRect(m+.5,m+.5,W-2*m-1,H-2*m-1); x.setLineDash([3,4]); x.beginPath(); x.moveTo(m,H-m); x.lineTo(W-m,m); x.stroke(); x.setLineDash([]);
+  x.globalCompositeOperation='lighter'; ['#ff5a4a','#5fe07a','#5a8cff'].forEach((col,k)=>{ x.strokeStyle=col; x.lineWidth=1.6; x.beginPath(); for(let i=0;i<256;i++){ const px=m+i/255*(W-2*m), py=H-m-d[i*4+k]/255*(H-2*m); i?x.lineTo(px,py):x.moveTo(px,py); } x.stroke(); }); x.globalCompositeOperation='source-over'; }
+function dkThumbs(){ const st=$('dkStrip'); st.innerHTML=''; let grp=''; DK.thSrc=DK.src;
   LOOKS.forEach(l=>{ if(l.grp!==grp){ grp=l.grp; const h=document.createElement('div'); h.className='dkgl'; h.textContent=grp==='year'?'By year':'Film stocks'; st.appendChild(h); }
     const b=document.createElement('button'); b.type='button'; b.dataset.l=l.id; b.setAttribute('aria-pressed',l===DK.look);
     const t=dkProcess(dkBase('135',150),l,l.p,{fmt:'none',dateOn:false,date:'',seed:3}); t.className='th'; b.appendChild(t); const sp=document.createElement('span'); sp.innerHTML=`<b>${l.tag}</b>${l.name}`; b.appendChild(sp); st.appendChild(b); }); }
 function dkSyncUI(){ DKS.forEach(([k])=>{ const el=$('dk_'+k); el.value=DK.p[k]; el.nextElementSibling.textContent=(+DK.p[k]).toFixed(2); });
   $('dkFmt').value=DK.fmt; $('dkDateOn').checked=DK.dateOn; $('dkDate').value=DK.date; $('dkCap').textContent=DK.look.cap;
-  const rel=CASES.filter(c=>c.lk===DK.look.id); $('dkCases').innerHTML=rel.length?'<span>The story behind it</span>'+rel.map(c=>`<a href="#${c.id}">${c.title}</a>`).join(''):'';
+  const rel=CASES.filter(c=>c.lk===DK.look.id||c.lk2===DK.look.id); $('dkCases').innerHTML=rel.length?'<span>The story behind it</span>'+rel.map(c=>`<a href="#${c.id}">${c.title}</a>`).join(''):'';
   [...$('dkStrip').querySelectorAll('button')].forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===DK.look.id)); }
-function dkSetLook(l){ DK.look=l; DK.p=Object.assign({},l.p); DK.fmt=l.fmt; DK.dateOn=l.dateOn; DK.date=l.date; dkSyncUI(); dkDraw(); }
+function dkSetLook(l){ if(!$('machine').hidden&&location.hash!=='#machine/'+l.id){ try{ history.replaceState(null,'','#machine/'+l.id); }catch(e){} } DK.look=l; DK.cur=l; DK.p=Object.assign({},l.p); DK.fmt=l.fmt; DK.dateOn=l.dateOn; DK.date=l.date; dkSyncUI(); dkDraw(); }
 DKS.forEach(([k,label,min,max,step,grp])=>{ const row=document.createElement('label'); row.className='dkrow'; row.htmlFor='dk_'+k;
   row.innerHTML=`<span>${label}</span><input type="range" id="dk_${k}" min="${min}" max="${max}" step="${step}"><output></output>`; $(grp).appendChild(row);
   const el=row.querySelector('input'); el.addEventListener('input',()=>{ DK.p[k]=+el.value; el.nextElementSibling.textContent=(+el.value).toFixed(2); dkDraw(); });
@@ -1254,13 +1317,13 @@ $('dkDate').addEventListener('input',e=>{ DK.date=e.target.value; dkDraw(); });
 $('dkStrip').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; const l=LOOKS.find(x=>x.id===b.dataset.l); blip(300+(LOOKS.indexOf(l)%9)*70,.14); dkSetLook(l); });
 $('dkReset').addEventListener('click',()=>dkSetLook(DK.look));
 $('dkShuffle').addEventListener('click',()=>{ DK.seed=1+Math.floor(Math.random()*9999); blip(660,.1); dkDraw(); });
-$('dkCmp').addEventListener('click',()=>{ DK.cmp=!DK.cmp; $('dkCmp').setAttribute('aria-pressed',DK.cmp); dkDraw(); });
+$('dkCmp').addEventListener('click',()=>{ DK.cmp=!DK.cmp; dkc.classList.toggle('cmp',DK.cmp); $('dkCmp').setAttribute('aria-pressed',DK.cmp); dkDraw(); });
 { let drag=false; const mv=e=>{ const r=dkc.getBoundingClientRect(); DK.split=Math.max(.02,Math.min(.98,(e.clientX-r.left)/r.width)); dkPaint(); };
   dkc.addEventListener('pointerdown',e=>{ if(!DK.cmp) return; drag=true; dkc.setPointerCapture(e.pointerId); mv(e); }); dkc.addEventListener('pointermove',e=>{ if(drag) mv(e); });
   dkc.addEventListener('pointerup',()=>drag=false); dkc.addEventListener('pointercancel',()=>drag=false); }
 $('dkPick').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('dkFile').click(); } });
 function dkLoad(file){ if(!file||!/^image\//.test(file.type)) return; const url=URL.createObjectURL(file), img=new Image();
-  img.onload=()=>{ DK.src=img; DK.own=true; dkThumbs(); dkSyncUI(); dkDraw(); blip(523,.16); setTimeout(()=>blip(784,.2),90); };
+  img.onload=()=>{ DK.src=img; DK.own=true; DK.ownImg=img; DK.from=null; dkSrcUI(); dkThumbs(); dkSyncUI(); dkDraw(); blip(523,.16); setTimeout(()=>blip(784,.2),90); };
   img.onerror=()=>{ URL.revokeObjectURL(url); $('dkCap').textContent='That file could not be read as a picture. Try a JPG or PNG.'; }; img.src=url; }
 $('dkFile').addEventListener('change',e=>dkLoad(e.target.files[0]));
 { const st=$('dkStage'); st.addEventListener('dragover',e=>e.preventDefault()); st.addEventListener('drop',e=>{ e.preventDefault(); dkLoad(e.dataTransfer.files[0]); }); }
@@ -1271,25 +1334,38 @@ $('dkSave').addEventListener('click',()=>{ const btn=$('dkSave'), old=btn.textCo
       let dl=null; try{ dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null; }catch(e){}
       if(dl){ try{ await dl.save({filename:name,data:bl}); }catch(e){} return; }
       const a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); },'image/jpeg',.92); },30); });
-const dkEnsure=()=>{ if(!DK.src) DK.src=dkSample(); };
-function mOpen(){ dkEnsure(); if(!DK.ready){ DK.ready=true; dkThumbs(); dkSetLook(DK.look); } else { dkSyncUI(); dkDraw(); }
-  dkLoadLuts(()=>{ dkThumbs(); dkSyncUI(); dkDraw(); }); }
-/* every case hands its own year to the darkroom */
-const lookOf=c=>LOOKS.find(l=>l.id===c.lk)||LOOKS[2];
-function tryPaint(c){ dkEnsure(); if(dkLutState===0) dkLoadLuts(()=>{ if(cur) tryPaint(cur); }); const l=lookOf(c), o={fmt:l.fmt,dateOn:l.dateOn,date:l.date,seed:5}; const t=dkFrame(dkProcess(dkBase(l.fmt,230),l,l.p,o),l.fmt,o);
-  const box=$('tryImg'); box.innerHTML=''; box.appendChild(t); $('trySub').textContent=`The darkroom has this look ready: ${l.tag}, ${l.name.toLowerCase()}.`; }
-$('tryLook').addEventListener('click',()=>{ if(!cur) return; const l=lookOf(cur); if(DK.ready) dkSetLook(l); else DK.look=l; blip(523,.14); });
+const SAMPLE={title:'Greengrocer at a street market in France',author:'Joenomias Menno De Jong',lic:'CC0',url:'https://commons.wikimedia.org/wiki/File:Greengrocer_At_A_Street_Market_In_France_Dordogne_(242326619).jpeg'};
+function dkEnsure(){ if(DK.src) return; DK.src=dkSample(); const im=new Image();
+  im.onload=()=>{ DK.sample=im; if(!DK.own&&!DK.from){ DK.src=im; DK.from=SAMPLE; dkSrcUI(); if(DK.ready&&!$('machine').hidden){ dkThumbs(); dkDraw(); } } if(cur) tryPaint(cur); }; im.src='img/sample.webp'; }
+/* which photo is on the table, and whose it is */
+function dkSrcUI(){ const f=DK.from, el=$('dkCredit'); el.innerHTML=f?`Photo: <a href="${f.url}" target="_blank" rel="noopener">${f.title}</a>, ${f.author}, ${f.lic}`:(DK.own?'Your photo. It stays in this browser.':'');
+  $('dkMine').hidden=!(DK.ownImg&&DK.src!==DK.ownImg); }
+$('dkMine').addEventListener('click',()=>{ if(!DK.ownImg) return; DK.src=DK.ownImg; DK.from=null; dkSrcUI(); dkThumbs(); dkDraw(); });
+function mOpen(sub){ dkEnsure(); const l=LOOKS.find(x=>x.id===sub); if(l) DK.look=l; const was=DK.cur; if(!DK.ready||DK.look!==was){ DK.ready=true; dkSetLook(DK.look); } else { dkSyncUI(); dkDraw(); }
+  dkSrcUI(); if(DK.thSrc!==DK.src) dkThumbs(); dkSyncUI(); if(dkLutState!==2) dkLoadLuts(()=>{ dkThumbs(); dkSyncUI(); dkDraw(); if(cur) tryPaint(cur); }); }
+/* every case hands its own photo and its own year to the darkroom, one look for each side of the card */
+const RAW={};
+function rawOf(c,f){ const side=f?'now':'then', o=(PHOTOS[c.id]||{})[side]; if(!o||!o.raw) return null; const k=c.id+'-'+side;
+  if(!RAW[k]){ const im=new Image(); im.credit=o; im.onload=()=>{ im.ok=true; if(cur===c) tryPaint(c); }; im.src='img/'+o.raw; RAW[k]=im; } return RAW[k]; }
+const lookOf=(c,f)=>LOOKS.find(l=>l.id===(f?c.lk2:c.lk))||LOOKS[0];
+function tryPaint(c){ if(!c) return; dkEnsure(); if(dkLutState===0) dkLoadLuts(()=>{ if(cur) tryPaint(cur); }); const l=lookOf(c,face), raw=rawOf(c,face), real=raw&&raw.ok, o={fmt:l.fmt,dateOn:l.dateOn,date:l.date,seed:5};
+  const keep=DK.src; DK.src=real?raw:(DK.sample||DK.src); let t; try{ t=dkFrame(dkProcess(dkBase(l.fmt,260),l,l.p,o),l.fmt,o); } finally{ DK.src=keep; }
+  const box=$('tryImg'); box.innerHTML=''; box.appendChild(t); $('tryLook').href='#machine/'+l.id;
+  $('tryTitle').textContent=real?(l.id==='2026'?'The real photo, as a phone takes it now':`The real photo, the way ${l.tag} recorded it`):`Try the ${l.tag} look`;
+  $('trySub').textContent=l.id==='2026'?'Nothing is taken away. Open the darkroom and take some of it away yourself.':`${l.name}. Open it in the darkroom, change it, or put your own photo in.`; }
+$('tryLook').addEventListener('click',()=>{ if(!cur) return; const raw=rawOf(cur,face); if(raw&&raw.ok){ DK.src=raw; DK.from=raw.credit; } else if(!DK.own&&DK.sample){ DK.src=DK.sample; DK.from=SAMPLE; } blip(523,.14); });
+{ const st=$('dkStrip'); st.addEventListener('wheel',e=>{ const max=st.scrollWidth-st.clientWidth; if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&max>0&&((e.deltaY>0&&st.scrollLeft<max-1)||(e.deltaY<0&&st.scrollLeft>0))){ st.scrollLeft+=e.deltaY; e.preventDefault(); } },{passive:false}); }
 addEventListener('resize',()=>{ if(DK.cmp&&!$('machine').hidden) dkPaint(); });
 
 /* ---------- router ---------- */
 const PAGES=['machine','timeline','pattern','argument','readings','sources'];
 function show(){
-  let h=location.hash.slice(1); if(h==='about') h='sources';
+  let h=location.hash.slice(1); if(h==='about') h='sources'; const sub=h.split('/')[1]||''; h=h.split('/')[0];
   const i=CASES.findIndex(c=>c.id===h), isCase=i>=0, page=PAGES.includes(h)?h:null;
   shelf.hidden=isCase||!!page; $('case').hidden=!isCase; PAGES.forEach(p=>$(p).hidden=p!==page); $('home').hidden=!(isCase||page);
   shelf.classList.remove('leaving'); objs.forEach(o=>{o.classList.remove('chosen');o.style.translate='';});
   if(isCase) openCase(i); else cur=null;
-  if(page){ $(page).scrollTop=0; if(page==='timeline') drawTimeline(); if(page==='pattern') drawPattern(); if(page==='machine') mOpen(); }
+  if(page){ $(page).scrollTop=0; if(page==='timeline') drawTimeline(); if(page==='pattern') drawPattern(); if(page==='machine') mOpen(sub); }
   hud(); syncPeek(); lastTouch=performance.now();
 }
 addEventListener('hashchange',show);
