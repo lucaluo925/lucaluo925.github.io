@@ -425,6 +425,9 @@ label.btn{display:inline-block}
 .dkcases{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8f96ad}
 .dkcases a{font-family:var(--body);font-size:13px;letter-spacing:0;text-transform:none;color:var(--ink);background:var(--lime);border-radius:999px;padding:5px 11px;text-decoration:none}
 .dkcases a:hover{background:#fff}
+
+.dkgl{flex:none;align-self:stretch;display:grid;place-items:center;writing-mode:vertical-rl;rotate:180deg;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8f96ad;border-left:1px solid #262a3a;padding:0 6px}
+.dkstrip b{font-size:15px}
 </style>
 </head>
 <body>
@@ -672,7 +675,7 @@ label.btn{display:inline-block}
     <p>Katherine Liao and <a href="../then-again.html">Haoyuan Luo</a>. CDM 002 A04, Professor Finn Brunton, UC Davis, Fall 2026.</p>
     <p>Photos were cut out and recoloured for this site. Where a photo carries a share-alike licence, our changed version is offered under the same licence.</p>
     <h2>How it was built</h2>
-    <p>One page of HTML, CSS and JavaScript with no framework. The darkroom changes your photo pixel by pixel on a canvas, in your own browser. Its two steps, film first and then the print, follow the idea behind <a href="https://github.com/andreavolpato/spektrafilm">spektrafilm</a> by Andrea Volpato and the <a href="https://github.com/JamesQiu2005/SpektraLab">SpektraLab</a> app. No code or film data from either project is used, and the looks are approximations, not measured film stocks. The globe and the marbled ground are drawn on canvas. Sound uses the Web Audio API, and the halos follow the volume of the recording. The site works with a keyboard and respects the reduced motion setting.</p>
+    <p>One page of HTML, CSS and JavaScript with no framework. The darkroom changes your photo pixel by pixel on a canvas, in your own browser. Its two steps, film first and then the print, follow the idea behind <a href="https://github.com/andreavolpato/spektrafilm">spektrafilm</a> by Andrea Volpato and the <a href="https://github.com/JamesQiu2005/SpektraLab">SpektraLab</a> app. The film stock looks use colour tables that we computed from the spektrafilm film and paper profiles, which Andrea Volpato publishes under CC BY-SA 4.0. Our tables are shared under the same licence. We wrote our own simplified version of the calculation, so the results are close to the real engine but not identical. The year looks without a film name are tuned by eye. The globe and the marbled ground are drawn on canvas. Sound uses the Web Audio API, and the halos follow the volume of the recording. The site works with a keyboard and respects the reduced motion setting.</p>
     <nav class="pager"><a class="btn solid" href="#shelf">All objects</a></nav>
   </div>
 </section>
@@ -1031,23 +1034,51 @@ $('credits').innerHTML='<tr><th>Object</th><th>Then</th><th>Now</th></tr>'+CASES
 const DKS=[ // sliders: key, label, min, max, step, group
  ['exp','Exposure',-2,2,.05,'dkFilm'],['con','Contrast',.5,1.7,.01,'dkFilm'],['warm','Warmth',-1,1,.01,'dkFilm'],['sat','Colour',0,1.7,.01,'dkFilm'],
  ['grain','Grain',0,1,.01,'dkFault'],['hal','Halation',0,1,.01,'dkFault'],['fade','Fade',0,1,.01,'dkFault'],['leak','Light leak',0,1,.01,'dkFault'],['vig','Vignette',0,1,.01,'dkFault']];
-const DKF=[['none','None'],['135','35mm'],['xpan','Panoramic'],['66','6 × 6'],['67','6 × 7'],['instant','Instant print']];
+const DKF=[['none','None'],['135','35mm'],['xpan','Panoramic'],['66','6 × 6'],['67','6 × 7'],['slide','Slide mount'],['instant','Instant print']];
 const LOOKS=[
- {id:'2026',name:'Phone',post:'bypass',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},sh:[0,0,0],hi:[0,0,0],
+ {id:'2026',tag:'2026',grp:'year',name:'Phone',post:'bypass',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},sh:[0,0,0],hi:[0,0,0],
   cap:'This is how the photo left the phone. Nothing is missing, so nothing looks old.'},
- {id:'2004',name:'Camera phone',post:'phone',fmt:'none',dateOn:false,date:'',p:{exp:.1,con:.92,warm:-.18,sat:.9,grain:.5,hal:.15,fade:.22,leak:0,vig:.2},sh:[-.01,.01,.04],hi:[-.01,.01,.02],
+ {id:'2004',tag:'2004',grp:'year',name:'Camera phone',post:'phone',fmt:'none',dateOn:false,date:'',p:{exp:.1,con:.92,warm:-.18,sat:.9,grain:.5,hal:.15,fade:.22,leak:0,vig:.2},sh:[-.01,.01,.04],hi:[-.01,.01,.02],
   cap:'The first camera phones took small, noisy pictures. People kept them anyway, because the phone was always in the pocket.'},
- {id:'1998',name:'Disposable camera',fmt:'135',dateOn:true,date:"'98 11 12",p:{exp:.25,con:1.22,warm:.2,sat:1.32,grain:.55,hal:.5,fade:.1,leak:.6,vig:.55},sh:[-.02,.03,.05],hi:[.045,.01,-.05],
-  cap:'Grain and light leaks were faults of cheap film. The orange date was a record of the day. Phone apps now add all three on purpose.'},
- {id:'1985',name:'TV screen',post:'crt',fmt:'none',dateOn:true,date:'PLAY ▶  0:00:12',p:{exp:.1,con:.95,warm:-.08,sat:1.25,grain:.2,hal:.35,fade:.12,leak:0,vig:.35},sh:[0,0,.02],hi:[0,0,0],
+ {id:'1998',tag:'1998',grp:'year',name:'Disposable camera',lut:'gold200_edge',fmt:'135',dateOn:true,date:"'98 11 12",p:{exp:.35,con:1.06,warm:.1,sat:1.1,grain:.6,hal:.45,fade:.06,leak:.5,vig:.55},sh:[0,0,0],hi:[0,0,0],
+  cap:'Kodak Gold 200 printed on Ektacolor Edge paper, with the grain, light leak and orange date of a cheap camera. Phone apps now add all three on purpose.'},
+ {id:'1985',tag:'1985',grp:'year',name:'TV screen',post:'crt',fmt:'none',dateOn:true,date:'PLAY ▶  0:00:12',p:{exp:.1,con:.95,warm:-.08,sat:1.25,grain:.2,hal:.35,fade:.12,leak:0,vig:.35},sh:[0,0,.02],hi:[0,0,0],
   cap:'Scan lines were how a TV drew a picture. Nobody chose them. Today they are a style you can switch on.'},
- {id:'1977',name:'Instant print',fmt:'instant',dateOn:false,date:'11 · 12 · 77',p:{exp:.1,con:.88,warm:.3,sat:.82,grain:.12,hal:.25,fade:.62,leak:0,vig:.4},sh:[.02,.03,-.015],hi:[.03,.02,-.06],
-  cap:'The white frame was the print itself, with the chemicals stored in the wide bottom edge. The faded colour came with age.'},
- {id:'1972',name:'Black and white',bw:true,fmt:'66',dateOn:false,date:'',p:{exp:.05,con:1.3,warm:0,sat:0,grain:.72,hal:.3,fade:.05,leak:0,vig:.3},sh:[0,0,.008],hi:[.012,.008,0],
-  cap:'Black and white film shows its grain most in the grey middle tones. Photographers used to fight it. Now it is a look.'},
- {id:'1955',name:'Newspaper',post:'halftone',bw:true,fmt:'none',dateOn:false,date:'',p:{exp:.1,con:1.25,warm:0,sat:0,grain:.3,hal:0,fade:0,leak:0,vig:0},sh:[0,0,0],hi:[0,0,0],
-  cap:'A press could only print dots of one ink. Small dots read as light grey and big dots as dark.'}
+ {id:'1977',tag:'1977',grp:'year',name:'Instant print',fmt:'instant',dateOn:false,date:'11 · 12 · 77',p:{exp:.1,con:.88,warm:.3,sat:.82,grain:.12,hal:.25,fade:.62,leak:0,vig:.4},sh:[.02,.03,-.015],hi:[.03,.02,-.06],
+  cap:'The white frame was the print itself, with the chemicals stored in the wide bottom edge. The faded colour came with age. This look is tuned by eye.'},
+ {id:'1972',tag:'1972',grp:'year',name:'Black and white',bw:true,fmt:'66',dateOn:false,date:'',p:{exp:.05,con:1.3,warm:0,sat:0,grain:.72,hal:.3,fade:.05,leak:0,vig:.3},sh:[0,0,.008],hi:[.012,.008,0],
+  cap:'Black and white film shows its grain most in the grey middle tones. Photographers used to fight it. Now it is a look. Tuned by eye.'},
+ {id:'1968',tag:'1968',grp:'year',name:'Slide night',lut:'kodachrome64',fmt:'slide',dateOn:false,date:'',p:{exp:.1,con:1.04,warm:.04,sat:1.04,grain:.2,hal:.2,fade:.08,leak:0,vig:.3},sh:[0,0,0],hi:[0,0,0],
+  cap:'Kodachrome 64 slide film in a cardboard mount. Families projected these on the living room wall, and the dense shadows came with the film.'},
+ {id:'1955',tag:'1955',grp:'year',name:'Newspaper',post:'halftone',bw:true,fmt:'none',dateOn:false,date:'',p:{exp:.1,con:1.25,warm:0,sat:0,grain:.3,hal:0,fade:0,leak:0,vig:0},sh:[0,0,0],hi:[0,0,0],
+  cap:'A press could only print dots of one ink. Small dots read as light grey and big dots as dark.'},
+ {id:'drugstore',tag:'Print',grp:'film',name:'Drugstore 4×6',lut:'ultramax400_edge',fmt:'none',dateOn:true,date:"'04 07 19",p:{exp:.3,con:1.04,warm:.08,sat:1.06,grain:.3,hal:.2,fade:.04,leak:0,vig:.2},sh:[0,0,0],hi:[0,0,0],
+  cap:'Kodak UltraMax 400 on Ektacolor Edge paper. This is the roll you dropped off at the shop and picked up an hour later.'},
+ {id:'portra',tag:'Film',grp:'film',name:'Portra 400',lut:'portra400_endura',fmt:'135',dateOn:false,date:'',p:{exp:.5,con:1,warm:.04,sat:1,grain:.26,hal:.18,fade:.03,leak:0,vig:.15},sh:[0,0,0],hi:[0,0,0],
+  cap:"Colours computed from the published data for Kodak Portra 400 film printed on Portra Endura paper, using profiles from the spektrafilm project. Soft contrast and gentle skin, the wedding photographer's choice."},
+ {id:'ektar',tag:'Film',grp:'film',name:'Ektar 100',lut:'ektar100_endura',fmt:'135',dateOn:false,date:'',p:{exp:.3,con:1.05,warm:0,sat:1.1,grain:.12,hal:.12,fade:0,leak:0,vig:.12},sh:[0,0,0],hi:[0,0,0],
+  cap:"Colours computed from the published data for Kodak Ektar 100 film printed on Portra Endura paper, using profiles from the spektrafilm project. Fine grain and strong colour."},
+ {id:'c200',tag:'Film',grp:'film',name:'Fuji C200',lut:'c200_crystal',fmt:'135',dateOn:false,date:'',p:{exp:.3,con:1.03,warm:-.02,sat:1.05,grain:.34,hal:.2,fade:.03,leak:0,vig:.18},sh:[0,0,0],hi:[0,0,0],
+  cap:"Colours computed from the published data for Fujifilm C200 film printed on Crystal Archive paper, using profiles from the spektrafilm project. Cooler greens and a cheaper roll."},
+ {id:'pro400h',tag:'Film',grp:'film',name:'Fuji Pro 400H',lut:'pro400h_crystal',fmt:'67',dateOn:false,date:'',p:{exp:.6,con:.98,warm:0,sat:.98,grain:.2,hal:.15,fade:.04,leak:0,vig:.1},sh:[0,0,0],hi:[0,0,0],
+  cap:"Colours computed from the published data for Fujifilm Pro 400H film printed on Crystal Archive paper, using profiles from the spektrafilm project. Pale and airy when given extra light."},
+ {id:'velvia',tag:'Slide',grp:'film',name:'Velvia 100',lut:'velvia100',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1.02,warm:0,sat:1.05,grain:.1,hal:.1,fade:0,leak:0,vig:.15},sh:[0,0,0],hi:[0,0,0],
+  cap:"Colours computed from the published data for Fujifilm Velvia 100 slide film, using profiles from the spektrafilm project. Landscape photographers used it for its saturated colour."},
+ {id:'ektachrome',tag:'Slide',grp:'film',name:'Ektachrome 100',lut:'ektachrome100',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:.12,hal:.1,fade:0,leak:0,vig:.12},sh:[0,0,0],hi:[0,0,0],
+  cap:"Colours computed from the published data for Kodak Ektachrome 100 slide film, using profiles from the spektrafilm project. Clean and slightly cool."},
+ {id:'cine',tag:'Cinema',grp:'film',name:'500T on 2383',lut:'vision500t_2383',fmt:'xpan',dateOn:false,date:'',p:{exp:.75,con:1.08,warm:-.06,sat:1.08,grain:.38,hal:.7,fade:0,leak:0,vig:.25},sh:[0,0,0],hi:[0,0,0],
+  cap:'Kodak Vision3 500T negative printed on 2383 release stock, the chain behind most films shot on film. Red glow around lights is halation.'},
+ {id:'expired',tag:'Film',grp:'film',name:'Expired roll',lut:'xtra400_crystal',fmt:'135',dateOn:false,date:'',p:{exp:.55,con:.9,warm:.22,sat:.86,grain:.75,hal:.35,fade:.42,leak:.35,vig:.4},sh:[0,0,0],hi:[0,0,0],
+  cap:'Fujifilm Superia X-TRA 400, then pushed toward what a roll left in a drawer for years tends to do. The ageing part is tuned by eye.'}
 ];
+/* film-and-print colour tables, baked from the spektrafilm profile data by tools/bake_luts.py */
+const DKL={}; let dkLutState=0;
+function dkLoadLuts(done){ if(dkLutState===2){ done&&done(); return; } if(dkLutState===1) return; dkLutState=1;
+  const names=[...new Set(LOOKS.map(l=>l.lut).filter(Boolean))]; let left=names.length;
+  const fin=()=>{ if(--left===0){ dkLutState=2; done&&done(); } };
+  names.forEach(n=>{ const im=new Image(); im.onload=()=>{ try{ const c=document.createElement('canvas'); c.width=1089; c.height=33; const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(im,0,0);
+        const d=x.getImageData(0,0,1089,33).data, a=new Uint8Array(1089*33*3); for(let i=0,j=0;i<d.length;i+=4){ a[j++]=d[i]; a[j++]=d[i+1]; a[j++]=d[i+2]; } DKL[n]=a; }catch(e){} fin(); };
+    im.onerror=fin; im.src='lut/'+n+'.png'; }); }
 const DK={src:null,look:LOOKS[2],p:{},fmt:'135',dateOn:true,date:'',seed:7,cmp:false,split:.5,ready:false,after:null,before:null};
 const dkc=$('dkCanvas'), dkx=dkc.getContext('2d');
 const S2L=new Float32Array(256); for(let i=0;i<256;i++){ const v=i/255; S2L[i]=v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4); }
@@ -1060,7 +1091,7 @@ function dkSample(){ const c=document.createElement('canvas'); c.width=1500; c.h
   x.fillStyle='rgba(255,255,255,.78)'; for(const [a,b,r] of [[300,200,66],[380,190,48],[800,130,56],[876,140,40]]){ x.beginPath(); x.ellipse(a,b,r*1.6,r*.5,0,0,7); x.fill(); }
   return c; }
 const dkRand=seed=>{ let s=(seed*9301+49297)%2147483647; return ()=>(s=(s*16807)%2147483647)/2147483647; };
-const DKA={'135':3/2,'xpan':65/24,'66':1,'67':70/56,'instant':1};
+const DKA={'135':3/2,'xpan':65/24,'66':1,'67':70/56,'instant':1,'slide':3/2};
 /* crop the source to the frame's shape and scale it; portrait photos keep their orientation */
 function dkBase(fmt,L){ const s=DK.src, sw0=s.width, sh0=s.height, port=sh0>sw0; let ar=DKA[fmt]||sw0/sh0; if(DKA[fmt]&&port&&ar!==1) ar=1/ar;
   let sw=sw0, sh=sh0; if(sw/sh>ar) sw=sh*ar; else sh=sw/ar; const sx=(sw0-sw)/2, sy=(sh0-sh)/2;
@@ -1086,11 +1117,19 @@ function dkProcess(b,look,p,o){ const w=b.width, h=b.height, bx=b.getContext('2d
   // one curve per colour layer: film then print, folded into a single S shape
   const N=1024, LUT=[0,1,2].map(ch=>{ const t=new Float32Array(N), lift=p.fade*.15; for(let i=0;i<N;i++){ const c=(i/(N-1))*(i/(N-1))*6, x=Math.log2(Math.max(c,1e-5)/.18), s=1/(1+Math.exp(-1.25*p.con*x));
       t[i]=lift+s*(1-lift-p.fade*.09)+look.sh[ch]*(1-s)*(1-s)+look.hi[ch]*s*s; } return t; });
-  const ex=Math.pow(2,p.exp), wr=ex*(1+p.warm*.22), wg=ex, wb=ex*(1-p.warm*.22), gs=p.grain*.13, bw=!!look.bw, sat=p.sat, cx0=w/2, cy0=h/2, inv=1/(cx0*cx0+cy0*cy0);
+  const TL=look.lut?DKL[look.lut]:null, lift=p.fade*.15;
+  const ex=Math.pow(2,p.exp), wr=ex*(1+p.warm*.22), wg=ex, wb=ex*(1-p.warm*.22), gs=p.grain*.095, bw=!!look.bw, sat=p.sat, cx0=w/2, cy0=h/2, inv=1/(cx0*cx0+cy0*cy0);
   for(let y=0;y<h;y++){ const gy=(y%T)*T, dy=y-cy0; for(let x=0;x<w;x++){ const i=(y*w+x)*4; let r=S2L[d[i]]*wr, g=S2L[d[i+1]]*wg, bl=S2L[d[i+2]]*wb;
       if(H){ const hv=H[Math.min(H.hh-1,y/H.q|0)*hw+Math.min(hw-1,x/H.q|0)]*p.hal; r+=hv*.85; g+=hv*.22; bl+=hv*.04; }
-      const l=.2126*r+.7152*g+.0722*bl; if(bw){ r=g=bl=l; } else { r=l+(r-l)*sat; g=l+(g-l)*sat; bl=l+(bl-l)*sat; if(r<0)r=0; if(g<0)g=0; if(bl<0)bl=0; }
-      let R=LUT[0][Math.min(N-1,Math.sqrt(r/6)*(N-1)|0)], Gn=LUT[1][Math.min(N-1,Math.sqrt(g/6)*(N-1)|0)], B=LUT[2][Math.min(N-1,Math.sqrt(bl/6)*(N-1)|0)];
+      const l=.2126*r+.7152*g+.0722*bl; if(bw){ r=g=bl=l; } else if(!TL) { r=l+(r-l)*sat; g=l+(g-l)*sat; bl=l+(bl-l)*sat; if(r<0)r=0; if(g<0)g=0; if(bl<0)bl=0; }
+      let R, Gn, B;
+      if(TL){ const tr=Math.sqrt((r>4?4:r)/4)*32, tg=Math.sqrt((g>4?4:g)/4)*32, tb=Math.sqrt((bl>4?4:bl)/4)*32, r0=tr>=32?31:tr|0, g0=tg>=32?31:tg|0, b0=tb>=32?31:tb|0, fr=tr-r0, fg=tg-g0, fb=tb-b0;
+        const i000=(g0*1089+b0*33+r0)*3, i010=i000+3267, i001=i000+99, i011=i010+99;
+        for(let ch=0;ch<3;ch++){ const c00=TL[i000+ch]+(TL[i000+3+ch]-TL[i000+ch])*fr, c10=TL[i010+ch]+(TL[i010+3+ch]-TL[i010+ch])*fr, c01=TL[i001+ch]+(TL[i001+3+ch]-TL[i001+ch])*fr, c11=TL[i011+ch]+(TL[i011+3+ch]-TL[i011+ch])*fr;
+          const v=((c00+(c10-c00)*fg)*(1-fb)+(c01+(c11-c01)*fg)*fb)/255; if(ch===0) R=v; else if(ch===1) Gn=v; else B=v; }
+        R=.46+(R-.46)*p.con; Gn=.46+(Gn-.46)*p.con; B=.46+(B-.46)*p.con; const l2=(R+Gn+B)/3; R=l2+(R-l2)*sat; Gn=l2+(Gn-l2)*sat; B=l2+(B-l2)*sat;
+        R=lift+R*(1-lift-p.fade*.09); Gn=lift+Gn*(1-lift-p.fade*.09)+p.fade*.012; B=lift+B*(1-lift-p.fade*.09)-p.fade*.02; }
+      else { R=LUT[0][Math.min(N-1,Math.sqrt(r/6)*(N-1)|0)]; Gn=LUT[1][Math.min(N-1,Math.sqrt(g/6)*(N-1)|0)]; B=LUT[2][Math.min(N-1,Math.sqrt(bl/6)*(N-1)|0)]; }
       if(gs>0){ const n0=G[gy+(x%T)], m=(4*Gn*(1-Gn)+.25)*gs; if(bw){ R+=n0*m; Gn+=n0*m; B+=n0*m; } else { R+=(n0*.7+G[gy+((x+71)%T)]*.5)*m; Gn+=(n0*.7+G[gy+((x+149)%T)]*.5)*m; B+=(n0*.7+G[gy+((x+211)%T)]*.6)*m; } }
       const dx=x-cx0, v=1-p.vig*.75*(dx*dx+dy*dy)*inv; d[i]=R*v*255; d[i+1]=Gn*v*255; d[i+2]=B*v*255; } }
   bx.putImageData(im,0,0);
@@ -1114,6 +1153,13 @@ function dkFrame(img,fmt,o){ const w=img.width, h=img.height;
   if(fmt==='instant'){ const m=Math.round(w*.07), bot=Math.round(w*.27), c=document.createElement('canvas'); c.width=w+m*2; c.height=h+m+bot; const x=c.getContext('2d');
     x.fillStyle='#f5f1e6'; x.fillRect(0,0,c.width,c.height); x.drawImage(img,m,m); x.strokeStyle='rgba(0,0,0,.14)'; x.strokeRect(m+.5,m+.5,w-1,h-1);
     if(o.dateOn) dkStamp(x,o.date,c.width/2,h+m+bot*.6,w*.05,'#27324f',null,'center'); return c; }
+  if(fmt==='slide'){ const side=Math.round(Math.max(w,h)*1.42), c=document.createElement('canvas'); c.width=c.height=side; const x=c.getContext('2d'), ox=(side-w)/2, oy=(side-h)/2, rr=side*.035;
+    x.fillStyle='#ece8dc'; if(x.roundRect){ x.beginPath(); x.roundRect(0,0,side,side,rr); x.fill(); } else x.fillRect(0,0,side,side);
+    x.fillStyle='#0b0a09'; x.fillRect(ox-2,oy-2,w+4,h+4); x.drawImage(img,ox,oy); x.strokeStyle='rgba(0,0,0,.18)'; x.lineWidth=Math.max(1,side*.004); x.strokeRect(side*.03,side*.03,side*.94,side*.94);
+    const n=1+Math.floor(dkRand(o.seed)()*36); x.fillStyle='#8a2a1e'; x.font=`500 ${side*.03}px "IBM Plex Mono",monospace`; x.textBaseline='middle'; x.textAlign='left';
+    if(w>=h){ x.fillText('THEN AGAIN · COLOR SLIDE',side*.07,oy/2+side*.01); x.textAlign='right'; x.fillText(String(n).padStart(2,'0'),side*.93,side-oy/2); }
+    else { x.save(); x.translate(ox/2,side*.93); x.rotate(-Math.PI/2); x.fillText('THEN AGAIN · COLOR SLIDE',0,0); x.restore(); }
+    return c; }
   const port=h>w, L=port?h:w, Sd=port?w:h, roll=fmt==='66'||fmt==='67', mm=roll?Sd/56:Sd/24, filmH=(roll?61.5:35)*mm, top=(filmH-Sd)/2, pad=(roll?6:7)*mm;
   const c=document.createElement('canvas'); c.width=Math.round(L+pad*2); c.height=Math.round(filmH); const x=c.getContext('2d');
   x.fillStyle='#0e0c0b'; x.fillRect(0,0,c.width,c.height); x.fillStyle='#171311'; const gap=(roll?4:2)*mm; x.fillRect(0,top,pad-gap,Sd); x.fillRect(pad+L+gap,top,pad,Sd);
@@ -1140,12 +1186,14 @@ function dkHist(){ const a=DK.after; if(!a) return; const hc=$('dkHist'), hx=hc.
   ['#ff5a4a','#5fe07a','#5a8cff'].forEach((col,k)=>{ hx.fillStyle=col; hx.globalAlpha=.75; hx.beginPath(); hx.moveTo(0,72); for(let i=0;i<64;i++) hx.lineTo(i*4+2,72-Math.min(1,B[k][i]/mx)*68); hx.lineTo(256,72); hx.fill(); }); hx.globalAlpha=1; hx.globalCompositeOperation='source-over'; }
 let dkRaf=0; function dkDraw(){ cancelAnimationFrame(dkRaf); dkRaf=requestAnimationFrame(()=>{ if(!DK.ready) return; DK.after=dkBuild(1000); if(DK.cmp) DK.before=dkBefore(1000); dkPaint(); dkHist();
     $('dkInfo').textContent=`${DK.src.naturalWidth||DK.src.width} × ${DK.src.naturalHeight||DK.src.height}`; }); }
-function dkThumbs(){ $('dkStrip').innerHTML=''; LOOKS.forEach(l=>{ const b=document.createElement('button'); b.type='button'; b.dataset.l=l.id; b.setAttribute('aria-pressed',l===DK.look);
-    const t=dkProcess(dkBase('135',150),l,l.p,{fmt:'none',dateOn:false,date:'',seed:3}); t.className='th'; b.appendChild(t); const s=document.createElement('span'); s.innerHTML=`<b>${l.id}</b>${l.name}`; b.appendChild(s); $('dkStrip').appendChild(b); }); }
+function dkThumbs(){ const st=$('dkStrip'); st.innerHTML=''; let grp='';
+  LOOKS.forEach(l=>{ if(l.grp!==grp){ grp=l.grp; const h=document.createElement('div'); h.className='dkgl'; h.textContent=grp==='year'?'By year':'Film stocks'; st.appendChild(h); }
+    const b=document.createElement('button'); b.type='button'; b.dataset.l=l.id; b.setAttribute('aria-pressed',l===DK.look);
+    const t=dkProcess(dkBase('135',150),l,l.p,{fmt:'none',dateOn:false,date:'',seed:3}); t.className='th'; b.appendChild(t); const sp=document.createElement('span'); sp.innerHTML=`<b>${l.tag}</b>${l.name}`; b.appendChild(sp); st.appendChild(b); }); }
 function dkSyncUI(){ DKS.forEach(([k])=>{ const el=$('dk_'+k); el.value=DK.p[k]; el.nextElementSibling.textContent=(+DK.p[k]).toFixed(2); });
   $('dkFmt').value=DK.fmt; $('dkDateOn').checked=DK.dateOn; $('dkDate').value=DK.date; $('dkCap').textContent=DK.look.cap;
   const rel=CASES.filter(c=>c.lk===DK.look.id); $('dkCases').innerHTML=rel.length?'<span>The story behind it</span>'+rel.map(c=>`<a href="#${c.id}">${c.title}</a>`).join(''):'';
-  [...$('dkStrip').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===DK.look.id)); }
+  [...$('dkStrip').querySelectorAll('button')].forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===DK.look.id)); }
 function dkSetLook(l){ DK.look=l; DK.p=Object.assign({},l.p); DK.fmt=l.fmt; DK.dateOn=l.dateOn; DK.date=l.date; dkSyncUI(); dkDraw(); }
 DKS.forEach(([k,label,min,max,step,grp])=>{ const row=document.createElement('label'); row.className='dkrow'; row.htmlFor='dk_'+k;
   row.innerHTML=`<span>${label}</span><input type="range" id="dk_${k}" min="${min}" max="${max}" step="${step}"><output></output>`; $(grp).appendChild(row);
@@ -1155,7 +1203,7 @@ $('dkFmt').innerHTML=DKF.map(([v,n])=>`<option value="${v}">${n}</option>`).join
 $('dkFmt').addEventListener('change',e=>{ DK.fmt=e.target.value; dkDraw(); });
 $('dkDateOn').addEventListener('change',e=>{ DK.dateOn=e.target.checked; dkDraw(); });
 $('dkDate').addEventListener('input',e=>{ DK.date=e.target.value; dkDraw(); });
-$('dkStrip').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; const l=LOOKS.find(x=>x.id===b.dataset.l); blip(300+LOOKS.indexOf(l)*70,.14); dkSetLook(l); });
+$('dkStrip').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; const l=LOOKS.find(x=>x.id===b.dataset.l); blip(300+(LOOKS.indexOf(l)%9)*70,.14); dkSetLook(l); });
 $('dkReset').addEventListener('click',()=>dkSetLook(DK.look));
 $('dkShuffle').addEventListener('click',()=>{ DK.seed=1+Math.floor(Math.random()*9999); blip(660,.1); dkDraw(); });
 $('dkCmp').addEventListener('click',()=>{ DK.cmp=!DK.cmp; $('dkCmp').setAttribute('aria-pressed',DK.cmp); dkDraw(); });
@@ -1176,11 +1224,12 @@ $('dkSave').addEventListener('click',()=>{ const btn=$('dkSave'), old=btn.textCo
       if(dl){ try{ await dl.save({filename:name,data:bl}); }catch(e){} return; }
       const a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); },'image/jpeg',.92); },30); });
 const dkEnsure=()=>{ if(!DK.src) DK.src=dkSample(); };
-function mOpen(){ dkEnsure(); if(!DK.ready){ DK.ready=true; dkThumbs(); dkSetLook(DK.look); } else { dkSyncUI(); dkDraw(); } }
+function mOpen(){ dkEnsure(); if(!DK.ready){ DK.ready=true; dkThumbs(); dkSetLook(DK.look); } else { dkSyncUI(); dkDraw(); }
+  dkLoadLuts(()=>{ dkThumbs(); dkSyncUI(); dkDraw(); }); }
 /* every case hands its own year to the darkroom */
 const lookOf=c=>LOOKS.find(l=>l.id===c.lk)||LOOKS[2];
-function tryPaint(c){ dkEnsure(); const l=lookOf(c), o={fmt:l.fmt,dateOn:l.dateOn,date:l.date,seed:5}; const t=dkFrame(dkProcess(dkBase(l.fmt,230),l,l.p,o),l.fmt,o);
-  const box=$('tryImg'); box.innerHTML=''; box.appendChild(t); $('trySub').textContent=`The darkroom has this look ready: ${l.id}, ${l.name.toLowerCase()}.`; }
+function tryPaint(c){ dkEnsure(); if(dkLutState===0) dkLoadLuts(()=>{ if(cur) tryPaint(cur); }); const l=lookOf(c), o={fmt:l.fmt,dateOn:l.dateOn,date:l.date,seed:5}; const t=dkFrame(dkProcess(dkBase(l.fmt,230),l,l.p,o),l.fmt,o);
+  const box=$('tryImg'); box.innerHTML=''; box.appendChild(t); $('trySub').textContent=`The darkroom has this look ready: ${l.tag}, ${l.name.toLowerCase()}.`; }
 $('tryLook').addEventListener('click',()=>{ if(!cur) return; const l=lookOf(cur); if(DK.ready) dkSetLook(l); else DK.look=l; blip(523,.14); });
 addEventListener('resize',()=>{ if(DK.cmp&&!$('machine').hidden) dkPaint(); });
 

@@ -57,3 +57,25 @@ Checked and found fine
 Not verified
 - Export at full size from a large phone photo was not timed. The test image was only 960 px wide.
 - No real-browser check of the split-compare drag on touch screens.
+
+## 2026-11-12 · then-again/: film stock colour tables from spektrafilm profiles
+
+Reviewed with `ocr delegate` (workspace mode). Covered `then-again/index.html`, `then-again/tools/bake_luts.py`, `then-again.html`, `projects.html`.
+
+Changed
+- `tools/bake_luts.py` (new, ours): reads the spektrafilm profile JSON (CC BY-SA 4.0) and bakes twelve 33-cube lookup tables: seven negative-on-paper pairs, three slide films, two cinema negative-on-2383 pairs. It does not import or execute spektrafilm code.
+- The darkroom applies a table with trilinear interpolation when a look names one, then trims contrast, colour and fade. Looks are now grouped as "By year" and "Film stocks", seventeen in total, with a slide mount frame.
+- `NOTICE.md` records the licences: tables CC BY-SA 4.0, darkroom code GPL-3.0-or-later.
+
+Known limits of the bake, stated on the site
+- Illuminants are black-body approximations and the colour matching functions are an analytic fit. RGB is turned into a spectrum with three smooth bands.
+- The neutral axis is pulled 75 percent of the way to grey to cancel the drift those approximations cause. This also removes some of each stock's real tint.
+- No grain, halation or coupler data from the profiles is used. Those effects are still ours.
+
+Checked and found fine
+- Table lookups clamp the cell index to 31, so the +1 neighbours never read past the 33rd entry.
+- If a table fails to load, the look falls back to the built-in curve instead of throwing.
+- Preview render with a table measured at about 90 ms for a 1000 px frame in headless Chrome.
+
+Not verified
+- No side-by-side comparison against output from the real spektrafilm engine. Running it was not possible in the build environment.
