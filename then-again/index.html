@@ -672,10 +672,12 @@ label.btn{display:inline-block}
       <p>Sergei Rachmaninoff, Piano Concerto No. 2 in C minor, Op. 18, second movement (Adagio sostenuto). Public domain recording from Musopen, by way of <a href="https://commons.wikimedia.org/wiki/File:Sergei_Rachmaninoff_-_piano_concerto_no._2_in_c_minor,_op._18_-_ii._adagio_sostenuto.ogg">Wikimedia Commons</a>.</p>
     </div>
     <h2>Made by</h2>
-    <p>Katherine Liao and <a href="../then-again.html">Haoyuan Luo</a>. CDM 002 A04, Professor Finn Brunton, UC Davis, Fall 2026.</p>
+    <p><a href="../then-again.html">About this project</a>. Katherine Liao and Haoyuan Luo. CDM 002 A04, Professor Finn Brunton, UC Davis, Fall 2026.</p>
     <p>Photos were cut out and recoloured for this site. Where a photo carries a share-alike licence, our changed version is offered under the same licence.</p>
     <h2>How it was built</h2>
-    <p>One page of HTML, CSS and JavaScript with no framework. The darkroom changes your photo pixel by pixel on a canvas, in your own browser. Its two steps, film first and then the print, follow the idea behind <a href="https://github.com/andreavolpato/spektrafilm">spektrafilm</a> by Andrea Volpato and the <a href="https://github.com/JamesQiu2005/SpektraLab">SpektraLab</a> app. The film stock looks use colour tables that we computed from the spektrafilm film and paper profiles, which Andrea Volpato publishes under CC BY-SA 4.0. Our tables are shared under the same licence. We wrote our own simplified version of the calculation, so the results are close to the real engine but not identical. The year looks without a film name are tuned by eye. The globe and the marbled ground are drawn on canvas. Sound uses the Web Audio API, and the halos follow the volume of the recording. The site works with a keyboard and respects the reduced motion setting.</p>
+    <p>One page of HTML, CSS and JavaScript with no framework. The darkroom changes your photo pixel by pixel on a canvas, in your own browser. Its two steps, film first and then the print, follow the idea behind <a href="https://github.com/andreavolpato/spektrafilm">spektrafilm</a> by Andrea Volpato and the <a href="https://github.com/JamesQiu2005/SpektraLab">SpektraLab</a> app. The film stock looks use colour tables that we computed from the spektrafilm film and paper profiles, which Andrea Volpato publishes under CC BY-SA 4.0. Our tables are shared under the same licence. We wrote our own simplified version of the calculation, so the results are close to the real engine but not identical. Grain and halation use the particle sizes and reflection strengths that spektrafilm sets for each film, scaled to the size of the frame.</p>
+    <p>The other looks also start from published numbers. The instant prints and the black and white films use colour tables from the RawTherapee Film Simulation Collection by Pat David, Pavlov Dmitry and Michael Ezra, taken from the <a href="https://github.com/cedeber/hald-clut">hald-clut</a> repository. The VHS look uses the tape bandwidths and noise levels listed in <a href="https://github.com/valadaptive/ntsc-rs">ntsc-rs</a> by valadaptive. The camera phone look runs the JPEG maths with the example tables printed in the JPEG standard, ITU-T T.81 Annex K. The newspaper look uses a 65 line screen at 45 degrees. Fade and light leak have no data behind them, so they start at zero and you add them yourself.</p>
+    <p> The globe and the marbled ground are drawn on canvas. Sound uses the Web Audio API, and the halos follow the volume of the recording. The site works with a keyboard and respects the reduced motion setting.</p>
     <nav class="pager"><a class="btn solid" href="#shelf">All objects</a></nav>
   </div>
 </section>
@@ -1033,44 +1035,59 @@ $('credits').innerHTML='<tr><th>Object</th><th>Then</th><th>Now</th></tr>'+CASES
 /* ---------- the darkroom: film, then print, then the frame ---------- */
 const DKS=[ // sliders: key, label, min, max, step, group
  ['exp','Exposure',-2,2,.05,'dkFilm'],['con','Contrast',.5,1.7,.01,'dkFilm'],['warm','Warmth',-1,1,.01,'dkFilm'],['sat','Colour',0,1.7,.01,'dkFilm'],
- ['grain','Grain',0,1,.01,'dkFault'],['hal','Halation',0,1,.01,'dkFault'],['fade','Fade',0,1,.01,'dkFault'],['leak','Light leak',0,1,.01,'dkFault'],['vig','Vignette',0,1,.01,'dkFault']];
+ ['grain','Grain',0,4,.05,'dkFault'],['hal','Halation',0,4,.05,'dkFault'],['fade','Fade',0,1,.01,'dkFault'],['leak','Light leak',0,1,.01,'dkFault'],['vig','Vignette',0,1,.01,'dkFault']];
 const DKF=[['none','None'],['135','35mm'],['xpan','Panoramic'],['66','6 × 6'],['67','6 × 7'],['slide','Slide mount'],['instant','Instant print']];
 const LOOKS=[
- {id:'2026',tag:'2026',grp:'year',name:'Phone',post:'bypass',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},sh:[0,0,0],hi:[0,0,0],
+ {id:'2026',tag:'2026',grp:'year',name:'Phone',post:'bypass',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
   cap:'This is how the photo left the phone. Nothing is missing, so nothing looks old.'},
- {id:'2004',tag:'2004',grp:'year',name:'Camera phone',post:'phone',fmt:'none',dateOn:false,date:'',p:{exp:.1,con:.92,warm:-.18,sat:.9,grain:.5,hal:.15,fade:.22,leak:0,vig:.2},sh:[-.01,.01,.04],hi:[-.01,.01,.02],
-  cap:'The first camera phones took small, noisy pictures. People kept them anyway, because the phone was always in the pocket.'},
- {id:'1998',tag:'1998',grp:'year',name:'Disposable camera',lut:'gold200_edge',fmt:'135',dateOn:true,date:"'98 11 12",p:{exp:.35,con:1.06,warm:.1,sat:1.1,grain:.6,hal:.45,fade:.06,leak:.5,vig:.55},sh:[0,0,0],hi:[0,0,0],
-  cap:'Kodak Gold 200 printed on Ektacolor Edge paper, with the grain, light leak and orange date of a cheap camera. Phone apps now add all three on purpose.'},
- {id:'1985',tag:'1985',grp:'year',name:'TV screen',post:'crt',fmt:'none',dateOn:true,date:'PLAY ▶  0:00:12',p:{exp:.1,con:.95,warm:-.08,sat:1.25,grain:.2,hal:.35,fade:.12,leak:0,vig:.35},sh:[0,0,.02],hi:[0,0,0],
-  cap:'Scan lines were how a TV drew a picture. Nobody chose them. Today they are a style you can switch on.'},
- {id:'1977',tag:'1977',grp:'year',name:'Instant print',fmt:'instant',dateOn:false,date:'11 · 12 · 77',p:{exp:.1,con:.88,warm:.3,sat:.82,grain:.12,hal:.25,fade:.62,leak:0,vig:.4},sh:[.02,.03,-.015],hi:[.03,.02,-.06],
-  cap:'The white frame was the print itself, with the chemicals stored in the wide bottom edge. The faded colour came with age. This look is tuned by eye.'},
- {id:'1972',tag:'1972',grp:'year',name:'Black and white',bw:true,fmt:'66',dateOn:false,date:'',p:{exp:.05,con:1.3,warm:0,sat:0,grain:.72,hal:.3,fade:.05,leak:0,vig:.3},sh:[0,0,.008],hi:[.012,.008,0],
-  cap:'Black and white film shows its grain most in the grey middle tones. Photographers used to fight it. Now it is a look. Tuned by eye.'},
- {id:'1968',tag:'1968',grp:'year',name:'Slide night',lut:'kodachrome64',fmt:'slide',dateOn:false,date:'',p:{exp:.1,con:1.04,warm:.04,sat:1.04,grain:.2,hal:.2,fade:.08,leak:0,vig:.3},sh:[0,0,0],hi:[0,0,0],
+ {id:'2004',tag:'2004',grp:'year',name:'Camera phone',post:'phone',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
+  cap:'A 2004 camera phone saved a picture 640 dots wide as a tightly squeezed JPEG. The blocks you see come from the standard JPEG tables, worked out here with the same maths.'},
+ {id:'1998',tag:'1998',grp:'year',name:'Disposable camera',lut:'gold200_edge',fl:30,fmt:'135',dateOn:true,date:"'98 11 12",p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:1},
+  cap:'Kodak Gold 200 printed on Ektacolor Edge paper. The dark corners follow the light falloff of a 30mm plastic lens, and the orange date came from the camera back.'},
+ {id:'1985',tag:'1985',grp:'year',name:'VHS tape',post:'vhs',fmt:'none',dateOn:true,date:'PLAY ▶  0:00:12',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
+  cap:'A VHS tape kept about 240 lines of detail across the picture and far less for colour, so colours smear sideways. The signal numbers come from the ntsc-rs project.'},
+ {id:'1977',tag:'1977',grp:'year',name:'Instant print',lut:'hald_polaroid_669',enc:'srgb',fmt:'instant',dateOn:false,date:'11 · 12 · 77',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
+  cap:'The white frame was the print itself, with the chemicals stored in the wide bottom edge. The colours use a table measured for Polaroid 669 film, from the RawTherapee film collection.'},
+ {id:'1972',tag:'1972',grp:'year',name:'Black and white',lut:'hald_trix400',enc:'srgb',bw:true,fmt:'66',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
+  cap:'Kodak Tri-X 400, the film of news photographers. The tones come from the RawTherapee film collection, and the grain follows the particle model in spektrafilm.'},
+ {id:'1968',tag:'1968',grp:'year',name:'Slide night',lut:'kodachrome64',fmt:'slide',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
   cap:'Kodachrome 64 slide film in a cardboard mount. Families projected these on the living room wall, and the dense shadows came with the film.'},
- {id:'1955',tag:'1955',grp:'year',name:'Newspaper',post:'halftone',bw:true,fmt:'none',dateOn:false,date:'',p:{exp:.1,con:1.25,warm:0,sat:0,grain:.3,hal:0,fade:0,leak:0,vig:0},sh:[0,0,0],hi:[0,0,0],
-  cap:'A press could only print dots of one ink. Small dots read as light grey and big dots as dark.'},
- {id:'drugstore',tag:'Print',grp:'film',name:'Drugstore 4×6',lut:'ultramax400_edge',fmt:'none',dateOn:true,date:"'04 07 19",p:{exp:.3,con:1.04,warm:.08,sat:1.06,grain:.3,hal:.2,fade:.04,leak:0,vig:.2},sh:[0,0,0],hi:[0,0,0],
+ {id:'1955',tag:'1955',grp:'year',name:'Newspaper',post:'halftone',bw:true,fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
+  cap:'A press could only print dots of one ink. This screen has 65 dots to the inch, set at 45 degrees, and each dot covers as much paper as the tone is dark.'},
+ {id:'drugstore',tag:'Print',grp:'film',name:'Drugstore 4×6',lut:'ultramax400_edge',fmt:'none',dateOn:true,date:"'04 07 19",p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
   cap:'Kodak UltraMax 400 on Ektacolor Edge paper. This is the roll you dropped off at the shop and picked up an hour later.'},
- {id:'portra',tag:'Film',grp:'film',name:'Portra 400',lut:'portra400_endura',fmt:'135',dateOn:false,date:'',p:{exp:.5,con:1,warm:.04,sat:1,grain:.26,hal:.18,fade:.03,leak:0,vig:.15},sh:[0,0,0],hi:[0,0,0],
+ {id:'portra',tag:'Film',grp:'film',name:'Portra 400',lut:'portra400_endura',fmt:'135',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
   cap:"Colours computed from the published data for Kodak Portra 400 film printed on Portra Endura paper, using profiles from the spektrafilm project. Soft contrast and gentle skin, the wedding photographer's choice."},
- {id:'ektar',tag:'Film',grp:'film',name:'Ektar 100',lut:'ektar100_endura',fmt:'135',dateOn:false,date:'',p:{exp:.3,con:1.05,warm:0,sat:1.1,grain:.12,hal:.12,fade:0,leak:0,vig:.12},sh:[0,0,0],hi:[0,0,0],
-  cap:"Colours computed from the published data for Kodak Ektar 100 film printed on Portra Endura paper, using profiles from the spektrafilm project. Fine grain and strong colour."},
- {id:'c200',tag:'Film',grp:'film',name:'Fuji C200',lut:'c200_crystal',fmt:'135',dateOn:false,date:'',p:{exp:.3,con:1.03,warm:-.02,sat:1.05,grain:.34,hal:.2,fade:.03,leak:0,vig:.18},sh:[0,0,0],hi:[0,0,0],
+ {id:'ektar',tag:'Film',grp:'film',name:'Ektar 100',lut:'ektar100_endura',fmt:'135',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
+  cap:"Colours computed from the published data for Kodak Ektar 100 film printed on Portra Endura paper, using profiles from the spektrafilm project. Strong colour from a slow film."},
+ {id:'c200',tag:'Film',grp:'film',name:'Fuji C200',lut:'c200_crystal',fmt:'135',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
   cap:"Colours computed from the published data for Fujifilm C200 film printed on Crystal Archive paper, using profiles from the spektrafilm project. Cooler greens and a cheaper roll."},
- {id:'pro400h',tag:'Film',grp:'film',name:'Fuji Pro 400H',lut:'pro400h_crystal',fmt:'67',dateOn:false,date:'',p:{exp:.6,con:.98,warm:0,sat:.98,grain:.2,hal:.15,fade:.04,leak:0,vig:.1},sh:[0,0,0],hi:[0,0,0],
-  cap:"Colours computed from the published data for Fujifilm Pro 400H film printed on Crystal Archive paper, using profiles from the spektrafilm project. Pale and airy when given extra light."},
- {id:'velvia',tag:'Slide',grp:'film',name:'Velvia 100',lut:'velvia100',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1.02,warm:0,sat:1.05,grain:.1,hal:.1,fade:0,leak:0,vig:.15},sh:[0,0,0],hi:[0,0,0],
+ {id:'pro400h',tag:'Film',grp:'film',name:'Fuji Pro 400H',lut:'pro400h_crystal',fmt:'67',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
+  cap:"Colours computed from the published data for Fujifilm Pro 400H film printed on Crystal Archive paper, using profiles from the spektrafilm project. Add exposure and it turns pale and airy."},
+ {id:'velvia',tag:'Slide',grp:'film',name:'Velvia 100',lut:'velvia100',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
   cap:"Colours computed from the published data for Fujifilm Velvia 100 slide film, using profiles from the spektrafilm project. Landscape photographers used it for its saturated colour."},
- {id:'ektachrome',tag:'Slide',grp:'film',name:'Ektachrome 100',lut:'ektachrome100',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:.12,hal:.1,fade:0,leak:0,vig:.12},sh:[0,0,0],hi:[0,0,0],
+ {id:'ektachrome',tag:'Slide',grp:'film',name:'Ektachrome 100',lut:'ektachrome100',fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
   cap:"Colours computed from the published data for Kodak Ektachrome 100 slide film, using profiles from the spektrafilm project. Clean and slightly cool."},
- {id:'cine',tag:'Cinema',grp:'film',name:'500T on 2383',lut:'vision500t_2383',fmt:'xpan',dateOn:false,date:'',p:{exp:.75,con:1.08,warm:-.06,sat:1.08,grain:.38,hal:.7,fade:0,leak:0,vig:.25},sh:[0,0,0],hi:[0,0,0],
-  cap:'Kodak Vision3 500T negative printed on 2383 release stock, the chain behind most films shot on film. Red glow around lights is halation.'},
- {id:'expired',tag:'Film',grp:'film',name:'Expired roll',lut:'xtra400_crystal',fmt:'135',dateOn:false,date:'',p:{exp:.55,con:.9,warm:.22,sat:.86,grain:.75,hal:.35,fade:.42,leak:.35,vig:.4},sh:[0,0,0],hi:[0,0,0],
-  cap:'Fujifilm Superia X-TRA 400, then pushed toward what a roll left in a drawer for years tends to do. The ageing part is tuned by eye.'}
+ {id:'cine',tag:'Cinema',grp:'film',name:'500T on 2383',lut:'vision500t_2383',fmt:'xpan',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
+  cap:'Kodak Vision3 500T negative printed on 2383 release stock, the chain behind most films shot on film.'},
+ {id:'hp5',tag:'B&W',grp:'film',name:'Ilford HP5',lut:'hald_hp5',enc:'srgb',bw:true,fmt:'135',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
+  cap:'Ilford HP5, the British black and white film that students still load first. Tones from the RawTherapee film collection.'},
+ {id:'expired',tag:'Instant',grp:'film',name:'Expired instant',lut:'hald_polaroid_timezero',enc:'srgb',fmt:'instant',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
+  cap:'Polaroid Time-Zero film used long past its date, from the RawTherapee film collection. The orange cast is what the old chemistry does.'}
 ];
+/* numbers read from data, not chosen by eye.
+   FILM: slope, density at mid grey and top density of each film's green curve, and its antihalation class, read from the spektrafilm profiles.
+   Grain and halation constants are the defaults in spektrafilm (params_schema.py, params_builder.py). */
+const FILM={gold200_edge:{g:.51,d0:.72,dm:1.51,ah:1},ultramax400_edge:{g:.51,d0:.76,dm:1.70,ah:1},portra400_endura:{g:.50,d0:.70,dm:1.80,ah:0},ektar100_endura:{g:.54,d0:.68,dm:1.78,ah:0},
+ c200_crystal:{g:.58,d0:.70,dm:2.04,ah:1},pro400h_crystal:{g:.49,d0:.70,dm:1.60,ah:0},kodachrome64:{g:-1.08,d0:.56,dm:2.80,ah:1},ektachrome100:{g:-.95,d0:.50,dm:2.80,ah:0},
+ velvia100:{g:-1.28,d0:.54,dm:3.57,ah:0},vision500t_2383:{g:.42,d0:.68,dm:1.64,ah:0,cine:1}}, FILM0={g:.5,d0:.7,dm:1.8,ah:1};
+const HAL=[[.015,.005,0],[.08,.02,0]], HAL_UM=[65,50], GR_AREA=.2, GR_SCALE=[1.6,1.6,3.2], GR_UNI=[.97,.99,.97], GR_BLUR=.65, GR_DMIN=.03;
+const FMT_MM={'135':[36,21.6,50],xpan:[65,34.7,45],'66':[56,39.6,80],'67':[70,44,90]}; // frame width, half diagonal and a normal lens, in mm
+const L2S=new Float32Array(4097); for(let i=0;i<4097;i++){ const c=i/4096; L2S[i]=c<=.0031308?c*12.92:1.055*Math.pow(c,1/2.4)-.055; }
+/* JPEG example tables, ITU-T T.81 Annex K (K.1 luminance, K.2 chrominance) */
+const JQL=[16,11,10,16,24,40,51,61,12,12,14,19,26,58,60,55,14,13,16,24,40,57,69,56,14,17,22,29,51,87,80,62,18,22,37,56,68,109,103,77,24,35,55,64,81,104,113,92,49,64,78,87,103,121,120,101,72,92,95,98,112,100,103,99];
+const JQC=[17,18,24,47,99,99,99,99,18,21,26,66,99,99,99,99,24,26,56,99,99,99,99,99,47,66,99,99,99,99,99,99].concat(Array(32).fill(99));
+const C8=new Float32Array(64); for(let u=0;u<8;u++) for(let x=0;x<8;x++) C8[u*8+x]=(u?.5:.5*Math.SQRT1_2)*Math.cos((2*x+1)*u*Math.PI/16);
 /* film-and-print colour tables, baked from the spektrafilm profile data by tools/bake_luts.py */
 const DKL={}; let dkLutState=0;
 function dkLoadLuts(done){ if(dkLutState===2){ done&&done(); return; } if(dkLutState===1) return; dkLutState=1;
@@ -1100,51 +1117,82 @@ function dkBase(fmt,L){ const s=DK.src, sw0=s.width, sh0=s.height, port=sh0>sw0;
 function dkStamp(x,txt,px,py,size,col,glow,align){ if(!txt) return; x.save(); x.font=`500 ${size}px "IBM Plex Mono",monospace`; x.textAlign=align; x.textBaseline='alphabetic';
   if(glow){ x.shadowColor=glow; x.shadowBlur=size*.4; } x.fillStyle=col; x.fillText(txt,px,py); if(glow) x.fillText(txt,px,py); x.restore(); }
 /* the picture itself: exposure, halation, a film-and-print curve, grain, then the special looks */
+/* a 2004 camera phone: VGA frame, 4:2:0 colour, 8×8 DCT blocks quantised with the JPEG example tables */
+function dkJpeg(b){ const w=b.width, h=b.height, f=Math.min(1,640/Math.max(w,h)), sw=Math.max(16,Math.round(w*f/16)*16), sh=Math.max(16,Math.round(h*f/16)*16);
+  const s=document.createElement('canvas'); s.width=sw; s.height=sh; const sx=s.getContext('2d',{willReadFrequently:true}); sx.drawImage(b,0,0,sw,sh);
+  const im=sx.getImageData(0,0,sw,sh), d=im.data, cw=sw/2, ch=sh/2, Y=new Float32Array(sw*sh), Cb=new Float32Array(cw*ch), Cr=new Float32Array(cw*ch);
+  for(let y=0;y<sh;y++) for(let x=0;x<sw;x++){ const i=(y*sw+x)*4, r=d[i], g=d[i+1], bl=d[i+2], j=(y>>1)*cw+(x>>1);
+    Y[y*sw+x]=.299*r+.587*g+.114*bl-128; Cb[j]+=(-.168736*r-.331264*g+.5*bl)/4; Cr[j]+=(.5*r-.418688*g-.081312*bl)/4; }
+  const t=new Float32Array(64), u=new Float32Array(64);
+  const plane=(P,pw,ph,Q)=>{ for(let by=0;by<ph;by+=8) for(let bx=0;bx<pw;bx+=8){
+      for(let y=0;y<8;y++) for(let k=0;k<8;k++){ let a=0; for(let x=0;x<8;x++) a+=C8[k*8+x]*P[(by+y)*pw+bx+x]; t[y*8+k]=a; }
+      for(let k=0;k<8;k++) for(let v=0;v<8;v++){ let a=0; for(let y=0;y<8;y++) a+=C8[v*8+y]*t[y*8+k]; const q=Q[v*8+k]; u[v*8+k]=Math.round(a/q)*q; }
+      for(let k=0;k<8;k++) for(let y=0;y<8;y++){ let a=0; for(let v=0;v<8;v++) a+=C8[v*8+y]*u[v*8+k]; t[y*8+k]=a; }
+      for(let y=0;y<8;y++) for(let x=0;x<8;x++){ let a=0; for(let k=0;k<8;k++) a+=C8[k*8+x]*t[y*8+k]; P[(by+y)*pw+bx+x]=a; } } };
+  plane(Y,sw,sh,JQL); plane(Cb,cw,ch,JQC); plane(Cr,cw,ch,JQC);
+  for(let y=0;y<sh;y++) for(let x=0;x<sw;x++){ const i=(y*sw+x)*4, j=(y>>1)*cw+(x>>1), yy=Y[y*sw+x]+128, cb=Cb[j], cr=Cr[j]; d[i]=yy+1.402*cr; d[i+1]=yy-.344136*cb-.714136*cr; d[i+2]=yy+1.772*cb; }
+  sx.putImageData(im,0,0); b.getContext('2d').drawImage(s,0,0,w,h); }
+/* VHS at standard play: 480 lines, luma cut at 2.4 MHz and chroma at 320 kHz with a 4 sample chroma delay, on the 14.318 MHz clock.
+   Noise levels and the head switching band are the ntsc-rs defaults. The code is ours. */
+function dkVhs(b,seed){ const w=b.width, h=b.height, rh=Math.min(480,h), rw=Math.max(16,Math.round(rh*w/h)), sc=640/754*rh/480, fs=14318181.8*sc, rnd=dkRand(seed+17);
+  const s=document.createElement('canvas'); s.width=rw; s.height=rh; const sx=s.getContext('2d',{willReadFrequently:true}); sx.drawImage(b,0,0,rw,rh);
+  const im=sx.getImageData(0,0,rw,rh), d=im.data, Y=new Float32Array(rw), I=new Float32Array(rw), Q=new Float32Array(rw);
+  const bq=fc=>{ const w0=2*Math.PI*Math.min(fc,fs*.45)/fs, c=Math.cos(w0), a=Math.sin(w0)/Math.SQRT2, a0=1+a; return [(1-c)/2/a0,(1-c)/a0,(1-c)/2/a0,-2*c/a0,(1-a)/a0]; }, fY=bq(2400000), fC=bq(320000), dl=Math.round(4*sc), vis=Math.max(1,Math.round(5*rh/480));
+  const lp=(A,f)=>{ let x1=A[0], x2=A[0], y1=A[0], y2=A[0]; for(let x=0;x<rw;x++){ const v=A[x], y=f[0]*v+f[1]*x1+f[2]*x2-f[3]*y1-f[4]*y2; x2=x1; x1=v; y2=y1; y1=y; A[x]=y; } }; // second order Butterworth low pass
+  for(let y=0;y<rh;y++){ const o=y*rw*4; let n=0, nt=0, ni=0, nq=0, ti=0, tq=0;
+    for(let x=0;x<rw;x++){ const i=o+x*4, r=d[i]/255, g=d[i+1]/255, bl=d[i+2]/255; Y[x]=.299*r+.587*g+.114*bl; I[x]=.5959*r-.2746*g-.3213*bl; Q[x]=.2115*r-.5227*g+.3112*bl; }
+    for(let x=0;x<rw;x++){ if(n--<=0){ n=Math.round(20*sc)||1; nt=0; ni=ti; nq=tq; ti=(rnd()-.5)*.1; tq=(rnd()-.5)*.1; } const k=nt++/(Math.round(20*sc)||1); I[x]+=ni+(ti-ni)*k; Q[x]+=nq+(tq-nq)*k; Y[x]+=(rnd()-.5)*.01; }
+    lp(Y,fY); lp(I,fC); lp(Q,fC);
+    const below=rh-y, shift=below<=vis?Math.round(72*sc*(3+5*(vis-below+1)/vis)/8):0; // head switching: the last lines slide sideways
+    for(let x=0;x<rw;x++){ const xs=Math.min(rw-1,Math.max(0,x-shift)), xc=Math.min(rw-1,xs+dl), yy=Y[xs], ii=I[xc], qq=Q[xc], i=o+x*4;
+      d[i]=(yy+.956*ii+.619*qq)*255; d[i+1]=(yy-.272*ii-.647*qq)*255; d[i+2]=(yy-1.106*ii+1.703*qq)*255; } }
+  sx.putImageData(im,0,0); b.getContext('2d').drawImage(s,0,0,w,h); }
 function dkProcess(b,look,p,o){ const w=b.width, h=b.height, bx=b.getContext('2d',{willReadFrequently:true});
   if(look.post==='bypass'){ if(o.dateOn) dkStamp(bx,o.date,w*.95,h*.94,h*.045,'#ffa238','#ff5a00','right'); return b; }
-  const im=bx.getImageData(0,0,w,h), d=im.data, rnd=dkRand(o.seed), fine=(o.fmt==='66'||o.fmt==='67')?.6:1;
-  // halation: bright areas spread as a red glow, as light bouncing off the film base did
-  let H=null, hw=0; if(p.hal>.01){ const q=4; hw=Math.max(2,w/q|0); const hh=Math.max(2,h/q|0), a=document.createElement('canvas'); a.width=hw; a.height=hh;
-    const ax=a.getContext('2d',{willReadFrequently:true}); ax.drawImage(b,0,0,hw,hh); const m=ax.getImageData(0,0,hw,hh), md=m.data;
-    for(let i=0;i<md.length;i+=4){ const l=md[i]*.3+md[i+1]*.59+md[i+2]*.11, v=Math.max(0,l-168)*2.9; md[i]=md[i+1]=md[i+2]=v>255?255:v; }
-    ax.putImageData(m,0,0); const c2=document.createElement('canvas'); c2.width=hw; c2.height=hh; const cx=c2.getContext('2d',{willReadFrequently:true});
-    cx.filter=`blur(${Math.max(1,(hw*.022*fine)).toFixed(1)}px)`; cx.drawImage(a,0,0); const hd=cx.getImageData(0,0,hw,hh).data; H=new Float32Array(hw*hh); for(let i=0;i<H.length;i++) H[i]=hd[i*4]/255; H.q=q; H.hh=hh; }
-  // grain: clumps whose size depends on the film format
-  const T=256, G=new Float32Array(T*T); { const n=document.createElement('canvas'); n.width=n.height=T; const nx=n.getContext('2d',{willReadFrequently:true}), ni=nx.createImageData(T,T);
+  const im=bx.getImageData(0,0,w,h), d=im.data, rnd=dkRand(o.seed), F=FILM[look.lut]||FILM0, fm=FMT_MM[o.fmt]||FMT_MM['135'], um=fm[0]*1000/Math.max(w,h);
+  // halation: light that crosses the film, bounces off the base and comes back as a wider red glow. Three bounces, each wider and half as strong.
+  let H=null; const hsig=HAL_UM[F.cine?1:0]/um, hs=HAL[F.ah].map(v=>v*p.hal);
+  if(p.hal>.01&&hsig>=.3){ const a=document.createElement('canvas'); a.width=w; a.height=h; const ax=a.getContext('2d'), li=ax.createImageData(w,h), ld=li.data;
+    for(let i=0;i<d.length;i+=4){ ld[i]=S2L[d[i]]*255; ld[i+1]=S2L[d[i+1]]*255; ld[i+2]=S2L[d[i+2]]*255; ld[i+3]=255; } ax.putImageData(li,0,0);
+    const c2=document.createElement('canvas'); c2.width=w; c2.height=h; const cx=c2.getContext('2d',{willReadFrequently:true}); cx.globalCompositeOperation='lighter';
+    [4/7,2/7,1/7].forEach((wk,k)=>{ cx.globalAlpha=wk; cx.filter=`blur(${(hsig*Math.sqrt(k+1)).toFixed(2)}px)`; cx.drawImage(a,0,0); }); H=cx.getImageData(0,0,w,h).data; }
+  // grain: silver particles of a fixed size, so a small frame or a big enlargement shows more of it
+  const T=256, G=new Float32Array(T*T); let GT=null;
+  if(p.grain>.01){ const n=document.createElement('canvas'); n.width=n.height=T; const nx=n.getContext('2d',{willReadFrequently:true}), ni=nx.createImageData(T,T);
     for(let i=0;i<T*T;i++){ const v=(rnd()+rnd()+rnd())/3*255; ni.data[i*4]=ni.data[i*4+1]=ni.data[i*4+2]=v; ni.data[i*4+3]=255; } nx.putImageData(ni,0,0);
-    const n2=document.createElement('canvas'); n2.width=n2.height=T; const n2x=n2.getContext('2d',{willReadFrequently:true}); n2x.filter=`blur(${(.45+w/1000*.55*fine*(look.bw?1.25:1)).toFixed(2)}px)`; n2x.drawImage(n,0,0);
-    const gd=n2x.getImageData(0,0,T,T).data; let mean=0; for(let i=0;i<T*T;i++){ G[i]=gd[i*4]; mean+=G[i]; } mean/=T*T; let sd=0; for(let i=0;i<T*T;i++){ G[i]-=mean; sd+=G[i]*G[i]; } sd=Math.sqrt(sd/(T*T))||1; for(let i=0;i<T*T;i++) G[i]/=sd; }
-  // one curve per colour layer: film then print, folded into a single S shape
-  const N=1024, LUT=[0,1,2].map(ch=>{ const t=new Float32Array(N), lift=p.fade*.15; for(let i=0;i<N;i++){ const c=(i/(N-1))*(i/(N-1))*6, x=Math.log2(Math.max(c,1e-5)/.18), s=1/(1+Math.exp(-1.25*p.con*x));
-      t[i]=lift+s*(1-lift-p.fade*.09)+look.sh[ch]*(1-s)*(1-s)+look.hi[ch]*s*s; } return t; });
-  const TL=look.lut?DKL[look.lut]:null, lift=p.fade*.15;
-  const ex=Math.pow(2,p.exp), wr=ex*(1+p.warm*.22), wg=ex, wb=ex*(1-p.warm*.22), gs=p.grain*.095, bw=!!look.bw, sat=p.sat, cx0=w/2, cy0=h/2, inv=1/(cx0*cx0+cy0*cy0);
-  for(let y=0;y<h;y++){ const gy=(y%T)*T, dy=y-cy0; for(let x=0;x<w;x++){ const i=(y*w+x)*4; let r=S2L[d[i]]*wr, g=S2L[d[i+1]]*wg, bl=S2L[d[i+2]]*wb;
-      if(H){ const hv=H[Math.min(H.hh-1,y/H.q|0)*hw+Math.min(hw-1,x/H.q|0)]*p.hal; r+=hv*.85; g+=hv*.22; bl+=hv*.04; }
-      const l=.2126*r+.7152*g+.0722*bl; if(bw){ r=g=bl=l; } else if(!TL) { r=l+(r-l)*sat; g=l+(g-l)*sat; bl=l+(bl-l)*sat; if(r<0)r=0; if(g<0)g=0; if(bl<0)bl=0; }
+    const n2=document.createElement('canvas'); n2.width=n2.height=T; const n2x=n2.getContext('2d',{willReadFrequently:true}); n2x.filter=`blur(${GR_BLUR}px)`; n2x.drawImage(n,0,0);
+    const gd=n2x.getImageData(0,0,T,T).data; let mean=0; for(let i=0;i<T*T;i++){ G[i]=gd[i*4]; mean+=G[i]; } mean/=T*T; let sd=0; for(let i=0;i<T*T;i++){ G[i]-=mean; sd+=G[i]*G[i]; } sd=Math.sqrt(sd/(T*T))||1; for(let i=0;i<T*T;i++) G[i]/=sd;
+    const kb=1/(2*GR_BLUR*Math.sqrt(Math.PI)), ag=Math.abs(F.g); GT=[0,1,2].map(ch=>{ const t=new Float32Array(256), N=um*um/(GR_AREA*GR_SCALE[ch]*p.grain);
+      for(let i=0;i<256;i++){ const c=(i/255)*(i/255)*4, D=Math.min(F.dm,Math.max(GR_DMIN,F.d0+F.g*Math.log10(Math.max(c,1e-4)/.18))), pp=D/F.dm; t[i]=F.dm*Math.sqrt(pp*(1-GR_UNI[ch]*pp)/N)*kb/ag*2.302585; } return t; }); }
+  const TL=look.lut?DKL[look.lut]:null, srgb=look.enc==='srgb', lift=p.fade*.15;
+  const ex=Math.pow(2,p.exp), wr=ex*(1+p.warm*.22), wg=ex, wb=ex*(1-p.warm*.22), bw=!!look.bw, sat=p.sat, cx0=w/2, cy0=h/2, inv=1/(cx0*cx0+cy0*cy0), tn=look.fl?21.6/look.fl:fm[1]/fm[2], t2=tn*tn;
+  for(let y=0;y<h;y++){ const gy=(y%T)*T, dy=y-cy0; for(let x=0;x<w;x++){ const i=(y*w+x)*4; let r=S2L[d[i]], g=S2L[d[i+1]], bl=S2L[d[i+2]];
+      if(H){ r=(r+hs[0]*H[i]/255)/(1+hs[0]); g=(g+hs[1]*H[i+1]/255)/(1+hs[1]); bl=(bl+hs[2]*H[i+2]/255)/(1+hs[2]); }
+      if(p.vig>0){ const dx=x-cx0, c4=1+(dx*dx+dy*dy)*inv*t2, v=1-p.vig*(1-1/(c4*c4)); r*=v; g*=v; bl*=v; } // cos⁴ falloff of the lens
+      r*=wr; g*=wg; bl*=wb;
+      if(GT){ const n0=G[gy+(x%T)], kr=Math.min(255,Math.sqrt(r/4)*255|0), kg=Math.min(255,Math.sqrt(g/4)*255|0), kb2=Math.min(255,Math.sqrt(bl/4)*255|0);
+        if(bw){ const m=Math.exp(n0*GT[1][kg]); r*=m; g*=m; bl*=m; } else { r*=Math.exp(n0*GT[0][kr]); g*=Math.exp(G[gy+((x+71)%T)]*GT[1][kg]); bl*=Math.exp(G[gy+((x+149)%T)]*GT[2][kb2]); } }
+      if(bw&&!TL){ r=g=bl=.2126*r+.7152*g+.0722*bl; }
       let R, Gn, B;
-      if(TL){ const tr=Math.sqrt((r>4?4:r)/4)*32, tg=Math.sqrt((g>4?4:g)/4)*32, tb=Math.sqrt((bl>4?4:bl)/4)*32, r0=tr>=32?31:tr|0, g0=tg>=32?31:tg|0, b0=tb>=32?31:tb|0, fr=tr-r0, fg=tg-g0, fb=tb-b0;
+      if(TL){ let tr, tg, tb; if(srgb){ tr=L2S[r>=1?4096:r*4096|0]*32; tg=L2S[g>=1?4096:g*4096|0]*32; tb=L2S[bl>=1?4096:bl*4096|0]*32; } else { tr=Math.sqrt((r>4?4:r)/4)*32; tg=Math.sqrt((g>4?4:g)/4)*32; tb=Math.sqrt((bl>4?4:bl)/4)*32; }
+        const r0=tr>=32?31:tr|0, g0=tg>=32?31:tg|0, b0=tb>=32?31:tb|0, fr=tr-r0, fg=tg-g0, fb=tb-b0;
         const i000=(g0*1089+b0*33+r0)*3, i010=i000+3267, i001=i000+99, i011=i010+99;
         for(let ch=0;ch<3;ch++){ const c00=TL[i000+ch]+(TL[i000+3+ch]-TL[i000+ch])*fr, c10=TL[i010+ch]+(TL[i010+3+ch]-TL[i010+ch])*fr, c01=TL[i001+ch]+(TL[i001+3+ch]-TL[i001+ch])*fr, c11=TL[i011+ch]+(TL[i011+3+ch]-TL[i011+ch])*fr;
-          const v=((c00+(c10-c00)*fg)*(1-fb)+(c01+(c11-c01)*fg)*fb)/255; if(ch===0) R=v; else if(ch===1) Gn=v; else B=v; }
-        R=.46+(R-.46)*p.con; Gn=.46+(Gn-.46)*p.con; B=.46+(B-.46)*p.con; const l2=(R+Gn+B)/3; R=l2+(R-l2)*sat; Gn=l2+(Gn-l2)*sat; B=l2+(B-l2)*sat;
-        R=lift+R*(1-lift-p.fade*.09); Gn=lift+Gn*(1-lift-p.fade*.09)+p.fade*.012; B=lift+B*(1-lift-p.fade*.09)-p.fade*.02; }
-      else { R=LUT[0][Math.min(N-1,Math.sqrt(r/6)*(N-1)|0)]; Gn=LUT[1][Math.min(N-1,Math.sqrt(g/6)*(N-1)|0)]; B=LUT[2][Math.min(N-1,Math.sqrt(bl/6)*(N-1)|0)]; }
-      if(gs>0){ const n0=G[gy+(x%T)], m=(4*Gn*(1-Gn)+.25)*gs; if(bw){ R+=n0*m; Gn+=n0*m; B+=n0*m; } else { R+=(n0*.7+G[gy+((x+71)%T)]*.5)*m; Gn+=(n0*.7+G[gy+((x+149)%T)]*.5)*m; B+=(n0*.7+G[gy+((x+211)%T)]*.6)*m; } }
-      const dx=x-cx0, v=1-p.vig*.75*(dx*dx+dy*dy)*inv; d[i]=R*v*255; d[i+1]=Gn*v*255; d[i+2]=B*v*255; } }
+          const v=((c00+(c10-c00)*fg)*(1-fb)+(c01+(c11-c01)*fg)*fb)/255; if(ch===0) R=v; else if(ch===1) Gn=v; else B=v; } }
+      else { R=L2S[r>=1?4096:r*4096|0]; Gn=L2S[g>=1?4096:g*4096|0]; B=L2S[bl>=1?4096:bl*4096|0]; }
+      if(p.con!==1){ R=.46+(R-.46)*p.con; Gn=.46+(Gn-.46)*p.con; B=.46+(B-.46)*p.con; } if(sat!==1){ const l2=(R+Gn+B)/3; R=l2+(R-l2)*sat; Gn=l2+(Gn-l2)*sat; B=l2+(B-l2)*sat; }
+      if(p.fade>0){ R=lift+R*(1-lift-p.fade*.09); Gn=lift+Gn*(1-lift-p.fade*.09)+p.fade*.012; B=lift+B*(1-lift-p.fade*.09)-p.fade*.02; }
+      d[i]=R*255; d[i+1]=Gn*255; d[i+2]=B*255; } }
   bx.putImageData(im,0,0);
   if(p.leak>.01){ const side=rnd()<.5?0:1, ly=h*(.2+rnd()*.6), gr=bx.createRadialGradient(side*w,ly,0,side*w,ly,w*(.4+rnd()*.35));
     gr.addColorStop(0,`rgba(255,70,10,${.9*p.leak})`); gr.addColorStop(.45,`rgba(255,150,30,${.4*p.leak})`); gr.addColorStop(1,'rgba(255,150,30,0)');
     bx.globalCompositeOperation='screen'; bx.fillStyle=gr; bx.fillRect(0,0,w,h); bx.globalCompositeOperation='source-over'; }
-  if(look.post==='halftone'){ const src=bx.getImageData(0,0,w,h).data, cell=Math.max(4,Math.round(w/150)); bx.fillStyle='#ece3cf'; bx.fillRect(0,0,w,h); bx.fillStyle='#1b1815'; bx.beginPath();
-    for(let y=0;y<h;y+=cell) for(let x=((y/cell)%2)*cell/2;x<w;x+=cell){ const px=Math.min(w-1,x+cell/2|0), py=Math.min(h-1,y+cell/2|0), i=(py*w+px)*4, l=(src[i]*.3+src[i+1]*.59+src[i+2]*.11)/255, r=cell*.72*Math.sqrt(1-l);
-        if(r>.4){ bx.moveTo(x+cell/2+r,y+cell/2); bx.arc(x+cell/2,y+cell/2,r,0,6.3); } } bx.fill(); }
-  if(look.post==='phone'){ const s=document.createElement('canvas'); s.width=Math.min(w,240); s.height=Math.max(2,Math.round(h*s.width/w)); s.getContext('2d').drawImage(b,0,0,s.width,s.height); bx.drawImage(s,0,0,w,h); }
-  if(look.post==='crt'){ const q=Math.max(2,Math.round(w/320)), s=document.createElement('canvas'); s.width=Math.max(2,w/q|0); s.height=Math.max(2,h/q|0); s.getContext('2d').drawImage(b,0,0,s.width,s.height);
-    bx.imageSmoothingEnabled=false; bx.drawImage(s,0,0,w,h); bx.imageSmoothingEnabled=true; const i2=bx.getImageData(0,0,w,h), e=i2.data, lh=Math.max(2,Math.round(h/240))*2;
-    for(let y=0;y<h;y++){ const line=(y%lh>=lh/2)?.6:1, wob=1+.035*Math.sin(y*.9+o.seed); for(let x=0;x<w;x++){ const i=(y*w+x)*4, m=x%3, k=line*wob; e[i]*=(m===0?1.2:.9)*k; e[i+1]*=(m===1?1.2:.9)*k; e[i+2]*=(m===2?1.2:.9)*k; } }
-    bx.putImageData(i2,0,0); bx.globalCompositeOperation='lighter'; bx.globalAlpha=.2; bx.filter=`blur(${Math.max(2,w/200)}px)`; bx.drawImage(b,0,0); bx.filter='none'; bx.globalAlpha=1; bx.globalCompositeOperation='source-over';
-    if(o.dateOn) dkStamp(bx,o.date,w*.05,h*.1,h*.05,'#f4f6ff','#ffffff','left'); return b; }
+  // newspaper screen: 65 lines to the inch at 45 degrees on a two column picture 3.75 inches wide. Dot area equals one minus the tone (Murray-Davies).
+  if(look.post==='halftone'){ const src=bx.getImageData(0,0,w,h).data, pt=Math.max(2.4,w/(3.75*65)), sp=pt*Math.SQRT2; bx.fillStyle='#ece3cf'; bx.fillRect(0,0,w,h); bx.fillStyle='#1b1815'; bx.beginPath();
+    for(let row=0, y=0;y<h+sp;row++, y=row*sp/2) for(let x=(row%2)*sp/2;x<w+sp;x+=sp){ const px=Math.min(w-1,x|0), py=Math.min(h-1,y|0), i=(py*w+px)*4, l=.2126*S2L[src[i]]+.7152*S2L[src[i+1]]+.0722*S2L[src[i+2]], r=Math.min(pt*.75,pt*Math.sqrt((1-l)/Math.PI));
+        if(r>.25){ bx.moveTo(x+r,y); bx.arc(x,y,r,0,6.3); } } bx.fill(); }
+  if(look.post==='phone') dkJpeg(b);
+  if(look.post==='vhs'){ dkVhs(b,o.seed); if(o.dateOn) dkStamp(bx,o.date,w*.05,h*.1,h*.05,'#f4f6ff','#ffffff','left'); return b; }
   if(o.dateOn&&o.fmt!=='instant') dkStamp(bx,o.date,w*.95,h*.94,Math.max(10,h*.045),look.post==='halftone'?'#1b1815':'#ffa238',look.post==='halftone'?null:'#ff5a00','right');
   return b; }
 /* the frame: film base, perforations, edge print and frame numbers, or the instant print's white border */

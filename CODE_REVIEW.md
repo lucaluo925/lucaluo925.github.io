@@ -79,3 +79,29 @@ Checked and found fine
 
 Not verified
 - No side-by-side comparison against output from the real spektrafilm engine. Running it was not possible in the build environment.
+
+## 2026-11-12 · then-again/: every look now starts from published numbers
+
+Reviewed with `ocr delegate` (workspace mode). Covered 2 of 2 reviewable files: `then-again/index.html`, `then-again/tools/hald_to_lut.py`. `NOTICE.md` and the PNG tables are outside what the tool reviews.
+
+Changed
+- Instant print, Tri-X, HP5 and expired Time-Zero use tables resampled from the RawTherapee Film Simulation Collection (via cedeber/hald-clut, GPL-3.0). These tables are sRGB encoded, so the engine got a second lookup axis for them.
+- Grain is a particle model with the spektrafilm default particle area, layer scales and uniformity. It acts on exposure before the film table and scales with the frame size in millimetres. Curve slope and densities per film are read from the profiles.
+- Halation is three reflections with the spektrafilm strengths for each antihalation class and a 65 µm (still) or 50 µm (cinema) first width.
+- VHS replaces the scan line effect: 480 lines, 2.4 MHz luma and 320 kHz chroma low pass, 4 sample chroma delay, noise levels and head switching band from ntsc-rs. Code is ours, no ntsc-rs code is used.
+- Camera phone runs a real 8×8 DCT with the Annex K tables of ITU-T T.81 on a 640 px frame with 4:2:0 colour.
+- Newspaper uses a 65 lpi screen at 45° with Murray-Davies dot area. Vignette is the cos⁴ law for the lens of each format.
+- All presets start with exposure, contrast, warmth, colour, fade and light leak at neutral. The eye-tuned curve and tint code is gone.
+
+Found and fixed
+- High: `dkVhs` built its low pass filter with a cutoff above half the sample rate when the raster was small (thumbnails). The filter would be unstable. The cutoff is now capped at 0.45 of the sample rate.
+
+Checked and found fine
+- Table and grain indices are clamped. The DCT round trip uses an orthonormal basis, and the output is written to a clamped byte array.
+- Preview render 60 to 220 ms per look at 1000 px in headless Chrome. No console errors across ten looks.
+
+Not verified
+- The upstream licence of the RawTherapee collection is not stated on its wiki page. The credit follows the GPL-3.0 licence of the repository the files came from.
+- HP5 and Tri-X have no grain or halation data of their own. They use the generic spektrafilm values.
+- The assumed print width for the newspaper screen (3.75 in) and the 30 mm disposable lens are our reading of typical cases.
+- No comparison against real ntsc-rs or spektrafilm output.
