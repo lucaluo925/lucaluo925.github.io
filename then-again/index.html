@@ -1029,7 +1029,11 @@ $('mFile').addEventListener('change',e=>mLoad(e.target.files[0]));
 const mf=$('mFrame'); mf.addEventListener('dragover',e=>e.preventDefault()); mf.addEventListener('drop',e=>{ e.preventDefault(); mLoad(e.dataTransfer.files[0]); });
 const mHold=on=>{ if(M.hold===on) return; M.hold=on; mDraw(); };
 mc.addEventListener('pointerdown',()=>mHold(true)); addEventListener('pointerup',()=>mHold(false)); mc.addEventListener('pointerleave',()=>mHold(false));
-$('mSave').addEventListener('click',()=>{ try{ mc.toBlob(bl=>{ if(!bl) return; const a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download=`then-again-${M.preset}.png`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); },'image/png'); }catch(e){} });
+$('mSave').addEventListener('click',()=>{ mc.toBlob(async bl=>{ if(!bl) return; const name=`then-again-${M.preset}.png`;
+    let dl=null; try{ dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null; }catch(e){}
+    if(dl){ try{ await dl.save({filename:name,data:bl}); }catch(e){} return; }
+    const a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  },'image/png'); });
 
 /* ---------- router ---------- */
 const PAGES=['machine','timeline','pattern','argument','readings','sources'];
