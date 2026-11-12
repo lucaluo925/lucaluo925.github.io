@@ -133,3 +133,18 @@ Not verified
 - "The way 1955 recorded it" applies a look to a modern photograph of the object. It is not a period photograph.
 - The camera's "now" photo shows a person from behind at a museum (CC0 on Commons). Katherine and Haoyuan should confirm they are comfortable using it.
 - The Moonliner photo is the later rebuilt rocket, standing in for the 1955 original.
+
+## 2026-11-12 · then-again/: pass against model defaults
+
+Reviewed with `ocr delegate` (workspace mode), 1 of 1 reviewable file (`then-again/index.html`). No new logic beyond string and colour changes.
+
+Changed
+- High (fact): the slide look was labelled 1968 but uses Kodachrome 64 data, a film sold from 1974. The label is now 1974 and the looks are back in year order. The drugstore print's date back moved from '04 to '08 because the UltraMax name is later than 2004.
+- The default sample photo was a fruit market, the stock choice for a colour test. It is now the project's own jukebox photograph.
+- The darkroom used the usual blue-black tool palette and a floating shadow under the picture. It is now a neutral warm black matching the film base colours, and the shadow is gone.
+- Half of the case answers ended on a one-line slogan. Those endings were cut.
+- The hand-off no longer says "the way 1955 recorded it". It names the look instead.
+
+Kept on purpose
+- Blue halftone, lime and silver come from the two reference images Haoyuan supplied. Syne and the wide mono labels follow those references and the edge print on film.
+- Left rail, picture, strip of looks: the common layout for an editor. Kept because people already know where things are.

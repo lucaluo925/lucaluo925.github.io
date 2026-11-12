@@ -367,47 +367,47 @@ label.btn{display:inline-block}
 @media (max-width:860px){.mpre b{font-size:15px}.mpre button{padding:10px 2px}.mach .pager .btn{padding:10px 12px}}
 
 /* ---------- the darkroom workspace ---------- */
-.page.dk{background:#0b0d16;color:#e9ecf5;overflow:auto}
+.page.dk{background:#0c0b0a;color:#efeae0;overflow:auto}
 .dkgrid{display:grid;grid-template-columns:320px minmax(0,1fr);min-height:100%}
-.dkrail{padding:74px 20px 24px;border-right:1px solid #262a3a;display:flex;flex-direction:column;gap:16px;background:#10131f}
+.dkrail{padding:74px 20px 24px;border-right:1px solid #2c2823;display:flex;flex-direction:column;gap:16px;background:#141210}
 .dkrail h1{font-size:30px;color:#fff}
 .dkrail .eyebrow{color:var(--lime)}
-.dkgroup{display:grid;gap:2px;border-top:1px solid #262a3a;padding-top:12px}
-.dkgroup>.lab{color:#8f96ad;margin-bottom:4px}
+.dkgroup{display:grid;gap:2px;border-top:1px solid #2c2823;padding-top:12px}
+.dkgroup>.lab{color:#9a938a;margin-bottom:4px}
 .dkrow{display:grid;grid-template-columns:92px minmax(0,1fr) 40px;align-items:center;gap:10px;font-size:13.5px;min-height:32px}
 .dkrow input[type=range]{width:100%;accent-color:var(--lime);height:22px}
-.dkrow output{font-family:var(--mono);font-size:11px;color:#8f96ad;text-align:right;font-variant-numeric:tabular-nums}
-.dkrow select,.dkrow input[type=text]{grid-column:2/4;background:#0b0d16;color:#e9ecf5;border:1px solid #3a4057;border-radius:6px;padding:7px 8px;font:inherit;font-size:13.5px;min-width:0}
+.dkrow output{font-family:var(--mono);font-size:11px;color:#9a938a;text-align:right;font-variant-numeric:tabular-nums}
+.dkrow select,.dkrow input[type=text]{grid-column:2/4;background:#0c0b0a;color:#efeae0;border:1px solid #4a443c;border-radius:6px;padding:7px 8px;font:inherit;font-size:13.5px;min-width:0}
 .dkrow input[type=checkbox]{width:20px;height:20px;accent-color:var(--lime);justify-self:start}
 .dkbtns{display:flex;gap:8px;flex-wrap:wrap}
-.dk .btn{background:#1a1e2e;color:#e9ecf5;border-color:#3a4057;padding:9px 13px;font-size:12px}
-.dk .btn:hover{background:#262b40}
+.dk .btn{background:#1e1b17;color:#efeae0;border-color:#4a443c;padding:9px 13px;font-size:12px}
+.dk .btn:hover{background:#2c2823}
 .dk .btn.solid{background:var(--lime);border-color:var(--lime);color:var(--ink)}
 .dk .btn[aria-pressed="true"]{background:var(--lime);border-color:var(--lime);color:var(--ink)}
 .dk .btn[disabled]{opacity:.5}
-#dkHist{width:100%;height:72px;background:#0b0d16;border:1px solid #262a3a;border-radius:6px}
-.dknote{margin:0;font-family:var(--mono);font-size:11px;color:#8f96ad;line-height:1.5}
+#dkHist{width:100%;height:72px;background:#0c0b0a;border:1px solid #2c2823;border-radius:6px}
+.dknote{margin:0;font-family:var(--mono);font-size:11px;color:#9a938a;line-height:1.5}
 .dkmain{display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;min-width:0;min-height:100vh}
-.dkbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 190px 12px 64px;border-bottom:1px solid #262a3a}
+.dkbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 190px 12px 64px;border-bottom:1px solid #2c2823}
 .dksp{flex:1}
-.dkinfo{font-family:var(--mono);font-size:11px;color:#8f96ad}
+.dkinfo{font-family:var(--mono);font-size:11px;color:#9a938a}
 .dkstage{position:relative;display:grid;place-items:center;padding:clamp(14px,2.4vw,34px);min-height:320px;overflow:hidden;
-  background:radial-gradient(#1a1e2e 1px,transparent 1.4px) 0 0/18px 18px,#0b0d16}
-#dkCanvas{display:block;max-width:100%;max-height:min(62vh,720px);width:auto;height:auto;filter:drop-shadow(0 18px 40px rgba(0,0,0,.6));touch-action:none}
+  background:radial-gradient(#1e1b17 1px,transparent 1.4px) 0 0/18px 18px,#0c0b0a}
+#dkCanvas{display:block;max-width:100%;max-height:min(62vh,720px);width:auto;height:auto;touch-action:none}
 .dksplit{position:absolute;width:2px;margin-left:-1px;background:#fff;pointer-events:none}
 .dksplit i{position:absolute;top:50%;left:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:var(--lime);box-shadow:0 2px 10px rgba(0,0,0,.5)}
 .dksplit i::before{content:"\2194";position:absolute;inset:0;display:grid;place-items:center;color:var(--ink);font-size:18px}
-.dkcap{margin:0;padding:12px clamp(14px,2.4vw,34px);font-size:15.5px;line-height:1.5;color:#c9cfe0;border-top:1px solid #262a3a;max-width:none}
-.dkstrip{display:flex;gap:10px;overflow-x:auto;padding:12px clamp(14px,2.4vw,34px) 18px;border-top:1px solid #262a3a;background:#10131f}
-.dkstrip button{flex:none;width:132px;background:none;border:2px solid transparent;border-radius:8px;padding:4px;cursor:pointer;color:#c9cfe0;display:grid;gap:6px;text-align:left}
-.dkstrip button[aria-pressed="true"]{border-color:var(--lime);background:#1a1e2e}
+.dkcap{margin:0;padding:12px clamp(14px,2.4vw,34px);font-size:15.5px;line-height:1.5;color:#d4cec4;border-top:1px solid #2c2823;max-width:none}
+.dkstrip{display:flex;gap:10px;overflow-x:auto;padding:12px clamp(14px,2.4vw,34px) 18px;border-top:1px solid #2c2823;background:#141210}
+.dkstrip button{flex:none;width:132px;background:none;border:2px solid transparent;border-radius:8px;padding:4px;cursor:pointer;color:#d4cec4;display:grid;gap:6px;text-align:left}
+.dkstrip button[aria-pressed="true"]{border-color:var(--lime);background:#1e1b17}
 .dkstrip canvas.th{width:100%;height:auto;display:block;border-radius:4px}
 .dkstrip span{font-size:11.5px;line-height:1.25;display:grid}
 .dkstrip b{font-family:var(--display);font-size:17px;letter-spacing:-.02em;color:#fff}
 @media (max-width:900px){
   .dkgrid{grid-template-columns:1fr}
   .dkmain{order:1;min-height:0}
-  .dkrail{order:2;padding-top:20px;border-right:0;border-top:1px solid #262a3a}
+  .dkrail{order:2;padding-top:20px;border-right:0;border-top:1px solid #2c2823}
   .dkbar{padding:64px 14px 12px}
   #dkCanvas{max-height:48vh}
 }
@@ -422,11 +422,11 @@ label.btn{display:inline-block}
 .tl-go{font-family:var(--mono);font-size:22px;color:var(--lime)}
 .dkcap{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between}
 .dkcap p{margin:0;flex:1;min-width:260px}
-.dkcases{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8f96ad}
+.dkcases{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9a938a}
 .dkcases a{font-family:var(--body);font-size:13px;letter-spacing:0;text-transform:none;color:var(--ink);background:var(--lime);border-radius:999px;padding:5px 11px;text-decoration:none}
 .dkcases a:hover{background:#fff}
 
-.dkgl{flex:none;align-self:stretch;display:grid;place-items:center;writing-mode:vertical-rl;rotate:180deg;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8f96ad;border-left:1px solid #262a3a;padding:0 6px}
+.dkgl{flex:none;align-self:stretch;display:grid;place-items:center;writing-mode:vertical-rl;rotate:180deg;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#9a938a;border-left:1px solid #2c2823;padding:0 6px}
 .dkstrip b{font-size:15px}
 
 /* v9: hand-off card sits in the page instead of a black block, darkroom data panel */
@@ -442,16 +442,16 @@ label.btn{display:inline-block}
 .dkcap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px 28px;align-items:start}
 .dkcap-l{display:grid;gap:8px;min-width:0}
 .dkcap p{min-width:0}
-.dkcredit{font-family:var(--mono);font-size:11px;line-height:1.5;color:#8f96ad}
-.dkcredit a{color:#c9cfe0}
+.dkcredit{font-family:var(--mono);font-size:11px;line-height:1.5;color:#9a938a}
+.dkcredit a{color:#d4cec4}
 .dkcredit:empty{display:none}
-.dkdata .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#8f96ad;margin-bottom:8px}
+.dkdata .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#9a938a;margin-bottom:8px}
 .dkdata-in{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start}
-#dkCurve{width:112px;height:112px;background:#0b0d16;border-radius:6px}
+#dkCurve{width:112px;height:112px;background:#0c0b0a;border-radius:6px}
 #dkSpec{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
-#dkSpec div{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px;padding:4px 0;border-bottom:1px dashed #262a3a;font-size:12.5px;line-height:1.35}
-#dkSpec dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#8f96ad;padding-top:1px}
-#dkSpec dd{margin:0;color:#e6e9f4;font-variant-numeric:tabular-nums}
+#dkSpec div{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px;padding:4px 0;border-bottom:1px dashed #2c2823;font-size:12.5px;line-height:1.35}
+#dkSpec dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#9a938a;padding-top:1px}
+#dkSpec dd{margin:0;color:#efeae0;font-variant-numeric:tabular-nums}
 @media (max-width:1100px){.dkcap{grid-template-columns:1fr}}
 @media (max-width:560px){#dkSpec{grid-template-columns:1fr}.trylook{grid-template-columns:96px 1fr auto}.tl-img canvas{max-width:96px}}
 .ans{margin:10px 0 0;display:grid;gap:4px;font-size:15px;line-height:1.5}
@@ -771,7 +771,7 @@ const EXTRA = {
   g:[['Games','One cartridge at a time','30 built in'],['Size','Sits under the TV','Fits in one hand'],['Sold','From 1985','November 2016, $59.99']],
   look:'Turn the card and the shape stays the same while the size shrinks. The new box takes no cartridges, so the 1985 shape does no work. It is there because buyers expect it.',
   q:'If the games are the same, what are people paying for?',
-  qa:"The games were already easy to find. People paid for the grey box on the shelf and the feeling of plugging it in. The shape is the product."},
+  qa:"The games were already easy to find. People paid for the grey box on the shelf and the feeling of plugging it in."},
  'camera':{lk:'1998',lk2:'2026',co:'a photo app maker',d:[{f:'The orange date and the light leaks',k:'look',r:'keep',w:'They are the whole product.'},{f:'The film',k:'works',r:'change',w:'The app needs no film at all.'}],n1:1995,n2:2018,
   g:[['The date','A record of when','A decoration'],['Grain and light leaks','Faults to avoid','Added on purpose'],['The wait','Until the film came back','None']],
   look:'The app sets its date to 1998 by default, not to today. That one setting shows the stamp no longer tells time. It tells style.',
@@ -781,7 +781,7 @@ const EXTRA = {
   g:[['Date','Opened July 1955','Rebuilt 1998'],['It shows','The year 1986','A future from old novels'],['The look','Rockets and new machines','Bronze and gold']],
   look:'The 1955 land promised something that had not happened yet. The 1998 land promised nothing. It asked visitors to enjoy how earlier people pictured the future.',
   q:'What does a park do when the year it predicted has already passed?',
-  qa:"It stops guessing. The rebuilt land took its look from old science fiction, so it could not go out of date a second time. A future that is already old is safe to sell."},
+  qa:"It stops guessing. The rebuilt land took its look from old science fiction, so it could not go out of date a second time."},
  'television':{lk:'1968',lk2:'1985',co:'a TV network',d:[{f:'The 1950s setting',k:'look',r:'keep',w:'The show was made in 1974 and dressed as the 1950s.'}],n1:1955,n2:1974,
   g:[['When','The 1950s','1974 to 1984'],['What it was','Daily life','A TV show about that life'],['Who it reached','Teenagers in a diner','Viewers at home, twenty years on']],
   look:'Our other cases bring back an object. This one brings back a whole decade. It also shows that 1974 was already selling the past, long before retro photo apps.',
@@ -796,7 +796,7 @@ const EXTRA = {
   g:[['Its role','The normal way to own music','One choice among many'],['U.S. sales','Ahead of CDs until 1987','41 million albums in 2022'],['What is pressed on it','That year’s music','Still that year’s music']],
   look:'The format is old but the albums are new. That makes the record different from the NES Classic, which sells old games. Here the past is only the container.',
   q:'Does an old format change how new music feels?',
-  qa:"It changes how people listen more than how the music sounds. A record asks you to stay in the room and turn it over halfway. Buyers are paying for that slower habit."},
+  qa:"It changes how people listen more than how the music sounds. A record asks you to stay in the room and turn it over halfway. That slower habit is what buyers pay for."},
  'instant':{lk:'1977',lk2:'2026',co:'Polaroid Originals',d:[{f:'The 1977 shape',k:'look',r:'keep',w:'The new camera was made as a successor to the first OneStep.'},{f:'Instant film',k:'works',r:'keep',w:'This is the exception. Here the old working part is the point.'}],n1:1977,n2:2017,
   g:[['Came out','1977','2017'],['Maker','Polaroid','Polaroid Originals, once the Impossible Project'],['The photo','Slides out and develops in your hand','The same']],
   look:'The new camera does what the old one did. What changed is everything around it. In 1977 this was the fast way to get a photo. In 2017 it is the slow way, and the slowness is what is for sale.',
@@ -806,7 +806,7 @@ const EXTRA = {
   g:[['Launched','2004','November 2019'],['Inside','A keypad and a small screen','One 6.2-inch folding screen'],['Hidden extra','None','A mode that imitates the 2004 keypad']],
   look:'The newest technology on this site sits inside one of the oldest shapes. Motorola could have sold a folding screen under a new name. It chose the name people already missed.',
   q:'Would the folding screen have sold without the old name?',
-  qa:"Probably not as well. A folding screen was a new and costly idea, and the old name told buyers what it was for before they read anything. The name did the explaining."}
+  qa:"Probably not as well. A folding screen was a new and costly idea, and the old name told buyers what it was for before they read anything."}
 };
 const READINGS = [
  {who:'Fredric Jameson', work:'Postmodernism, or, The Cultural Logic of Late Capitalism',
@@ -1088,13 +1088,13 @@ const LOOKS=[
   cap:'A VHS tape kept about 250 lines of detail across the picture and far less for colour, so colours smear sideways. The signal numbers come from the ntsc-rs project.'},
  {id:'1977',tag:'1977',grp:'year',name:'Instant print',lut:'hald_polaroid_669',enc:'srgb',fmt:'instant',dateOn:false,date:'11 · 12 · 77',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
   cap:'The white frame was the print itself, with the chemicals stored in the wide bottom edge. The colours use a table measured for Polaroid 669 film, from the RawTherapee film collection.'},
+ {id:'1968',tag:'1974',grp:'year',name:'Slide night',lut:'kodachrome64',fmt:'slide',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
+  cap:'Kodachrome 64 slide film, sold from 1974, in a cardboard mount. Families projected these on the living room wall, and the dense shadows came with the film.'},
  {id:'1972',tag:'1972',grp:'year',name:'Black and white',lut:'hald_trix400',enc:'srgb',bw:true,fmt:'66',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
   cap:'Kodak Tri-X 400, the film of news photographers. The tones come from the RawTherapee film collection, and the grain follows the particle model in spektrafilm.'},
- {id:'1968',tag:'1968',grp:'year',name:'Slide night',lut:'kodachrome64',fmt:'slide',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
-  cap:'Kodachrome 64 slide film in a cardboard mount. Families projected these on the living room wall, and the dense shadows came with the film.'},
  {id:'1955',tag:'1955',grp:'year',name:'Newspaper',post:'halftone',bw:true,fmt:'none',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
   cap:'A press could only print dots of one ink. This screen has 65 dots to the inch, set at 45 degrees, and each dot covers as much paper as the tone is dark.'},
- {id:'drugstore',tag:'Print',grp:'film',name:'Drugstore 4×6',lut:'ultramax400_edge',fmt:'none',dateOn:true,date:"'04 07 19",p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
+ {id:'drugstore',tag:'Print',grp:'film',name:'Drugstore 4×6',lut:'ultramax400_edge',fmt:'none',dateOn:true,date:"'08 07 19",p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
   cap:'Kodak UltraMax 400 on Ektacolor Edge paper. This is the roll you dropped off at the shop and picked up an hour later.'},
  {id:'portra',tag:'Film',grp:'film',name:'Portra 400',lut:'portra400_endura',fmt:'135',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
   cap:"Colours computed from the published data for Kodak Portra 400 film printed on Portra Endura paper, using profiles from the spektrafilm project. Soft contrast and gentle skin, the wedding photographer's choice."},
@@ -1111,7 +1111,7 @@ const LOOKS=[
  {id:'cine',tag:'Cinema',grp:'film',name:'500T on 2383',lut:'vision500t_2383',fmt:'xpan',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
   cap:'Kodak Vision3 500T negative printed on 2383 release stock, the chain behind most films shot on film.'},
  {id:'hp5',tag:'B&W',grp:'film',name:'Ilford HP5',lut:'hald_hp5',enc:'srgb',bw:true,fmt:'135',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:1,hal:1,fade:0,leak:0,vig:0},
-  cap:'Ilford HP5, the British black and white film that students still load first. Tones from the RawTherapee film collection.'},
+  cap:'Ilford HP5 black and white film. The tones come from the RawTherapee film collection, and the grain uses the general spektrafilm values.'},
  {id:'expired',tag:'Instant',grp:'film',name:'Expired instant',lut:'hald_polaroid_timezero',enc:'srgb',fmt:'instant',dateOn:false,date:'',p:{exp:0,con:1,warm:0,sat:1,grain:0,hal:0,fade:0,leak:0,vig:0},
   cap:'Polaroid Time-Zero film used long past its date, from the RawTherapee film collection. The orange cast is what the old chemistry does.'}
 ];
@@ -1295,7 +1295,7 @@ function dkCurve(){ const cv=$('dkCurve'), x=cv.getContext('2d'), W=cv.width, H=
   for(let y=0;y<8;y++) for(let i=0;i<256;i++){ const j=(y*256+i)*4; id.data[j]=id.data[j+1]=id.data[j+2]=i; id.data[j+3]=255; } rx.putImageData(id,0,0);
   const L=Object.assign({},DK.look,{post:DK.look.post==='bypass'?'bypass':null,fl:null}), P=Object.assign({},DK.p,{grain:0,hal:0,vig:0,leak:0}); let d;
   try{ d=dkProcess(r,L,P,{fmt:'none',dateOn:false,date:'',seed:1}).getContext('2d').getImageData(0,4,256,1).data; }catch(e){ return; }
-  x.clearRect(0,0,W,H); x.strokeStyle='#262a3a'; x.lineWidth=1; x.strokeRect(m+.5,m+.5,W-2*m-1,H-2*m-1); x.setLineDash([3,4]); x.beginPath(); x.moveTo(m,H-m); x.lineTo(W-m,m); x.stroke(); x.setLineDash([]);
+  x.clearRect(0,0,W,H); x.strokeStyle='#2c2823'; x.lineWidth=1; x.strokeRect(m+.5,m+.5,W-2*m-1,H-2*m-1); x.setLineDash([3,4]); x.beginPath(); x.moveTo(m,H-m); x.lineTo(W-m,m); x.stroke(); x.setLineDash([]);
   x.globalCompositeOperation='lighter'; ['#ff5a4a','#5fe07a','#5a8cff'].forEach((col,k)=>{ x.strokeStyle=col; x.lineWidth=1.6; x.beginPath(); for(let i=0;i<256;i++){ const px=m+i/255*(W-2*m), py=H-m-d[i*4+k]/255*(H-2*m); i?x.lineTo(px,py):x.moveTo(px,py); } x.stroke(); }); x.globalCompositeOperation='source-over'; }
 function dkThumbs(){ const st=$('dkStrip'); st.innerHTML=''; let grp=''; DK.thSrc=DK.src;
   LOOKS.forEach(l=>{ if(l.grp!==grp){ grp=l.grp; const h=document.createElement('div'); h.className='dkgl'; h.textContent=grp==='year'?'By year':'Film stocks'; st.appendChild(h); }
@@ -1334,9 +1334,9 @@ $('dkSave').addEventListener('click',()=>{ const btn=$('dkSave'), old=btn.textCo
       let dl=null; try{ dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null; }catch(e){}
       if(dl){ try{ await dl.save({filename:name,data:bl}); }catch(e){} return; }
       const a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); },'image/jpeg',.92); },30); });
-const SAMPLE={title:'Greengrocer at a street market in France',author:'Joenomias Menno De Jong',lic:'CC0',url:'https://commons.wikimedia.org/wiki/File:Greengrocer_At_A_Street_Market_In_France_Dordogne_(242326619).jpeg'};
+const SAMPLE=PHOTOS.television.then;
 function dkEnsure(){ if(DK.src) return; DK.src=dkSample(); const im=new Image();
-  im.onload=()=>{ DK.sample=im; if(!DK.own&&!DK.from){ DK.src=im; DK.from=SAMPLE; dkSrcUI(); if(DK.ready&&!$('machine').hidden){ dkThumbs(); dkDraw(); } } if(cur) tryPaint(cur); }; im.src='img/sample.webp'; }
+  im.onload=()=>{ DK.sample=im; if(!DK.own&&!DK.from){ DK.src=im; DK.from=SAMPLE; dkSrcUI(); if(DK.ready&&!$('machine').hidden){ dkThumbs(); dkDraw(); } } if(cur) tryPaint(cur); }; im.src='img/'+SAMPLE.raw; }
 /* which photo is on the table, and whose it is */
 function dkSrcUI(){ const f=DK.from, el=$('dkCredit'); el.innerHTML=f?`Photo: <a href="${f.url}" target="_blank" rel="noopener">${f.title}</a>, ${f.author}, ${f.lic}`:(DK.own?'Your photo. It stays in this browser.':'');
   $('dkMine').hidden=!(DK.ownImg&&DK.src!==DK.ownImg); }
@@ -1351,7 +1351,7 @@ const lookOf=(c,f)=>LOOKS.find(l=>l.id===(f?c.lk2:c.lk))||LOOKS[0];
 function tryPaint(c){ if(!c) return; dkEnsure(); if(dkLutState===0) dkLoadLuts(()=>{ if(cur) tryPaint(cur); }); const l=lookOf(c,face), raw=rawOf(c,face), real=raw&&raw.ok, o={fmt:l.fmt,dateOn:l.dateOn,date:l.date,seed:5};
   const keep=DK.src; DK.src=real?raw:(DK.sample||DK.src); let t; try{ t=dkFrame(dkProcess(dkBase(l.fmt,260),l,l.p,o),l.fmt,o); } finally{ DK.src=keep; }
   const box=$('tryImg'); box.innerHTML=''; box.appendChild(t); $('tryLook').href='#machine/'+l.id;
-  $('tryTitle').textContent=real?(l.id==='2026'?'The real photo, as a phone takes it now':`The real photo, the way ${l.tag} recorded it`):`Try the ${l.tag} look`;
+  $('tryTitle').textContent=real?(l.id==='2026'?'The real photo, as a phone takes it now':`The real photo with the ${l.tag} ${l.name.replace(/^[A-Z](?=[a-z])/,m=>m.toLowerCase())} look`):`Try the ${l.tag} look`;
   $('trySub').textContent=l.id==='2026'?'Nothing is taken away. Open the darkroom and take some of it away yourself.':`${l.name}. Open it in the darkroom, change it, or put your own photo in.`; }
 $('tryLook').addEventListener('click',()=>{ if(!cur) return; const raw=rawOf(cur,face); if(raw&&raw.ok){ DK.src=raw; DK.from=raw.credit; } else if(!DK.own&&DK.sample){ DK.src=DK.sample; DK.from=SAMPLE; } blip(523,.14); });
 { const st=$('dkStrip'); st.addEventListener('wheel',e=>{ const max=st.scrollWidth-st.clientWidth; if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&max>0&&((e.deltaY>0&&st.scrollLeft<max-1)||(e.deltaY<0&&st.scrollLeft>0))){ st.scrollLeft+=e.deltaY; e.preventDefault(); } },{passive:false}); }
