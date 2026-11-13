@@ -181,3 +181,7 @@ Not verified
 ## 2026-11-12 · then-again/: the entrance can be reopened
 
 Reviewed with `ocr delegate` (workspace mode), 1 of 1 reviewable file. Small change: the entrance only showed on the first visit of a tab with no hash, so it could not be seen again. `#entrance` now opens it, and the menu has an Entrance item. `openIntro` clears the closing class so it can run more than once. Tested both paths in Playwright, no errors.
+
+## 2026-11-12 · then-again/: two more entrance drafts for comparison
+
+Reviewed with `ocr delegate` (workspace mode), 1 of 1 reviewable file. Adds `#entrance/countdown` (a film leader counting 5 to 1 over the eight old photographs) and `#entrance/picture` (one object full screen, the old photograph through its own look on the left of a line that follows the pointer, today's photograph on the right). `#entrance` stays the two rolls of film. All three are drafts until Haoyuan picks one; the two not chosen should then be removed. Timers and the animation loop stop when the entrance closes. Tested in Playwright, no errors.

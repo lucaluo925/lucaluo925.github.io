@@ -513,6 +513,34 @@ label.btn{display:inline-block}
 #intro{padding:clamp(10px,2.2vh,22px) 0;gap:clamp(14px,3.4vh,36px)}
 .gate h2{font-size:clamp(50px,10vw,168px)}
 @media (max-width:820px){.reel{--fh:clamp(78px,14vh,120px)}.gate h2{font-size:clamp(46px,16.5vw,104px)}.gate p{font-size:15px}}
+
+/* v12: two more entrances to compare. #entrance/countdown and #entrance/picture */
+#introPic,.cd,.cdskip{display:none}
+#intro.v-countdown .reel,#intro.v-picture .reel{display:none}
+#intro.v-countdown,#intro.v-picture{grid-template-rows:minmax(0,1fr);padding:0}
+@property --sw{syntax:"<angle>";inherits:false;initial-value:0deg}
+#intro.v-countdown .cd{display:grid;place-items:center;position:absolute;inset:0;overflow:hidden;animation:cdjit .18s steps(2) infinite}
+@keyframes cdjit{50%{translate:0 1.5px}}
+.cd img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.25) brightness(.5)}
+.cd::after{content:"";position:absolute;inset:0;background:var(--blue);mix-blend-mode:screen;opacity:.55}
+.cd::before{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(#efeae0,#efeae0) 50% 0/1.5px 100% no-repeat,linear-gradient(#efeae0,#efeae0) 0 50%/100% 1.5px no-repeat;opacity:.5}
+.cd .ring{position:relative;z-index:3;width:min(64vmin,580px);aspect-ratio:1;border-radius:50%;border:3px solid #efeae0;display:grid;place-items:center;box-shadow:inset 0 0 0 calc(min(64vmin,580px)*.06) transparent,inset 0 0 0 calc(min(64vmin,580px)*.06 + 2px) #efeae0}
+.cd .ring i{position:absolute;inset:0;border-radius:50%;background:conic-gradient(rgba(12,11,10,.55) var(--sw),transparent 0)}
+.cd .ring.go i{animation:cdsweep .9s linear}
+@keyframes cdsweep{from{--sw:0deg}to{--sw:360deg}}
+.cd b{position:relative;font-family:var(--display);font-weight:800;font-size:min(40vmin,360px);line-height:1;color:#efeae0}
+.cdlab{position:absolute;z-index:3;left:clamp(20px,6vw,96px);bottom:clamp(20px,5vh,48px);font:500 12px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#f2a53a;white-space:pre}
+#intro.v-countdown .cdskip{display:inline-block;position:absolute;z-index:4;right:clamp(20px,6vw,96px);bottom:clamp(20px,5vh,48px);color:#efeae0}
+#intro.v-countdown .gate{opacity:0;pointer-events:none;align-self:center;transition:opacity .5s}
+#intro.v-countdown.done .gate{opacity:1;pointer-events:auto}
+#intro.v-countdown.done .cd{animation:none}
+#intro.v-countdown.done .cd .ring,#intro.v-countdown.done .cdskip,#intro.v-countdown.done .cd::before{display:none}
+#intro.v-countdown.done .cd img{filter:grayscale(1) contrast(1.2) brightness(.22)}
+#intro.v-picture #introPic{display:block;position:absolute;inset:0;width:100%;height:100%}
+#intro.v-picture::after{content:"";position:absolute;inset:auto 0 0 0;height:62%;background:linear-gradient(transparent,rgba(12,11,10,.9) 70%);z-index:1;pointer-events:none}
+#intro.v-picture .gate{align-self:end;padding-bottom:clamp(24px,6vh,64px)}
+#intro.v-picture .gate p{color:#efeae0}
+@media (prefers-reduced-motion:reduce){#intro.v-countdown .cd,.cd .ring.go i{animation:none}}
 </style>
 </head>
 <body>
@@ -574,6 +602,9 @@ label.btn{display:inline-block}
 <div id="intro" hidden>
   <svg class="halo" viewBox="-100 -100 200 200" id="introHalo" aria-hidden="true"></svg>
   <canvas id="introGlobe" width="16" height="16" aria-hidden="true"></canvas>
+  <canvas id="introPic" aria-hidden="true"></canvas>
+  <div class="cd" id="introCd" aria-hidden="true"><img id="cdImg" alt=""><div class="ring"><i></i><b id="cdNum">5</b></div><span class="cdlab" id="cdLab"></span></div>
+  <button class="skiplink cdskip" id="cdSkip">Skip the countdown</button>
   <div class="reel then" id="reelThen" aria-hidden="true"></div>
   <div class="gate">
     <div class="gate-l">
@@ -581,7 +612,7 @@ label.btn{display:inline-block}
       <h2 id="introTitle" aria-label="Then, Again"></h2>
     </div>
     <div class="gate-r">
-      <p>Eight old objects, each one sold again. The top roll shows them the first time. The bottom roll shows what is sold now.</p>
+      <p>Eight old objects, each one sold again. Turn them over, then put a photo of your own through the same years in the darkroom.</p>
       <div class="pager">
         <button class="btn solid" id="enterMusic">Enter with music</button>
         <button class="btn" id="enterQuiet">Enter</button>
@@ -1124,8 +1155,8 @@ function level(){ if(analyser&&!track.paused){ analyser.getByteFrequencyData(fbu
   else amp*=.9; document.documentElement.style.setProperty('--amp',amp.toFixed(3)); }
 
 /* ---------- entrance ---------- */
-const intro=$('intro'), ig=$('introGlobe').getContext('2d'); let introOn=false, ispin=0;
-function openIntro(){ introOn=true; intro.classList.remove('out'); intro.hidden=false;
+let introV='reel'; const intro=$('intro'), ig=$('introGlobe').getContext('2d'); let introOn=false, ispin=0;
+function openIntro(v){ introOn=true; introV=['reel','countdown','picture'].includes(v)?v:'reel'; intro.className='v-'+introV; intro.hidden=false; if(introV==='countdown') cdStart(); if(introV==='picture') picStart();
   // two rolls of film made from the site's own photographs: the first time above, sold again below
   [['reelThen','then','y1'],['reelNow','now','y2']].forEach(([id,side,yk])=>{ const fr=CASES.map((c,i)=>{ const o=(PHOTOS[c.id]||{})[side]; return o&&o.raw?`<figure><img src="img/${o.raw}" alt="" loading="eager" decoding="async"><figcaption><b>${String(i+1).padStart(2,'0')}${side==='now'?'A':''}</b><span>${c[yk]}</span><span>${c.title}</span></figcaption></figure>`:''; }).join('');
     $(id).innerHTML=`<div class="track">${fr}${fr}</div>`; });
@@ -1658,8 +1689,30 @@ addEventListener('hashchange',show);
 let rz=0; addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(drawBg,180); });
 drawBg(); show();
 let seen=false; try{seen=sessionStorage.getItem('ta-in')==='1';}catch(e){}
-if(location.hash==='#entrance'){ try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} seen=false; }
-if(!location.hash.slice(1) && !seen) openIntro();
+/* entrance, second version: a film leader counts down while the eight objects flash past */
+let cdTimer=0;
+function cdStart(){ clearInterval(cdTimer); intro.classList.remove('done'); const list=CASES.map(c=>({c,o:(PHOTOS[c.id]||{}).then})).filter(x=>x.o&&x.o.raw); let n=5, k=0;
+  const tick=()=>{ if(!introOn||introV!=='countdown'){ clearInterval(cdTimer); return; } if(n<1){ clearInterval(cdTimer); intro.classList.add('done'); return; }
+    const x=list[k++%list.length]; $('cdImg').src='img/'+x.o.raw; $('cdNum').textContent=n; $('cdLab').textContent=`${x.c.y1}  ${x.c.title}`; const r=$('introCd').querySelector('.ring'); r.classList.remove('go'); void r.offsetWidth; r.classList.add('go'); blip(n===1?880:440,.06); n--; };
+  tick(); cdTimer=setInterval(tick,reduce?450:900); }
+$('cdSkip').addEventListener('click',()=>{ clearInterval(cdTimer); intro.classList.add('done'); });
+/* entrance, third version: one object fills the screen. Left of the line is the old photo through its own year, right of it is what is sold now. */
+let picI=0, picX=.5, picAuto=true, picA=null, picB=null, picC=null, picT0=0, picRaf=0;
+function picStart(){ const cv=$('introPic'), x=cv.getContext('2d'), list=CASES.filter(c=>{ const p=PHOTOS[c.id]||{}; return p.then&&p.then.raw&&p.now&&p.now.raw; }); if(!list.length) return; picA=null; picT0=performance.now(); picAuto=true;
+  if(dkLutState===0) dkLoadLuts(()=>{ picA=null; });
+  const cover=(im,W,H)=>{ const iw=im.naturalWidth||im.width, ih=im.naturalHeight||im.height, f=Math.max(W/iw,H/ih), w=iw*f, h=ih*f; x.drawImage(im,(W-w)/2,(H-h)/2,w,h); };
+  const prep=()=>{ const c=list[picI%list.length], a=rawOf(c,0), b=rawOf(c,1); if(!(a&&a.ok&&b&&b.ok)) return; const l=lookOf(c,0), keep=DK.src; DK.src=a; let t=null; try{ t=dkProcess(dkBase('none',1300),l,PP(l),{fmt:'none',dateOn:false,date:'',seed:4}); }catch(e){} DK.src=keep; picA=t||a; picB=b; picC=c; picL=l; };
+  let picL=null; cancelAnimationFrame(picRaf);
+  const loop=now=>{ if(!introOn||introV!=='picture') return; picRaf=requestAnimationFrame(loop); const dpr=Math.min(1.5,devicePixelRatio||1), W=Math.round(innerWidth*dpr), H=Math.round(innerHeight*dpr); if(cv.width!==W||cv.height!==H){ cv.width=W; cv.height=H; }
+    if(now-picT0>7500){ picT0=now; picI++; picA=null; } if(!picA){ prep(); if(!picA){ x.fillStyle='#0c0b0a'; x.fillRect(0,0,W,H); return; } }
+    if(picAuto&&!reduce) picX=.5+.3*Math.sin((now-picT0)/7500*Math.PI*2); const sx=Math.round(W*picX);
+    cover(picB,W,H); x.save(); x.beginPath(); x.rect(0,0,sx,H); x.clip(); x.fillStyle='#0c0b0a'; x.fillRect(0,0,sx,H); cover(picA,W,H); x.restore();
+    x.fillStyle='#b8ff5a'; x.fillRect(sx-1*dpr,0,2*dpr,H); x.font=`500 ${12*dpr}px "IBM Plex Mono",monospace`; x.textBaseline='top'; x.shadowColor='rgba(0,0,0,.8)'; x.shadowBlur=6*dpr;
+    x.textAlign='right'; x.fillStyle='#f2a53a'; x.fillText(`${picC.y1}  ·  ${picL.name}`.toUpperCase(),sx-14*dpr,22*dpr); x.textAlign='left'; x.fillStyle='#efeae0'; x.fillText(`${picC.y2}  ·  sold again`.toUpperCase(),sx+14*dpr,22*dpr); x.shadowBlur=0; };
+  picRaf=requestAnimationFrame(loop); }
+intro.addEventListener('pointermove',e=>{ if(introV==='picture'){ picAuto=false; picX=Math.max(.04,Math.min(.96,e.clientX/innerWidth)); } });
+let introAsk=''; if(/^#entrance(\/|$)/.test(location.hash)){ introAsk=location.hash.split('/')[1]||'reel'; try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} seen=false; }
+if(!location.hash.slice(1) && !seen) openIntro(introAsk);
 $('menuIntro').addEventListener('click',()=>{ setTimeout(()=>{ openIntro(); hud(); },60); });
 hud();
 requestAnimationFrame(frame);
