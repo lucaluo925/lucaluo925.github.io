@@ -43,7 +43,7 @@ const SPK=(()=>{
     return {dc:dc2,Mx}; }
 
   /* o: film, paper, grade (black and white paper), ev (camera, stops), pe (print exposure, stops), fy, fm (CC shifts), couplers, glare (percent) */
-  function build(o){ const F=prof(o.film); if(!F) return null; const key=[o.film,o.paper||'',o.grade||'',o.ev||0,o.pe||0,o.fy||0,o.fm||0,o.couplers==null?1:o.couplers,o.glare==null?.03:o.glare].join('|'); if(cache.has(key)) return cache.get(key);
+  function build(o){ const F=prof(o.film); if(!F) return null; const key=[o.film,o.paper||'',o.grade||'',o.ev||0,o.pe||0,o.fy||0,o.fm||0,o.couplers==null?1:o.couplers,o.glare==null?.03:o.glare,o.pf||0].join('|'); if(cache.has(key)) return cache.get(key);
     const illF=ILL[F.info.reference_illuminant]||ILL.D55, A=[[0,0,0],[0,0,0],[0,0,0]], Eg=[0,0,0];
     for(let k=0;k<3;k++){ for(let j=0;j<3;j++){ let s=0; for(let i=0;i<NW;i++) s+=BAS[j][i]*illF[i]*F.sens[i*3+k]; A[k][j]=s; } Eg[k]=.18*(A[k][0]+A[k][1]+A[k][2]); }
     const cp=couple(F,o.couplers==null?1:o.couplers), fdc=cp.dc, Mx=cp.Mx, ev=(o.ev||0)*.30103, D=[0,0,0], L=[0,0,0], sp=new Float64Array(NW), rgb=[0,0,0];
@@ -60,19 +60,21 @@ const SPK=(()=>{
       const gr=Pp.bw&&P._grades?P._grades[o.grade||'2']||P._grades['2']:null, W=new Float64Array(243), dy=((gr?gr[0]:0))/100, dm=((gr?gr[1]:0))/100;
       for(let i=0;i<NW;i++){ const f=Math.exp(-LN10*(dy*FY[i]+dm*FM[i])); for(let k=0;k<3;k++) W[i*3+k]=illP[i]*f*Pp.sens[i*3+k]; }
       const pe=(o.pe||0)*.30103, sh=[pe,pe-(Pp.bw?0:(o.fm||0)/100),pe-(Pp.bw?0:(o.fy||0)/100)], E=[0,0,0], Dp=[0,0,0], sp2=new Float64Array(NW), g0=[1,1,1], tg=[0,0,0];
-      const paperE=()=>{ E[0]=E[1]=E[2]=0; for(let i=0;i<NW;i++){ const t=sp[i]; E[0]+=t*W[i*3]; E[1]+=t*W[i*3+1]; E[2]+=t*W[i*3+2]; } };
+      // preflash: a short exposure of the paper through clear film base before the picture, which softens the highlights
+      const pfE=[0,0,0], pf=o.pf||0; if(pf>0) for(let i=0;i<NW;i++){ const t=Math.exp(-LN10*F.base[i]); pfE[0]+=t*W[i*3]; pfE[1]+=t*W[i*3+1]; pfE[2]+=t*W[i*3+2]; }
+      let flash=0; const paperE=()=>{ E[0]=E[1]=E[2]=0; for(let i=0;i<NW;i++){ const t=sp[i]; E[0]+=t*W[i*3]; E[1]+=t*W[i*3+1]; E[2]+=t*W[i*3+2]; } if(flash){ E[0]+=flash*pfE[0]; E[1]+=flash*pfE[1]; E[2]+=flash*pfE[2]; } };
       filmD(.18,.18,.18); paperE(); if(Pp.bw){ const m=(E[0]+E[1]+E[2])/3; g0[0]=g0[1]=g0[2]=m; } else { g0[0]=E[0]; g0[1]=E[1]; g0[2]=E[2]; }
       const one=(r,g,b)=>{ filmD(r,g,b); paperE(); for(let k=0;k<3;k++) Dp[k]=at(Pp.le,Pp.dc,k,Pp.n,Math.log10(Math.max(E[k]/g0[k],1e-12))+tg[k]); trans(Pp,Dp,sp2); toRgb(sp2,view,kv,rgb); };
       // place mid grey: a common exposure for black and white paper, equal layer densities for colour paper
       if(Pp.bw){ let lo=-3, hi=3; for(let i=0;i<40;i++){ const m=(lo+hi)/2; tg[0]=tg[1]=tg[2]=m; one(.18,.18,.18); if(rgb[1]/w>.18) lo=m; else hi=m; } const m=(lo+hi)/2; for(let k=0;k<3;k++) tg[k]=m+sh[k]; }
       else { let lo=.05, hi=2.5; for(let i=0;i<40;i++){ const m=(lo+hi)/2; for(let k=0;k<3;k++) tg[k]=inv(Pp,k,m); one(.18,.18,.18); if(rgb[1]/w>.18) lo=m; else hi=m; } const m=(lo+hi)/2; for(let k=0;k<3;k++) tg[k]=inv(Pp,k,m)+sh[k]; }
-      run=one; }
+      flash=pf; run=one; }
     const out=new Float32Array(N*N*N*3), lin=Float64Array.from({length:N},(_,i)=>4*Math.pow(i/(N-1),2));
     for(let g=0;g<N;g++) for(let b=0;b<N;b++) for(let r=0;r<N;r++){ run(lin[r],lin[g],lin[b]); const i=(g*1089+b*33+r)*3; out[i]=rgb[0]/w+glare; out[i+1]=rgb[1]/w+glare; out[i+2]=rgb[2]/w+glare; }
     // our spectra and lamps are approximations, so the grey axis drifts. Pull it most of the way back and keep a quarter of the stock's own tint.
     // A filter or exposure change made by the user is measured against the neutral setting, so it is kept in full.
     const neu=new Float64Array(N*3), tgt=new Float64Array(N), xs=new Float64Array(N), ys=new Float64Array(N);
-    const base=(o.pe||o.fy||o.fm)?build(Object.assign({},o,{pe:0,fy:0,fm:0})):null, ref=base?base.f:out;
+    const base=(o.pe||o.fy||o.fm||o.pf)?build(Object.assign({},o,{pe:0,fy:0,fm:0,pf:0})):null, ref=base?base.f:out;
     for(let i=0;i<N;i++){ const j=(i*1089+i*33+i)*3; for(let c=0;c<3;c++) neu[i*3+c]=Math.max(0,ref[j+c]); tgt[i]=.2126*neu[i*3]+.7152*neu[i*3+1]+.0722*neu[i*3+2]; }
     const lut=new Uint8Array(N*N*N*3), rawNeg=!F.pos&&!o.paper;
     for(let c=0;c<3;c++){ let mx=-1; for(let i=0;i<N;i++){ mx=Math.max(mx+1e-9,neu[i*3+c]); xs[i]=mx; ys[i]=.75*tgt[i]+.25*neu[i*3+c]; }

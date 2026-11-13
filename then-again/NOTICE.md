@@ -64,3 +64,10 @@ were computed from. This site is not affiliated with or endorsed by those compan
   looks now use the measured profiles.
 - The enlarger's yellow and magenta filters are modelled as smooth dye bands and the paper's neutral balance is found
   by the page itself. spektrafilm uses measured filter spectra and stored neutral packs, so numbers will differ.
+
+## Update, 13 November 2026
+
+- RAW files are opened by our own reader, which finds the largest JPEG preview stored inside the file. No RAW decoding library is used.
+- Preflash and the scanner's unsharp mask follow the definitions in spektrafilm (`runtime/stages/printing.py`, `ScannerParams`). The code is ours.
+- The four stage order of the Develop page (capture, development, print, scan) follows spektrafilm, SpektraLab and LightTable
+  (https://github.com/reville/lighttable-digital-darkroom, GPL-3.0). No LightTable code or data is used.

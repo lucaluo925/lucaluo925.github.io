@@ -189,3 +189,21 @@ Reviewed with `ocr delegate` (workspace mode), 1 of 1 reviewable file. Adds `#en
 ## 2026-11-12 · then-again/: entrance settled
 
 Reviewed with `ocr delegate` (workspace mode), 1 of 1 reviewable file. Haoyuan chose the plain entrance. The countdown and full-screen picture drafts are removed (markup, script and styles), so `#entrance/countdown` and `#entrance/picture` now open the same single entrance. The two film rolls sit level and move more slowly. Tested: entrance opens from the address and from the menu, no errors.
+
+## 2026-11-13 · then-again/: RAW files, preflash, scan stage, four stage Develop page
+
+Reviewed with `ocr delegate` (workspace mode). Reviewable files: `then-again/index.html`, `then-again/tools/engine.js`.
+
+Changed
+- RAW files (DNG, CR2, CR3, NEF, ARW, RAF, ORF, RW2 and others by extension) open in the darkroom. Our own reader walks the file for JPEG headers, takes the largest baseline or progressive one, and turns it by the TIFF orientation tag when the preview carries no EXIF of its own. Lossless JPEG sensor data (SOF3) is skipped.
+- Preflash in the engine: light through clear film base added to the paper exposure after the neutral point is found, as spektrafilm defines it. Scan stage: lens softness and a 0.7 px unsharp mask (spektrafilm's default amount 0.7 on film looks).
+- The Develop page is grouped as Capture, Development, Print, Scan. Paper and grade moved under Print.
+
+Checked
+- A synthetic RAW (TIFF header with orientation 6, a small thumbnail, a false JPEG marker, a 960 × 1280 preview, trailing bytes) opens as 1280 × 960. A RAW with no preview shows a plain message and adds nothing to the roll. Files over 220 MB are refused before reading.
+- Preflash lowers the print highlights and leaves the black unchanged. The earlier regression test (film, paper, grade, edit, roll, export) still passes with no console errors.
+
+Not verified
+- No real camera RAW file was available here, so each maker's format is untested. Some cameras store only a small preview (older Sony ARW is one), and the picture will then be small.
+- This is not RAW development. The sensor data is not decoded. A real decoder (LibRaw compiled to WebAssembly) could not be installed in this workspace without Haoyuan's approval.
+- The preflash slider range (0 to 0.05) was set by looking at the result, because spektrafilm gives no typical value.

@@ -660,14 +660,15 @@ label.btn{display:inline-block}
       <h1>Make it look old</h1>
       <div class="dktabs" role="tablist" aria-label="Darkroom pages"><button type="button" role="tab" data-t="dev" aria-selected="true">Develop</button><button type="button" role="tab" data-t="edit" aria-selected="false">Edit</button><button type="button" role="tab" data-t="frame" aria-selected="false">Frame</button></div>
       <div class="dkpane" id="dkP_dev">
-        <div class="dkgroup"><div class="lab">Film and paper</div>
+        <div class="dkgroup"><div class="lab">1 &middot; Capture</div>
           <label class="dkrow wide" for="dkFilmSel"><span>Film</span><select id="dkFilmSel"><option value="">From the preset</option></select></label>
+          <div id="dkG_cam"></div></div>
+        <div class="dkgroup"><div class="lab">2 &middot; Development</div><div id="dkG_fx"></div></div>
+        <div class="dkgroup"><div class="lab">3 &middot; Print</div>
           <label class="dkrow wide" for="dkPaperSel"><span>Paper</span><select id="dkPaperSel"></select></label>
           <label class="dkrow wide" for="dkGradeSel" id="dkGradeRow" hidden><span>Grade</span><select id="dkGradeSel"><option>00</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
-        </div>
-        <div class="dkgroup"><div class="lab">Camera</div><div id="dkG_cam"></div></div>
-        <div class="dkgroup"><div class="lab">Enlarger</div><div id="dkG_enl"></div></div>
-        <div class="dkgroup"><div class="lab">Effects</div><div id="dkG_fx"></div></div>
+          <div id="dkG_enl"></div></div>
+        <div class="dkgroup"><div class="lab">4 &middot; Scan</div><div id="dkG_scan"></div></div>
       </div>
       <div class="dkpane" id="dkP_edit" hidden>
         <div class="dkgroup"><div class="lab">Tone</div><div id="dkG_tone"></div></div>
@@ -693,7 +694,7 @@ label.btn{display:inline-block}
     <div class="dkmain">
       <div class="dkbar">
         <label class="btn solid" for="dkFile" tabindex="0" id="dkPick">Open photos</label>
-        <input type="file" id="dkFile" accept="image/*" multiple hidden>
+        <input type="file" id="dkFile" accept="image/*,.dng,.cr2,.cr3,.nef,.nrw,.arw,.raf,.orf,.rw2,.pef,.srw,.3fr,.iiq,.x3f,.erf" multiple hidden>
         <button class="btn" id="dkMine" hidden>My photo</button>
         <button class="btn" id="dkCmp" aria-pressed="false">Compare</button>
         <button class="btn" id="dkCopy">Copy settings</button>
@@ -806,7 +807,7 @@ label.btn{display:inline-block}
     <p>Photos were cut out and recoloured for this site. Where a photo carries a share-alike licence, our changed version is offered under the same licence.</p>
     <h2>How it was built</h2>
     <p>One page of HTML, CSS and JavaScript with no framework. The darkroom changes your photo pixel by pixel on a canvas, in your own browser. Its two steps, film first and then the print, follow the idea behind <a href="https://github.com/andreavolpato/spektrafilm">spektrafilm</a> by Andrea Volpato and the <a href="https://github.com/JamesQiu2005/SpektraLab">SpektraLab</a> app. The colour of every film look is computed in this page. Light is followed through 81 wavelengths, first into the film and then through the enlarger onto the paper, using the spektrafilm film and paper profiles that Andrea Volpato publishes under CC BY-SA 4.0. The four black and white films and the Multigrade paper are profiles the SpektraLab project traced from the makers' data sheets. We wrote our own simplified version of the calculation, so the results are close to the real engine but not identical. Grain and halation use the particle sizes and reflection strengths that spektrafilm sets for each film, scaled to the size of the frame.</p>
-    <p>The other looks also start from published numbers. The instant prints use colour tables from the RawTherapee Film Simulation Collection by Pat David, Pavlov Dmitry and Michael Ezra, taken from the <a href="https://github.com/cedeber/hald-clut">hald-clut</a> repository. The VHS look uses the tape bandwidths and noise levels listed in <a href="https://github.com/valadaptive/ntsc-rs">ntsc-rs</a> by valadaptive. The camera phone look runs the JPEG maths with the example tables printed in the JPEG standard, ITU-T T.81 Annex K. The newspaper look uses a 65 line screen at 45 degrees. Fade and light leak have no data behind them, so they start at zero and you add them yourself.</p>
+    <p>The other looks also start from published numbers. The instant prints use colour tables from the RawTherapee Film Simulation Collection by Pat David, Pavlov Dmitry and Michael Ezra, taken from the <a href="https://github.com/cedeber/hald-clut">hald-clut</a> repository. The VHS look uses the tape bandwidths and noise levels listed in <a href="https://github.com/valadaptive/ntsc-rs">ntsc-rs</a> by valadaptive. The Develop page is ordered as capture, development, print and scan, the same four stages that spektrafilm, SpektraLab and <a href="https://github.com/reville/lighttable-digital-darkroom">LightTable</a> use, and the preflash and scanner sharpening follow spektrafilm's definitions. RAW files are opened through the full size preview the camera stores inside them, read by our own code. The camera phone look runs the JPEG maths with the example tables printed in the JPEG standard, ITU-T T.81 Annex K. The newspaper look uses a 65 line screen at 45 degrees. Fade and light leak have no data behind them, so they start at zero and you add them yourself.</p>
     <p> The globe and the marbled ground are drawn on canvas. Sound uses the Web Audio API, and the halos follow the volume of the recording. The site works with a keyboard and respects the reduced motion setting.</p>
     <nav class="pager"><a class="btn solid" href="#shelf">All objects</a></nav>
   </div>
@@ -964,7 +965,7 @@ const SPK=(()=>{
     return {dc:dc2,Mx}; }
 
   /* o: film, paper, grade (black and white paper), ev (camera, stops), pe (print exposure, stops), fy, fm (CC shifts), couplers, glare (percent) */
-  function build(o){ const F=prof(o.film); if(!F) return null; const key=[o.film,o.paper||'',o.grade||'',o.ev||0,o.pe||0,o.fy||0,o.fm||0,o.couplers==null?1:o.couplers,o.glare==null?.03:o.glare].join('|'); if(cache.has(key)) return cache.get(key);
+  function build(o){ const F=prof(o.film); if(!F) return null; const key=[o.film,o.paper||'',o.grade||'',o.ev||0,o.pe||0,o.fy||0,o.fm||0,o.couplers==null?1:o.couplers,o.glare==null?.03:o.glare,o.pf||0].join('|'); if(cache.has(key)) return cache.get(key);
     const illF=ILL[F.info.reference_illuminant]||ILL.D55, A=[[0,0,0],[0,0,0],[0,0,0]], Eg=[0,0,0];
     for(let k=0;k<3;k++){ for(let j=0;j<3;j++){ let s=0; for(let i=0;i<NW;i++) s+=BAS[j][i]*illF[i]*F.sens[i*3+k]; A[k][j]=s; } Eg[k]=.18*(A[k][0]+A[k][1]+A[k][2]); }
     const cp=couple(F,o.couplers==null?1:o.couplers), fdc=cp.dc, Mx=cp.Mx, ev=(o.ev||0)*.30103, D=[0,0,0], L=[0,0,0], sp=new Float64Array(NW), rgb=[0,0,0];
@@ -981,19 +982,21 @@ const SPK=(()=>{
       const gr=Pp.bw&&P._grades?P._grades[o.grade||'2']||P._grades['2']:null, W=new Float64Array(243), dy=((gr?gr[0]:0))/100, dm=((gr?gr[1]:0))/100;
       for(let i=0;i<NW;i++){ const f=Math.exp(-LN10*(dy*FY[i]+dm*FM[i])); for(let k=0;k<3;k++) W[i*3+k]=illP[i]*f*Pp.sens[i*3+k]; }
       const pe=(o.pe||0)*.30103, sh=[pe,pe-(Pp.bw?0:(o.fm||0)/100),pe-(Pp.bw?0:(o.fy||0)/100)], E=[0,0,0], Dp=[0,0,0], sp2=new Float64Array(NW), g0=[1,1,1], tg=[0,0,0];
-      const paperE=()=>{ E[0]=E[1]=E[2]=0; for(let i=0;i<NW;i++){ const t=sp[i]; E[0]+=t*W[i*3]; E[1]+=t*W[i*3+1]; E[2]+=t*W[i*3+2]; } };
+      // preflash: a short exposure of the paper through clear film base before the picture, which softens the highlights
+      const pfE=[0,0,0], pf=o.pf||0; if(pf>0) for(let i=0;i<NW;i++){ const t=Math.exp(-LN10*F.base[i]); pfE[0]+=t*W[i*3]; pfE[1]+=t*W[i*3+1]; pfE[2]+=t*W[i*3+2]; }
+      let flash=0; const paperE=()=>{ E[0]=E[1]=E[2]=0; for(let i=0;i<NW;i++){ const t=sp[i]; E[0]+=t*W[i*3]; E[1]+=t*W[i*3+1]; E[2]+=t*W[i*3+2]; } if(flash){ E[0]+=flash*pfE[0]; E[1]+=flash*pfE[1]; E[2]+=flash*pfE[2]; } };
       filmD(.18,.18,.18); paperE(); if(Pp.bw){ const m=(E[0]+E[1]+E[2])/3; g0[0]=g0[1]=g0[2]=m; } else { g0[0]=E[0]; g0[1]=E[1]; g0[2]=E[2]; }
       const one=(r,g,b)=>{ filmD(r,g,b); paperE(); for(let k=0;k<3;k++) Dp[k]=at(Pp.le,Pp.dc,k,Pp.n,Math.log10(Math.max(E[k]/g0[k],1e-12))+tg[k]); trans(Pp,Dp,sp2); toRgb(sp2,view,kv,rgb); };
       // place mid grey: a common exposure for black and white paper, equal layer densities for colour paper
       if(Pp.bw){ let lo=-3, hi=3; for(let i=0;i<40;i++){ const m=(lo+hi)/2; tg[0]=tg[1]=tg[2]=m; one(.18,.18,.18); if(rgb[1]/w>.18) lo=m; else hi=m; } const m=(lo+hi)/2; for(let k=0;k<3;k++) tg[k]=m+sh[k]; }
       else { let lo=.05, hi=2.5; for(let i=0;i<40;i++){ const m=(lo+hi)/2; for(let k=0;k<3;k++) tg[k]=inv(Pp,k,m); one(.18,.18,.18); if(rgb[1]/w>.18) lo=m; else hi=m; } const m=(lo+hi)/2; for(let k=0;k<3;k++) tg[k]=inv(Pp,k,m)+sh[k]; }
-      run=one; }
+      flash=pf; run=one; }
     const out=new Float32Array(N*N*N*3), lin=Float64Array.from({length:N},(_,i)=>4*Math.pow(i/(N-1),2));
     for(let g=0;g<N;g++) for(let b=0;b<N;b++) for(let r=0;r<N;r++){ run(lin[r],lin[g],lin[b]); const i=(g*1089+b*33+r)*3; out[i]=rgb[0]/w+glare; out[i+1]=rgb[1]/w+glare; out[i+2]=rgb[2]/w+glare; }
     // our spectra and lamps are approximations, so the grey axis drifts. Pull it most of the way back and keep a quarter of the stock's own tint.
     // A filter or exposure change made by the user is measured against the neutral setting, so it is kept in full.
     const neu=new Float64Array(N*3), tgt=new Float64Array(N), xs=new Float64Array(N), ys=new Float64Array(N);
-    const base=(o.pe||o.fy||o.fm)?build(Object.assign({},o,{pe:0,fy:0,fm:0})):null, ref=base?base.f:out;
+    const base=(o.pe||o.fy||o.fm||o.pf)?build(Object.assign({},o,{pe:0,fy:0,fm:0,pf:0})):null, ref=base?base.f:out;
     for(let i=0;i<N;i++){ const j=(i*1089+i*33+i)*3; for(let c=0;c<3;c++) neu[i*3+c]=Math.max(0,ref[j+c]); tgt[i]=.2126*neu[i*3]+.7152*neu[i*3+1]+.0722*neu[i*3+2]; }
     const lut=new Uint8Array(N*N*N*3), rawNeg=!F.pos&&!o.paper;
     for(let c=0;c<3;c++){ let mx=-1; for(let i=0;i<N;i++){ mx=Math.max(mx+1e-9,neu[i*3+c]); xs[i]=mx; ys[i]=.75*tgt[i]+.25*neu[i*3+c]; }
@@ -1266,16 +1269,17 @@ const cell=(c,s)=>{ const p=ph(c,s); return p?`<a href="${esc(p.url)}">${esc(p.t
 $('credits').innerHTML='<tr><th>Object</th><th>Then</th><th>Now</th></tr>'+CASES.map(c=>`<tr><td>${c.title}</td><td>${cell(c,'then')}</td><td>${cell(c,'now')}</td></tr>`).join('');
 
 /* ---------- the darkroom: film, then print, then the frame ---------- */
-const DKS=[ // sliders: key, label, min, max, step, group
+const DKS=[ // sliders: key, label, min, max, step, group. The Develop groups follow the film's own path: capture, development, print, scan.
  ['exp','Exposure',-3,3,.05,'dkG_cam'],['warm','Temperature',-1,1,.01,'dkG_cam'],['tint','Tint',-1,1,.01,'dkG_cam'],
- ['pe','Print exposure',-2,2,.05,'dkG_enl'],['fy','Yellow filter',-40,40,1,'dkG_enl'],['fm','Magenta filter',-40,40,1,'dkG_enl'],
- ['grain','Grain',0,4,.05,'dkG_fx'],['hal','Halation',0,4,.05,'dkG_fx'],['scatter','Scatter',0,4,.05,'dkG_fx'],['glare','Glare',0,1,.01,'dkG_fx'],['couplers','Couplers',0,2,.05,'dkG_fx'],
+ ['grain','Grain',0,4,.05,'dkG_fx'],['hal','Halation',0,4,.05,'dkG_fx'],['scatter','Scatter',0,4,.05,'dkG_fx'],['couplers','Couplers',0,2,.05,'dkG_fx'],
+ ['pe','Print exposure',-2,2,.05,'dkG_enl'],['pf','Preflash',0,.05,.001,'dkG_enl'],['fy','Yellow filter',-40,40,1,'dkG_enl'],['fm','Magenta filter',-40,40,1,'dkG_enl'],
+ ['glare','Glare',0,1,.01,'dkG_scan'],['soft','Softness',0,3,.05,'dkG_scan'],['usm','Sharpen',0,2,.05,'dkG_scan'],
  ['br','Brightness',-1,1,.01,'dkG_tone'],['con','Contrast',.5,1.7,.01,'dkG_tone'],['hl','Highlights',-1,1,.01,'dkG_tone'],['sdw','Shadows',-1,1,.01,'dkG_tone'],
  ['et','Temperature',-1,1,.01,'dkG_col'],['vib','Vibrance',-1,1,.01,'dkG_col'],['sat','Saturation',0,2,.01,'dkG_col'],['vig','Vignette',0,1,.01,'dkG_col'],
  ['fade','Fade',0,1,.01,'dkG_age'],['leak','Light leak',0,1,.01,'dkG_age']];
-const DEF={film:'',paper:'',grade:'2',exp:0,warm:0,tint:0,pe:0,fy:0,fm:0,grain:0,hal:0,scatter:0,glare:.03,couplers:1,br:0,con:1,hl:0,sdw:0,et:0,vib:0,sat:1,vig:0,fade:0,leak:0,curve:[[0,0],[1,1]],hsl:null};
+const DEF={film:'',paper:'',grade:'2',exp:0,warm:0,tint:0,pe:0,pf:0,soft:0,usm:0,fy:0,fm:0,grain:0,hal:0,scatter:0,glare:.03,couplers:1,br:0,con:1,hl:0,sdw:0,et:0,vib:0,sat:1,vig:0,fade:0,leak:0,curve:[[0,0],[1,1]],hsl:null};
 const PP=l=>{ const o=Object.assign({},DEF,l.p); o.curve=o.curve.map(q=>q.slice()); o.hsl=o.hsl?o.hsl.slice():new Array(24).fill(0); return o; };
-const FP=(film,paper,x)=>Object.assign({film,paper:paper||'',grain:1,hal:1,scatter:1},x||{});
+const FP=(film,paper,x)=>Object.assign({film,paper:paper||'',grain:1,hal:1,scatter:1,usm:.7},x||{});
 /* frames: label, picture size along the film and across it in mm, roll film or 35mm */
 const FMS={'135':['35mm',36,24,0],half:['Half frame',18,24,0],xpan:['Panoramic',65,24,0],'645':['6 × 4.5',41.5,56,1],'66':['6 × 6',56,56,1],'67':['6 × 7',70,56,1],'69':['6 × 9',84,56,1],'612':['6 × 12',112,56,1],'617':['6 × 17',168,56,1]};
 const DKF=[['none','None']].concat(Object.keys(FMS).map(k=>[k,FMS[k][0]]),[['slide','Slide mount'],['instant','Instant print']]);
@@ -1423,7 +1427,7 @@ function dkProcess(b,look,p,o){ const w=b.width, h=b.height, bx=b.getContext('2d
     const gd=n2x.getImageData(0,0,T,T).data; let mean=0; for(let i=0;i<T*T;i++){ G[i]=gd[i*4]; mean+=G[i]; } mean/=T*T; let sd=0; for(let i=0;i<T*T;i++){ G[i]-=mean; sd+=G[i]*G[i]; } sd=Math.sqrt(sd/(T*T))||1; for(let i=0;i<T*T;i++) G[i]/=sd;
     const kb=1/(2*GR_BLUR*Math.sqrt(Math.PI)), ag=Math.abs(F.g); GT=[0,1,2].map(ch=>{ const t=new Float32Array(256), N=um*um/(GR_AREA*GR_SCALE[ch]*p.grain);
       for(let i=0;i<256;i++){ const c=(i/255)*(i/255)*4, D=Math.min(F.dm,Math.max(GR_DMIN,F.d0+F.g*Math.log10(Math.max(c,1e-4)/.18))), pp=D/F.dm; t[i]=F.dm*Math.sqrt(pp*(1-GR_UNI[ch]*pp)/N)*kb/ag*2.302585; } return t; }); }
-  let TL=null; if(p.film){ const r=SPK.ok()?SPK.build({film:p.film,paper:p.paper,grade:p.grade,pe:p.pe,fy:p.fy,fm:p.fm,couplers:p.couplers,glare:p.glare}):null; TL=r?r.lut:null; } else if(look.lut) TL=DKL[look.lut];
+  let TL=null; if(p.film){ const r=SPK.ok()?SPK.build({film:p.film,paper:p.paper,grade:p.grade,pe:p.pe,pf:p.pf,fy:p.fy,fm:p.fm,couplers:p.couplers,glare:p.glare}):null; TL=r?r.lut:null; } else if(look.lut) TL=DKL[look.lut];
   const srgb=!p.film&&look.enc==='srgb', lift=p.fade*.15, ET=dkTone(p), HS=p.hsl&&p.hsl.some(v=>v)?p.hsl:null, et=p.et||0, vib=p.vib||0;
   const ex=Math.pow(2,p.exp), wr=ex*(1+p.warm*.22), wg=ex*(1-p.tint*.15), wb=ex*(1-p.warm*.22), bw=!!look.bw||!!F.bw, sat=p.sat, cx0=w/2, cy0=h/2, inv=1/(cx0*cx0+cy0*cy0), tn=look.fl?21.6/look.fl:fm[1]/fm[2], t2=tn*tn;
   for(let y=0;y<h;y++){ const gy=(y%T)*T, dy=y-cy0; for(let x=0;x<w;x++){ const i=(y*w+x)*4; let r=S2L[d[i]], g=S2L[d[i+1]], bl=S2L[d[i+2]];
@@ -1451,6 +1455,9 @@ function dkProcess(b,look,p,o){ const w=b.width, h=b.height, bx=b.getContext('2d
       if(p.fade>0){ R=lift+R*(1-lift-p.fade*.09); Gn=lift+Gn*(1-lift-p.fade*.09)+p.fade*.012; B=lift+B*(1-lift-p.fade*.09)-p.fade*.02; }
       d[i]=R*255; d[i+1]=Gn*255; d[i+2]=B*255; } }
   bx.putImageData(im,0,0);
+  if(p.soft>.01||p.usm>.01){ const c2=document.createElement('canvas'); c2.width=w; c2.height=h; const cx=c2.getContext('2d',{willReadFrequently:true});
+    if(p.soft>.01){ cx.filter=`blur(${(p.soft*Math.max(w,h)/1000).toFixed(2)}px)`; cx.drawImage(b,0,0); cx.filter='none'; bx.drawImage(c2,0,0); }
+    if(p.usm>.01){ cx.filter='blur(0.7px)'; cx.drawImage(b,0,0); const bl=cx.getImageData(0,0,w,h).data, o2=bx.getImageData(0,0,w,h), q=o2.data, a=p.usm; for(let i=0;i<q.length;i+=4){ q[i]+=a*(q[i]-bl[i]); q[i+1]+=a*(q[i+1]-bl[i+1]); q[i+2]+=a*(q[i+2]-bl[i+2]); } bx.putImageData(o2,0,0); } }
   if(p.leak>.01){ const side=rnd()<.5?0:1, ly=h*(.2+rnd()*.6), gr=bx.createRadialGradient(side*w,ly,0,side*w,ly,w*(.4+rnd()*.35));
     gr.addColorStop(0,`rgba(255,70,10,${.9*p.leak})`); gr.addColorStop(.45,`rgba(255,150,30,${.4*p.leak})`); gr.addColorStop(1,'rgba(255,150,30,0)');
     bx.globalCompositeOperation='screen'; bx.fillStyle=gr; bx.fillRect(0,0,w,h); bx.globalCompositeOperation='source-over'; }
@@ -1533,14 +1540,14 @@ function dkThumbs(){ const st=$('dkStrip'); st.innerHTML=''; let grp=''; DK.thSr
   const gen=++dkThGen, src=DK.src, todo=LOOKS.slice(); const step=()=>{ if(gen!==dkThGen||!todo.length) return; const l=todo.shift(), b=st.querySelector(`button[data-l="${l.id}"]`);
     if(b){ const keep=DK.src; DK.src=src; let t; try{ t=dkProcess(dkBase('135',150),l,PP(l),{fmt:'none',dateOn:false,date:'',seed:3}); }catch(e){ t=null; } DK.src=keep; if(t){ t.className='th'; b.replaceChild(t,b.firstChild); } } setTimeout(step,0); }; step(); }
 let dkThGen=0;
-function dkSyncUI(){ DKS.forEach(([k,,,,st])=>{ const el=$('dk_'+k); el.value=DK.p[k]; el.nextElementSibling.textContent=(+DK.p[k]).toFixed(st>=1?0:2); }); dkStockUI(); dkBandUI(); dkCurveEd();
+function dkSyncUI(){ DKS.forEach(([k,,,,st])=>{ const el=$('dk_'+k); el.value=DK.p[k]; el.nextElementSibling.textContent=(+DK.p[k]).toFixed(st>=1?0:st<.01?3:2); }); dkStockUI(); dkBandUI(); dkCurveEd();
   $('dkFmt').value=DK.fmt; $('dkDateOn').checked=DK.dateOn; $('dkDate').value=DK.date; { const b0=PP(DK.look), F=filmMeta(DK.p.film), pp=F&&DK.p.paper&&SPK.prof(DK.p.paper); $('dkCap').textContent=(F&&(DK.p.film!==b0.film||DK.p.paper!==b0.paper))?`Your own pairing: ${F.name}${pp?' printed on '+pp.info.name:F.pos?', a slide viewed directly':', the negative before it is printed'}. The table for it was just computed in this page from the measured film and paper data.`:DK.look.cap; }
   const rel=CASES.filter(c=>c.lk===DK.look.id||c.lk2===DK.look.id); $('dkCases').innerHTML=rel.length?'<span>The story behind it</span>'+rel.map(c=>`<a href="#${c.id}">${c.title}</a>`).join(''):'';
   [...$('dkStrip').querySelectorAll('button')].forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===DK.look.id)); }
 function dkSetLook(l){ if(!$('machine').hidden&&location.hash!=='#machine/'+l.id){ try{ history.replaceState(null,'','#machine/'+l.id); }catch(e){} } DK.look=l; DK.cur=l; DK.p=PP(l); DK.fmt=l.fmt; DK.dateOn=l.dateOn; DK.date=l.date; dkSyncUI(); dkDraw(); }
 DKS.forEach(([k,label,min,max,step,grp])=>{ const row=document.createElement('label'); row.className='dkrow'; row.htmlFor='dk_'+k;
   row.innerHTML=`<span>${label}</span><input type="range" id="dk_${k}" min="${min}" max="${max}" step="${step}"><output></output>`; $(grp).appendChild(row);
-  const el=row.querySelector('input'); el.addEventListener('input',()=>{ DK.p[k]=+el.value; el.nextElementSibling.textContent=(+el.value).toFixed(step>=1?0:2); dkDraw(); });
+  const el=row.querySelector('input'); el.addEventListener('input',()=>{ DK.p[k]=+el.value; el.nextElementSibling.textContent=(+el.value).toFixed(step>=1?0:step<.01?3:2); dkDraw(); });
   el.addEventListener('dblclick',()=>{ DK.p[k]=PP(DK.look)[k]; dkSyncUI(); dkDraw(); }); });
 $('dkFmt').innerHTML=DKF.map(([v,n])=>`<option value="${v}">${n}</option>`).join('');
 $('dkFmt').addEventListener('change',e=>{ DK.fmt=e.target.value; dkDraw(); });
@@ -1565,12 +1572,25 @@ function dkRollUI(){ const el=$('dkRoll'), R=DK.roll; el.hidden=!R.length; $('dk
     const m=document.createElement('span'); m.className='rm'; m.innerHTML=`<i class="tg" data-tag="${i}" style="background:${TAGS[e.tag]||'transparent'}" title="Colour tag"></i><span class="st" aria-label="Rating ${e.rating} of 5">${[1,2,3,4,5].map(n=>`<i data-star="${n}" data-i="${i}" class="${n<=e.rating?'on':''}">★</i>`).join('')}</span>`; b.appendChild(m); el.appendChild(b); }); }
 $('dkRoll').addEventListener('click',e=>{ const t=e.target; if(t.dataset.star){ const en=DK.roll[+t.dataset.i]; en.rating=en.rating===+t.dataset.star?0:+t.dataset.star; dkRollUI(); return; }
   if(t.dataset.tag){ const en=DK.roll[+t.dataset.tag]; en.tag=(en.tag+1)%TAGS.length; dkRollUI(); return; } const b=t.closest('button'); if(b&&+b.dataset.i!==DK.ri){ blip(440,.1); dkPickRoll(+b.dataset.i); } });
-function dkLoad(files){ const list=[...(files||[])].filter(f=>/^image\//.test(f.type)).slice(0,24); if(!list.length){ if(files&&files.length) $('dkCap').textContent='That file could not be read as a picture. Try a JPG or PNG.'; return; }
-  let left=list.length, first=-1; list.forEach(file=>{ const url=URL.createObjectURL(file), img=new Image();
-    img.onload=()=>{ const th=document.createElement('canvas'), f=64/Math.max(img.width,img.height); th.width=Math.max(1,Math.round(img.width*f)); th.height=Math.max(1,Math.round(img.height*f)); th.getContext('2d').drawImage(img,0,0,th.width,th.height);
-      DK.roll.push({img,name:file.name,rating:0,tag:0,st:null,th}); if(first<0) first=DK.roll.length-1; if(--left===0) done(); };
-    img.onerror=()=>{ URL.revokeObjectURL(url); if(--left===0) done(); }; img.src=url; });
-  const done=()=>{ if(first<0){ $('dkCap').textContent='That file could not be read as a picture. Try a JPG or PNG.'; return; } dkPickRoll(first); blip(523,.16); setTimeout(()=>blip(784,.2),90); }; }
+/* RAW files. A RAW file carries a finished JPEG that the camera made for its own screen, usually at full size.
+   We find the largest one by reading JPEG headers and open that. This is our own reader. It does not develop the sensor data. */
+const RAWX=/\.(dng|cr2|cr3|crw|nef|nrw|arw|srf|sr2|raf|orf|rw2|pef|srw|3fr|iiq|x3f|erf|mef|mos|kdc|dcr)$/i;
+function rawFind(u){ let best=null; const n=u.length; for(let i=0;i<n-12;i++){ if(u[i]!==0xFF||u[i+1]!==0xD8||u[i+2]!==0xFF) continue; let p=i+2, ok=false, w=0, h=0;
+    for(let k=0;k<64&&p<n-9;k++){ if(u[p]!==0xFF) break; const m=u[p+1]; if(m===0xC0||m===0xC1||m===0xC2){ h=(u[p+5]<<8)|u[p+6]; w=(u[p+7]<<8)|u[p+8]; ok=w>0&&h>0&&u[p+9]>=1&&u[p+9]<=4; break; }
+      if(m===0xDA||m===0xD9||(m>=0xC3&&m<=0xCF&&m!==0xC4&&m!==0xC8&&m!==0xCC)) break; p+=2+((u[p+2]<<8)|u[p+3]); }
+    if(ok&&(!best||w*h>best.w*best.h)) best={off:i,w,h,exif:u[i+3]===0xE1}; } return best; }
+function rawOrient(u){ try{ const le=u[0]===0x49&&u[1]===0x49, be=u[0]===0x4D&&u[1]===0x4D; if(!le&&!be) return 1; const r16=o=>le?u[o]|(u[o+1]<<8):(u[o]<<8)|u[o+1], r32=o=>le?(u[o]|(u[o+1]<<8)|(u[o+2]<<16)|(u[o+3]<<24))>>>0:((u[o]<<24)|(u[o+1]<<16)|(u[o+2]<<8)|u[o+3])>>>0;
+    const ifd=r32(4), cnt=r16(ifd); for(let i=0;i<cnt&&i<200;i++){ const e=ifd+2+i*12; if(r16(e)===0x0112) return r16(e+8); } }catch(e){} return 1; }
+async function rawOpen(file){ if(file.size>220e6) throw new Error('too big'); const u=new Uint8Array(await file.arrayBuffer()), f=rawFind(u); if(!f) throw new Error('no preview');
+  const url=URL.createObjectURL(new Blob([u.subarray(f.off)],{type:'image/jpeg'})), img=await new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=()=>rej(new Error('decode')); im.src=url; });
+  const o=f.exif?1:rawOrient(u); if(o!==3&&o!==6&&o!==8){ img.rawNote=`${f.w} × ${f.h}`; return img; }
+  const c=document.createElement('canvas'), sw=o===3?img.width:img.height, sh=o===3?img.height:img.width; c.width=sw; c.height=sh; const x=c.getContext('2d'); x.translate(sw/2,sh/2); x.rotate(o===3?Math.PI:o===6?Math.PI/2:-Math.PI/2); x.drawImage(img,-img.width/2,-img.height/2); URL.revokeObjectURL(url); c.rawNote=`${sw} × ${sh}`; return c; }
+function dkLoad(files){ const list=[...(files||[])].filter(f=>/^image\//.test(f.type)||RAWX.test(f.name)).slice(0,24); if(!list.length){ if(files&&files.length) $('dkCap').textContent='That file could not be read as a picture. Try a JPG, a PNG or a RAW file.'; return; }
+  let left=list.length, first=-1, raws=0, failed=0; const add=(img,file)=>{ const iw=img.naturalWidth||img.width, ih=img.naturalHeight||img.height, th=document.createElement('canvas'), f=64/Math.max(iw,ih); th.width=Math.max(1,Math.round(iw*f)); th.height=Math.max(1,Math.round(ih*f)); th.getContext('2d').drawImage(img,0,0,th.width,th.height);
+      DK.roll.push({img,name:file.name,rating:0,tag:0,st:null,th,raw:img.rawNote||''}); if(first<0) first=DK.roll.length-1; };
+  const done=()=>{ if(first<0){ $('dkCap').textContent=failed?'No camera preview was found inside that RAW file. Export a JPG from it and open that.':'That file could not be read as a picture. Try a JPG, a PNG or a RAW file.'; return; } dkPickRoll(first); blip(523,.16); setTimeout(()=>blip(784,.2),90); };
+  list.forEach(file=>{ if(RAWX.test(file.name)&&!/^image\/(jpeg|png|webp)$/.test(file.type)){ raws++; rawOpen(file).then(img=>add(img,file),()=>{ failed++; }).then(()=>{ if(--left===0) done(); }); return; }
+    const url=URL.createObjectURL(file), img=new Image(); img.onload=()=>{ add(img,file); if(--left===0) done(); }; img.onerror=()=>{ URL.revokeObjectURL(url); if(--left===0) done(); }; img.src=url; }); }
 $('dkFile').addEventListener('change',e=>{ dkLoad(e.target.files); e.target.value=''; });
 { const st=$('dkStage'); st.addEventListener('dragover',e=>e.preventDefault()); st.addEventListener('drop',e=>{ e.preventDefault(); dkLoad(e.dataTransfer.files); }); }
 $('dkCopy').addEventListener('click',()=>{ DK.clip=dkState(); $('dkPaste').disabled=false; dkRollUI(); blip(600,.08); });
@@ -1601,8 +1621,8 @@ function dkStockUI(){ const fs=$('dkFilmSel'), ps=$('dkPaperSel'); if(!SPK.ok())
     fs.innerHTML='<option value="">From the preset</option>'+grp('Colour negative',x=>!x.bw&&!x.pos&&!x.cine)+grp('Cinema negative',x=>x.cine&&!x.pos)+grp('Slide',x=>x.pos)+grp('Black and white',x=>x.bw); fs.dataset.done=1; }
   fs.value=DK.p.film||''; const ok=F&&!F.pos?L.papers.filter(x=>x.bw===!!F.bw):[];
   ps.innerHTML=`<option value="">${!F?'Set by the preset':F.pos?'None, a slide is viewed directly':'None, show the negative'}</option>`+ok.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join(''); ps.value=DK.p.paper||''; ps.disabled=!F||F.pos;
-  const pp=DK.p.paper&&SPK.prof(DK.p.paper); $('dkGradeRow').hidden=!(pp&&pp.bw); $('dkGradeSel').value=DK.p.grade; ['pe','fy','fm'].forEach(k=>{ $('dk_'+k).disabled=!F||(k!=='pe'&&(!pp||pp.bw)); }); }
-$('dkFilmSel').addEventListener('change',e=>{ const v=e.target.value, base=PP(DK.look); if(!v){ DK.p.film=base.film; DK.p.paper=base.paper; } else { const m=filmMeta(v); DK.p.film=v; DK.p.paper=m&&!m.pos?(m.paper||''):''; if(!base.film){ DK.p.grain=DK.p.hal=DK.p.scatter=1; } }
+  const pp=DK.p.paper&&SPK.prof(DK.p.paper); $('dkGradeRow').hidden=!(pp&&pp.bw); $('dkGradeSel').value=DK.p.grade; ['pe','pf','fy','fm'].forEach(k=>{ $('dk_'+k).disabled=!F||!pp||((k==='fy'||k==='fm')&&pp.bw); }); }
+$('dkFilmSel').addEventListener('change',e=>{ const v=e.target.value, base=PP(DK.look); if(!v){ DK.p.film=base.film; DK.p.paper=base.paper; } else { const m=filmMeta(v); DK.p.film=v; DK.p.paper=m&&!m.pos?(m.paper||''):''; if(!base.film){ DK.p.grain=DK.p.hal=DK.p.scatter=1; DK.p.usm=.7; } }
   dkSyncUI(); dkDraw(); });
 $('dkPaperSel').addEventListener('change',e=>{ DK.p.paper=e.target.value; dkSyncUI(); dkDraw(); });
 $('dkGradeSel').addEventListener('change',e=>{ DK.p.grade=e.target.value; dkDraw(); });
@@ -1629,7 +1649,7 @@ const SAMPLE=PHOTOS.television.then;
 function dkEnsure(){ if(DK.src) return; DK.src=dkSample(); const im=new Image();
   im.onload=()=>{ DK.sample=im; if(!DK.own&&!DK.from){ DK.src=im; DK.from=SAMPLE; dkSrcUI(); if(DK.ready&&!$('machine').hidden){ dkThumbs(); dkDraw(); } } if(cur) tryPaint(cur); }; im.src='img/'+SAMPLE.raw; }
 /* which photo is on the table, and whose it is */
-function dkSrcUI(){ const f=DK.from, el=$('dkCredit'); el.innerHTML=f?`Photo: <a href="${f.url}" target="_blank" rel="noopener">${f.title}</a>, ${f.author}, ${f.lic}`:(DK.own?'Your photo. It stays in this browser.':'');
+function dkSrcUI(){ const f=DK.from, el=$('dkCredit'); { const e=DK.roll[DK.ri], rw=e&&e.img===DK.src&&e.raw; el.innerHTML=f?`Photo: <a href="${f.url}" target="_blank" rel="noopener">${f.title}</a>, ${f.author}, ${f.lic}`:(DK.own?(rw?`RAW file. This is the camera's own preview from inside it, ${rw} pixels. It stays in this browser.`:'Your photo. It stays in this browser.'):''); }
   $('dkMine').hidden=!(DK.ownImg&&DK.src!==DK.ownImg); }
 $('dkMine').addEventListener('click',()=>{ if(!DK.ownImg) return; DK.src=DK.ownImg; DK.from=null; dkSrcUI(); dkRollUI(); dkThumbs(); dkDraw(); });
 function mOpen(sub){ dkEnsure(); const l=LOOKS.find(x=>x.id===sub); if(l) DK.look=l; const was=DK.cur; if(!DK.ready||DK.look!==was){ DK.ready=true; dkSetLook(DK.look); } else { dkSyncUI(); dkDraw(); }
