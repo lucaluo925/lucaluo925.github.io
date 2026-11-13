@@ -71,3 +71,10 @@ were computed from. This site is not affiliated with or endorsed by those compan
 - Preflash and the scanner's unsharp mask follow the definitions in spektrafilm (`runtime/stages/printing.py`, `ScannerParams`). The code is ours.
 - The four stage order of the Develop page (capture, development, print, scan) follows spektrafilm, SpektraLab and LightTable
   (https://github.com/reville/lighttable-digital-darkroom, GPL-3.0). No LightTable code or data is used.
+
+### RAW development (added 13 November 2026)
+
+`lib/libraw/` holds the unmodified `dist` files of the npm package `libraw-wasm` 1.6.0
+(https://github.com/ybouane/LibRaw-Wasm, ISC licence, by Youssef Bouane and contributors). It is a WebAssembly build
+of LibRaw (https://www.libraw.org, LGPL-2.1 or CDDL-1.0, copyright LibRaw LLC). Source for both is at those addresses.
+The files are loaded only when a RAW file is opened. Source maps were left out.

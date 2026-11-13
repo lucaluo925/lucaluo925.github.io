@@ -207,3 +207,20 @@ Not verified
 - No real camera RAW file was available here, so each maker's format is untested. Some cameras store only a small preview (older Sony ARW is one), and the picture will then be small.
 - This is not RAW development. The sensor data is not decoded. A real decoder (LibRaw compiled to WebAssembly) could not be installed in this workspace without Haoyuan's approval.
 - The preflash slider range (0 to 0.05) was set by looking at the result, because spektrafilm gives no typical value.
+
+## 2026-11-13 · then-again/: real RAW development with LibRaw
+
+Reviewed with `ocr delegate` (workspace mode). Our change is in `then-again/index.html`. The three files under `then-again/lib/libraw/` are the unmodified build output of the npm package `libraw-wasm` 1.6.0 (ISC; LibRaw itself is LGPL-2.1 or CDDL-1.0) and were not reviewed line by line. Haoyuan approved installing it. It was installed with `--ignore-scripts`.
+
+Changed
+- A RAW file is now developed from its sensor data in a web worker: camera white balance, sRGB output with the sRGB curve, 8 bits. The library is fetched only when a RAW file is opened. Pictures wider than 6000 px are scaled to 6000.
+- If the library cannot load, times out after 120 s, or cannot read the file, the earlier reader opens the camera's embedded preview instead. The caption says which of the two happened.
+
+Checked
+- The project's own sample (`example-sony.ARW`, 6240 × 4168) develops in about 5 s in headless Chromium and renders through Portra 400 with no console errors. A file LibRaw cannot read falls back to the preview reader. The worker is disposed after every file.
+
+Not verified
+- Only one real RAW file, from one Sony camera, was tested. Canon CR3 and Fujifilm X-Trans files are untested.
+- The output is 8 bit and display referred, so the extra highlight range of a RAW file is not yet passed to the film engine.
+- Inside the claude.ai artifact the worker may be blocked. The preview fallback covers that case but was not tested there.
+- Memory on phones with large files.
