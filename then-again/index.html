@@ -556,6 +556,7 @@ label.btn{display:inline-block}
 
 <div id="menu" hidden>
   <nav class="mnav" aria-label="Pages">
+    <a href="#shelf" id="menuIntro"><small>00</small>Entrance</a>
     <a href="#shelf"><small>01</small>Objects</a>
     <a href="#machine"><small>02</small>The darkroom</a>
     <a href="#timeline"><small>03</small>Timeline</a>
@@ -1124,7 +1125,7 @@ function level(){ if(analyser&&!track.paused){ analyser.getByteFrequencyData(fbu
 
 /* ---------- entrance ---------- */
 const intro=$('intro'), ig=$('introGlobe').getContext('2d'); let introOn=false, ispin=0;
-function openIntro(){ introOn=true; intro.hidden=false;
+function openIntro(){ introOn=true; intro.classList.remove('out'); intro.hidden=false;
   // two rolls of film made from the site's own photographs: the first time above, sold again below
   [['reelThen','then','y1'],['reelNow','now','y2']].forEach(([id,side,yk])=>{ const fr=CASES.map((c,i)=>{ const o=(PHOTOS[c.id]||{})[side]; return o&&o.raw?`<figure><img src="img/${o.raw}" alt="" loading="eager" decoding="async"><figcaption><b>${String(i+1).padStart(2,'0')}${side==='now'?'A':''}</b><span>${c[yk]}</span><span>${c.title}</span></figcaption></figure>`:''; }).join('');
     $(id).innerHTML=`<div class="track">${fr}${fr}</div>`; });
@@ -1657,7 +1658,9 @@ addEventListener('hashchange',show);
 let rz=0; addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(drawBg,180); });
 drawBg(); show();
 let seen=false; try{seen=sessionStorage.getItem('ta-in')==='1';}catch(e){}
+if(location.hash==='#entrance'){ try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} seen=false; }
 if(!location.hash.slice(1) && !seen) openIntro();
+$('menuIntro').addEventListener('click',()=>{ setTimeout(()=>{ openIntro(); hud(); },60); });
 hud();
 requestAnimationFrame(frame);
 </script>

@@ -177,3 +177,7 @@ Not built (SpektraLab has these)
 Not verified
 - No comparison against real SpektraLab or spektrafilm output. Our filters are smooth dye bands and the neutral balance is found by the page, so numbers differ from theirs.
 - Export at 4800 px on a phone. Batch export in Safari, which may block several downloads in a row.
+
+## 2026-11-12 · then-again/: the entrance can be reopened
+
+Reviewed with `ocr delegate` (workspace mode), 1 of 1 reviewable file. Small change: the entrance only showed on the first visit of a tab with no hash, so it could not be seen again. `#entrance` now opens it, and the menu has an Entrance item. `openIntro` clears the closing class so it can run more than once. Tested both paths in Playwright, no errors.
