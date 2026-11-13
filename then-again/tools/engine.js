@@ -85,8 +85,11 @@ const SPK=(()=>{
   // numbers the grain and halation models need, read from the film's own green curve
   function meta(k){ const p=prof(k); if(!p) return null; let j0=0; for(let j=0;j<p.n;j++) if(Math.abs(p.le[j])<Math.abs(p.le[j0])) j0=j; const a=Math.max(0,j0-4), b=Math.min(p.n-1,j0+4);
     return {g:(p.dc[b*3+1]-p.dc[a*3+1])/(p.le[b]-p.le[a]),d0:p.dc[j0*3+1],dm:p.dmax[1],ah:p.info.antihalation==='strong'?0:p.info.antihalation==='no'?2:1,cine:p.info.use==='cine'?1:0,bw:p.bw,pos:p.pos,name:p.info.name,paper:p.info.target_print}; }
+  // the colour of a light leak: white light that reaches the emulsion through the back of the film is filtered by the film's own base.
+  // Returned as the share of that light each layer receives, so a masked colour negative leaks warm and a clear based film leaks white.
+  function leak(k){ const p=prof(k); if(!p) return [1,1,1]; const ill=ILL.D55, e=[0,0,0]; for(let c=0;c<3;c++){ let a=0, b=0; for(let i=0;i<NW;i++){ const v=ill[i]*p.sens[i*3+c]; b+=v; a+=v*Math.exp(-LN10*p.base[i]); } e[c]=b?a/b:1; } const m=Math.max(e[0],e[1],e[2])||1; return e.map(v=>v/m); }
   function list(){ const films=[], papers=[]; for(const k in P){ if(k[0]==='_') continue; const p=prof(k); if(!p) continue; const i=p.info, e={id:k,name:i.name||k,bw:p.bw,pos:p.pos,cine:i.use==='cine'};
       if(i.support==='paper'||k==='kodak_2383'||k==='kodak_2393') papers.push(e); else films.push(e); } return {films,papers}; }
-  return {load,use,build,meta,list,prof,N,ok:()=>!!P};
+  return {load,use,build,meta,list,prof,leak,N,ok:()=>!!P};
 })();
 if(typeof module!=='undefined') module.exports=SPK;

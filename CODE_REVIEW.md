@@ -224,3 +224,23 @@ Not verified
 - The output is 8 bit and display referred, so the extra highlight range of a RAW file is not yet passed to the film engine.
 - Inside the claude.ai artifact the worker may be blocked. The preview fallback covers that case but was not tested there.
 - Memory on phones with large files.
+
+## 2026-11-13 · then-again/: accidents (two photos on one frame, light leak), film data card
+
+Reviewed with `ocr delegate` (workspace mode). Reviewable files: `then-again/index.html`, `then-again/tools/engine.js`.
+
+Changed
+- Frame page has an Accidents group. A second photo can share the frame with the first: another photo from the roll, a newly opened file (RAW included), or one of the site's eight object photographs. Its light is added to the first in linear light before the film table, as in a camera. "Film slip" moves it along the film for a partial overlap. "The same picture, slipped" gives a ghost.
+- The light leak is no longer a painted orange gradient laid over the finished picture. It is extra light added before the film. Its colour comes from `SPK.leak`, which filters white light through the film's own measured base: masked colour negatives get about 1.00 / 0.41 / 0.46 for the three layers, slide and black and white film get white. The shape is seeded value noise falling off from one edge.
+- Under the film picker there is now a card with the film's three measured density curves and numbers read from them (type, slope, density range, antihalation, base). The grain, halation and scatter sliders show the resulting physical value for the chosen film instead of a bare multiplier, so the numbers change from film to film.
+
+Found and fixed
+- High: a `//` comment added inside a one line block swallowed the rest of the line and broke the script. Caught by `node --check` before build.
+- Medium: the first leak covered the whole frame. Falloff depth and strength were reduced.
+
+Checked
+- Second photo from each of the three sources, slip, leak on negative and slide film, and the earlier regression (film, paper, edit, roll, export): no console errors.
+
+Not verified
+- The leak's shape, depth and the 0.35 factor for slide film were set by looking. Only its colour comes from data.
+- No existing open project models a partial frame overlap or a physical light leak that we could check against. Jonas Wagner's analog-film-emulator (procedural noise leaks) is the reference for the shape idea. Its licence was not confirmed and none of its code is used.

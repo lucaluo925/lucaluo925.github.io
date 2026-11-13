@@ -518,6 +518,16 @@ label.btn{display:inline-block}
 .reel,.reel.now{rotate:none;margin:0}
 .reel .track{animation-duration:110s}
 .reel.now .track{animation-duration:130s}
+
+/* v14: the film's own data under the film picker */
+.dkfilm{display:grid;gap:8px;margin:8px 0 10px}
+.dkfilm[hidden]{display:none}
+#dkFilmPlot{width:100%;height:auto;background:#0c0b0a;border-radius:6px}
+#dkFilmData{margin:0;display:grid;gap:0}
+#dkFilmData div{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:8px;padding:3px 0;border-bottom:1px dashed #2c2823;font-size:12.5px}
+#dkFilmData dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#9a938a}
+#dkFilmData dd{margin:0;color:#efeae0;font-variant-numeric:tabular-nums}
+.dkrow output{min-width:52px;text-align:right}
 </style>
 </head>
 <body>
@@ -662,6 +672,7 @@ label.btn{display:inline-block}
       <div class="dkpane" id="dkP_dev">
         <div class="dkgroup"><div class="lab">1 &middot; Capture</div>
           <label class="dkrow wide" for="dkFilmSel"><span>Film</span><select id="dkFilmSel"><option value="">From the preset</option></select></label>
+          <div class="dkfilm" id="dkFilmCard" hidden><canvas id="dkFilmPlot" width="280" height="110" aria-label="Measured density curves of this film"></canvas><dl id="dkFilmData"></dl><p class="dknote">Density against exposure for the three layers, as measured for this film. The dashed line is mid grey.</p></div>
           <div id="dkG_cam"></div></div>
         <div class="dkgroup"><div class="lab">2 &middot; Development</div><div id="dkG_fx"></div></div>
         <div class="dkgroup"><div class="lab">3 &middot; Print</div>
@@ -681,6 +692,12 @@ label.btn{display:inline-block}
           <label class="dkrow wide" for="dkFmt"><span>Film edge</span><select id="dkFmt"></select></label>
           <label class="dkrow" for="dkDateOn"><span>Date back</span><input type="checkbox" id="dkDateOn"></label>
           <label class="dkrow wide" for="dkDate"><span>Date</span><input type="text" id="dkDate" maxlength="16" spellcheck="false"></label>
+        </div>
+        <div class="dkgroup"><div class="lab">Accidents</div>
+          <div id="dkG_acc"></div>
+          <label class="dkrow wide" for="dkSecond"><span>Second photo</span><select id="dkSecond"><option value="none">None</option></select></label>
+          <input type="file" id="dkFile2" accept="image/*,.dng,.cr2,.cr3,.nef,.arw,.raf,.orf,.rw2,.pef" hidden>
+          <p class="dknote">Pick a second photo and the two share one frame, as when the film was not wound on. Slip moves the second one along the film so the frames only partly overlap.</p>
         </div>
         <div class="dkgroup"><div class="lab">Age</div><div id="dkG_age"></div></div>
       </div>
@@ -807,7 +824,7 @@ label.btn{display:inline-block}
     <p>Photos were cut out and recoloured for this site. Where a photo carries a share-alike licence, our changed version is offered under the same licence.</p>
     <h2>How it was built</h2>
     <p>One page of HTML, CSS and JavaScript with no framework. The darkroom changes your photo pixel by pixel on a canvas, in your own browser. Its two steps, film first and then the print, follow the idea behind <a href="https://github.com/andreavolpato/spektrafilm">spektrafilm</a> by Andrea Volpato and the <a href="https://github.com/JamesQiu2005/SpektraLab">SpektraLab</a> app. The colour of every film look is computed in this page. Light is followed through 81 wavelengths, first into the film and then through the enlarger onto the paper, using the spektrafilm film and paper profiles that Andrea Volpato publishes under CC BY-SA 4.0. The four black and white films and the Multigrade paper are profiles the SpektraLab project traced from the makers' data sheets. We wrote our own simplified version of the calculation, so the results are close to the real engine but not identical. Grain and halation use the particle sizes and reflection strengths that spektrafilm sets for each film, scaled to the size of the frame.</p>
-    <p>The other looks also start from published numbers. The instant prints use colour tables from the RawTherapee Film Simulation Collection by Pat David, Pavlov Dmitry and Michael Ezra, taken from the <a href="https://github.com/cedeber/hald-clut">hald-clut</a> repository. The VHS look uses the tape bandwidths and noise levels listed in <a href="https://github.com/valadaptive/ntsc-rs">ntsc-rs</a> by valadaptive. The Develop page is ordered as capture, development, print and scan, the same four stages that spektrafilm, SpektraLab and <a href="https://github.com/reville/lighttable-digital-darkroom">LightTable</a> use, and the preflash and scanner sharpening follow spektrafilm's definitions. RAW files are developed in the page by <a href="https://www.libraw.org">LibRaw</a>, through the <a href="https://github.com/ybouane/LibRaw-Wasm">LibRaw-Wasm</a> build by Youssef Bouane. If that cannot read a file, our own code opens the full size preview the camera stored inside it. The camera phone look runs the JPEG maths with the example tables printed in the JPEG standard, ITU-T T.81 Annex K. The newspaper look uses a 65 line screen at 45 degrees. Fade and light leak have no data behind them, so they start at zero and you add them yourself.</p>
+    <p>The other looks also start from published numbers. The instant prints use colour tables from the RawTherapee Film Simulation Collection by Pat David, Pavlov Dmitry and Michael Ezra, taken from the <a href="https://github.com/cedeber/hald-clut">hald-clut</a> repository. The VHS look uses the tape bandwidths and noise levels listed in <a href="https://github.com/valadaptive/ntsc-rs">ntsc-rs</a> by valadaptive. The Develop page is ordered as capture, development, print and scan, the same four stages that spektrafilm, SpektraLab and <a href="https://github.com/reville/lighttable-digital-darkroom">LightTable</a> use, and the preflash and scanner sharpening follow spektrafilm's definitions. RAW files are developed in the page by <a href="https://www.libraw.org">LibRaw</a>, through the <a href="https://github.com/ybouane/LibRaw-Wasm">LibRaw-Wasm</a> build by Youssef Bouane. If that cannot read a file, our own code opens the full size preview the camera stored inside it. The camera phone look runs the JPEG maths with the example tables printed in the JPEG standard, ITU-T T.81 Annex K. The newspaper look uses a 65 line screen at 45 degrees. A double exposure adds the light of the second shot to the first before the film is developed, which is what happens in the camera. A light leak is added the same way, and its colour is worked out from the film's own base, so a colour negative leaks orange and a slide leaks white. The shape of the leak is drawn from random noise, an idea taken from the light leaks in Jonas Wagner's <a href="https://github.com/jwagner/analog-film-emulator">analog-film-emulator</a>. Fade has no data behind it and starts at zero.</p>
     <p> The globe and the marbled ground are drawn on canvas. Sound uses the Web Audio API, and the halos follow the volume of the recording. The site works with a keyboard and respects the reduced motion setting.</p>
     <nav class="pager"><a class="btn solid" href="#shelf">All objects</a></nav>
   </div>
@@ -1007,9 +1024,12 @@ const SPK=(()=>{
   // numbers the grain and halation models need, read from the film's own green curve
   function meta(k){ const p=prof(k); if(!p) return null; let j0=0; for(let j=0;j<p.n;j++) if(Math.abs(p.le[j])<Math.abs(p.le[j0])) j0=j; const a=Math.max(0,j0-4), b=Math.min(p.n-1,j0+4);
     return {g:(p.dc[b*3+1]-p.dc[a*3+1])/(p.le[b]-p.le[a]),d0:p.dc[j0*3+1],dm:p.dmax[1],ah:p.info.antihalation==='strong'?0:p.info.antihalation==='no'?2:1,cine:p.info.use==='cine'?1:0,bw:p.bw,pos:p.pos,name:p.info.name,paper:p.info.target_print}; }
+  // the colour of a light leak: white light that reaches the emulsion through the back of the film is filtered by the film's own base.
+  // Returned as the share of that light each layer receives, so a masked colour negative leaks warm and a clear based film leaks white.
+  function leak(k){ const p=prof(k); if(!p) return [1,1,1]; const ill=ILL.D55, e=[0,0,0]; for(let c=0;c<3;c++){ let a=0, b=0; for(let i=0;i<NW;i++){ const v=ill[i]*p.sens[i*3+c]; b+=v; a+=v*Math.exp(-LN10*p.base[i]); } e[c]=b?a/b:1; } const m=Math.max(e[0],e[1],e[2])||1; return e.map(v=>v/m); }
   function list(){ const films=[], papers=[]; for(const k in P){ if(k[0]==='_') continue; const p=prof(k); if(!p) continue; const i=p.info, e={id:k,name:i.name||k,bw:p.bw,pos:p.pos,cine:i.use==='cine'};
       if(i.support==='paper'||k==='kodak_2383'||k==='kodak_2393') papers.push(e); else films.push(e); } return {films,papers}; }
-  return {load,use,build,meta,list,prof,N,ok:()=>!!P};
+  return {load,use,build,meta,list,prof,leak,N,ok:()=>!!P};
 })();
 if(typeof module!=='undefined') module.exports=SPK;
 
@@ -1276,8 +1296,8 @@ const DKS=[ // sliders: key, label, min, max, step, group. The Develop groups fo
  ['glare','Glare',0,1,.01,'dkG_scan'],['soft','Softness',0,3,.05,'dkG_scan'],['usm','Sharpen',0,2,.05,'dkG_scan'],
  ['br','Brightness',-1,1,.01,'dkG_tone'],['con','Contrast',.5,1.7,.01,'dkG_tone'],['hl','Highlights',-1,1,.01,'dkG_tone'],['sdw','Shadows',-1,1,.01,'dkG_tone'],
  ['et','Temperature',-1,1,.01,'dkG_col'],['vib','Vibrance',-1,1,.01,'dkG_col'],['sat','Saturation',0,2,.01,'dkG_col'],['vig','Vignette',0,1,.01,'dkG_col'],
- ['fade','Fade',0,1,.01,'dkG_age'],['leak','Light leak',0,1,.01,'dkG_age']];
-const DEF={film:'',paper:'',grade:'2',exp:0,warm:0,tint:0,pe:0,pf:0,soft:0,usm:0,fy:0,fm:0,grain:0,hal:0,scatter:0,glare:.03,couplers:1,br:0,con:1,hl:0,sdw:0,et:0,vib:0,sat:1,vig:0,fade:0,leak:0,curve:[[0,0],[1,1]],hsl:null};
+ ['leak','Light leak',0,1,.01,'dkG_acc'],['dx','Second exposure',0,1.5,.01,'dkG_acc'],['dxs','Film slip',-1,1,.01,'dkG_acc'],['fade','Fade',0,1,.01,'dkG_age']];
+const DEF={film:'',paper:'',grade:'2',exp:0,warm:0,tint:0,pe:0,pf:0,soft:0,usm:0,fy:0,fm:0,grain:0,hal:0,scatter:0,glare:.03,couplers:1,br:0,con:1,hl:0,sdw:0,et:0,vib:0,sat:1,vig:0,fade:0,leak:0,dx:0,dxs:0,curve:[[0,0],[1,1]],hsl:null};
 const PP=l=>{ const o=Object.assign({},DEF,l.p); o.curve=o.curve.map(q=>q.slice()); o.hsl=o.hsl?o.hsl.slice():new Array(24).fill(0); return o; };
 const FP=(film,paper,x)=>Object.assign({film,paper:paper||'',grain:1,hal:1,scatter:1,usm:.7},x||{});
 /* frames: label, picture size along the film and across it in mm, roll film or 35mm */
@@ -1346,7 +1366,7 @@ function dkLoadLuts(done){ if(dkLutState===2){ done&&done(); return; } if(dkLutS
   names.forEach(n=>{ const im=new Image(); im.onload=()=>{ try{ const c=document.createElement('canvas'); c.width=1089; c.height=33; const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(im,0,0);
         const d=x.getImageData(0,0,1089,33).data, a=new Uint8Array(1089*33*3); for(let i=0,j=0;i<d.length;i+=4){ a[j++]=d[i]; a[j++]=d[i+1]; a[j++]=d[i+2]; } DKL[n]=a; }catch(e){} fin(); };
     im.onerror=fin; im.src='lut/'+n+'.png'; }); }
-const DK={roll:[],ri:-1,clip:null,band:0,sample:null,ownImg:null,from:null,thSrc:null,inner:null,src:null,look:LOOKS[2],p:{},fmt:'135',dateOn:true,date:'',seed:7,cmp:false,split:.5,ready:false,after:null,before:null};
+const DK={sec:'none',secImg:null,roll:[],ri:-1,clip:null,band:0,sample:null,ownImg:null,from:null,thSrc:null,inner:null,src:null,look:LOOKS[2],p:{},fmt:'135',dateOn:true,date:'',seed:7,cmp:false,split:.5,ready:false,after:null,before:null};
 const dkc=$('dkCanvas'), dkx=dkc.getContext('2d');
 const S2L=new Float32Array(256); for(let i=0;i<256;i++){ const v=i/255; S2L[i]=v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4); }
 function dkSample(){ const c=document.createElement('canvas'); c.width=1500; c.height=1000; const x=c.getContext('2d');
@@ -1419,6 +1439,13 @@ function dkProcess(b,look,p,o){ const w=b.width, h=b.height, bx=b.getContext('2d
   // scatter inside the emulsion: most of the light spreads about nine micrometres before it is caught
   let SCT=null; const ssig=9.4*p.scatter/um; if(p.scatter>.01&&ssig>=.3){ const a=document.createElement('canvas'); a.width=w; a.height=h; const ax=a.getContext('2d',{willReadFrequently:true}), li=ax.createImageData(w,h), ld=li.data;
     for(let i=0;i<d.length;i+=4){ ld[i]=S2L[d[i]]*255; ld[i+1]=S2L[d[i+1]]*255; ld[i+2]=S2L[d[i+2]]*255; ld[i+3]=255; } ax.putImageData(li,0,0); const c2=document.createElement('canvas'); c2.width=w; c2.height=h; const cx=c2.getContext('2d',{willReadFrequently:true}); cx.filter=`blur(${ssig.toFixed(2)}px)`; cx.drawImage(a,0,0); SCT=cx.getImageData(0,0,w,h).data; }
+  // accidents. A second shot on the same frame and a light leak both add light to the film, so they go in before the film table.
+  let SEC=null; if(p.dx>.01&&o.second){ const c2=document.createElement('canvas'); c2.width=w; c2.height=h; const cx=c2.getContext('2d',{willReadFrequently:true}), src=o.second==='same'?b:o.second, iw=src.naturalWidth||src.width, ih=src.naturalHeight||src.height, f=Math.max(w/iw,h/ih);
+    cx.fillStyle='#000'; cx.fillRect(0,0,w,h); cx.drawImage(src,(w-iw*f)/2+p.dxs*w,(h-ih*f)/2,iw*f,ih*f); SEC=cx.getImageData(0,0,w,h).data; }
+  let LK=null, lkT=[1,1,1], lkA=0; if(p.leak>.01){ const n=48, c1=document.createElement('canvas'); c1.width=c1.height=n; const x1=c1.getContext('2d'), id=x1.createImageData(n,n), q=id.data, R=dkRand(o.seed+91), side=Math.floor(R()*4), depth=.07+R()*.2, cy=R(), g=[]; for(let i=0;i<81;i++) g.push(R());
+      const vn=(x,y)=>{ const xi=Math.floor(x), yi=Math.floor(y), fx=x-xi, fy=y-yi, a=g[(yi%9)*9+xi%9], b2=g[(yi%9)*9+(xi+1)%9], c=g[((yi+1)%9)*9+xi%9], d2=g[((yi+1)%9)*9+(xi+1)%9], sx=fx*fx*(3-2*fx), sy=fy*fy*(3-2*fy); return a+(b2-a)*sx+(c-a)*sy+(a-b2-c+d2)*sx*sy; };
+      for(let y=0;y<n;y++) for(let x=0;x<n;x++){ const u=x/(n-1), v=y/(n-1), dist=side===0?u:side===1?1-u:side===2?v:1-v, along=side<2?v:u, noise=.5*vn(u*2+1,v*2+1)+.3*vn(u*4+2,v*4+2)+.2*vn(u*8,v*8), wdt=Math.exp(-Math.pow((along-cy)/(.35+.4*noise),2)), val=Math.exp(-dist/(depth*(.5+noise)))*(.35+.65*wdt), k=(y*n+x)*4; q[k]=q[k+1]=q[k+2]=Math.min(255,val*255); q[k+3]=255; }
+      x1.putImageData(id,0,0); const c2=document.createElement('canvas'); c2.width=w; c2.height=h; const cx=c2.getContext('2d',{willReadFrequently:true}); cx.imageSmoothingQuality='high'; cx.drawImage(c1,0,0,w,h); LK=cx.getImageData(0,0,w,h).data; lkT=p.film&&SPK.ok()?SPK.leak(p.film):[1,.55,.2]; lkA=.18*(Math.pow(2,p.leak*5.5)-1)/255*(F.pos?.35:1); }
   // grain: silver particles of a fixed size, so a small frame or a big enlargement shows more of it
   const T=256, G=new Float32Array(T*T); let GT=null;
   if(p.grain>.01){ const n=document.createElement('canvas'); n.width=n.height=T; const nx=n.getContext('2d',{willReadFrequently:true}), ni=nx.createImageData(T,T);
@@ -1431,6 +1458,8 @@ function dkProcess(b,look,p,o){ const w=b.width, h=b.height, bx=b.getContext('2d
   const srgb=!p.film&&look.enc==='srgb', lift=p.fade*.15, ET=dkTone(p), HS=p.hsl&&p.hsl.some(v=>v)?p.hsl:null, et=p.et||0, vib=p.vib||0;
   const ex=Math.pow(2,p.exp), wr=ex*(1+p.warm*.22), wg=ex*(1-p.tint*.15), wb=ex*(1-p.warm*.22), bw=!!look.bw||!!F.bw, sat=p.sat, cx0=w/2, cy0=h/2, inv=1/(cx0*cx0+cy0*cy0), tn=look.fl?21.6/look.fl:fm[1]/fm[2], t2=tn*tn;
   for(let y=0;y<h;y++){ const gy=(y%T)*T, dy=y-cy0; for(let x=0;x<w;x++){ const i=(y*w+x)*4; let r=S2L[d[i]], g=S2L[d[i+1]], bl=S2L[d[i+2]];
+      if(SEC){ r+=p.dx*S2L[SEC[i]]; g+=p.dx*S2L[SEC[i+1]]; bl+=p.dx*S2L[SEC[i+2]]; }
+      if(LK){ const a=LK[i]*lkA; r+=a*lkT[0]; g+=a*lkT[1]; bl+=a*lkT[2]; }
       if(SCT){ r+=(SCT[i]/255-r)*SC_W[0]; g+=(SCT[i+1]/255-g)*SC_W[1]; bl+=(SCT[i+2]/255-bl)*SC_W[2]; }
       if(H){ r=(r+hs[0]*H[i]/255)/(1+hs[0]); g=(g+hs[1]*H[i+1]/255)/(1+hs[1]); bl=(bl+hs[2]*H[i+2]/255)/(1+hs[2]); }
       if(p.vig>0){ const dx=x-cx0, c4=1+(dx*dx+dy*dy)*inv*t2, v=1-p.vig*(1-1/(c4*c4)); r*=v; g*=v; bl*=v; } // cos⁴ falloff of the lens
@@ -1458,9 +1487,6 @@ function dkProcess(b,look,p,o){ const w=b.width, h=b.height, bx=b.getContext('2d
   if(p.soft>.01||p.usm>.01){ const c2=document.createElement('canvas'); c2.width=w; c2.height=h; const cx=c2.getContext('2d',{willReadFrequently:true});
     if(p.soft>.01){ cx.filter=`blur(${(p.soft*Math.max(w,h)/1000).toFixed(2)}px)`; cx.drawImage(b,0,0); cx.filter='none'; bx.drawImage(c2,0,0); }
     if(p.usm>.01){ cx.filter='blur(0.7px)'; cx.drawImage(b,0,0); const bl=cx.getImageData(0,0,w,h).data, o2=bx.getImageData(0,0,w,h), q=o2.data, a=p.usm; for(let i=0;i<q.length;i+=4){ q[i]+=a*(q[i]-bl[i]); q[i+1]+=a*(q[i+1]-bl[i+1]); q[i+2]+=a*(q[i+2]-bl[i+2]); } bx.putImageData(o2,0,0); } }
-  if(p.leak>.01){ const side=rnd()<.5?0:1, ly=h*(.2+rnd()*.6), gr=bx.createRadialGradient(side*w,ly,0,side*w,ly,w*(.4+rnd()*.35));
-    gr.addColorStop(0,`rgba(255,70,10,${.9*p.leak})`); gr.addColorStop(.45,`rgba(255,150,30,${.4*p.leak})`); gr.addColorStop(1,'rgba(255,150,30,0)');
-    bx.globalCompositeOperation='screen'; bx.fillStyle=gr; bx.fillRect(0,0,w,h); bx.globalCompositeOperation='source-over'; }
   // newspaper screen: 65 lines to the inch at 45 degrees on a two column picture 3.75 inches wide. Dot area equals one minus the tone (Murray-Davies).
   if(look.post==='halftone'){ const src=bx.getImageData(0,0,w,h).data, pt=Math.max(2.4,w/(3.75*65)), sp=pt*Math.SQRT2; bx.fillStyle='#ece3cf'; bx.fillRect(0,0,w,h); bx.fillStyle='#1b1815'; bx.beginPath();
     for(let row=0, y=0;y<h+sp;row++, y=row*sp/2) for(let x=(row%2)*sp/2;x<w+sp;x+=sp){ const px=Math.min(w-1,x|0), py=Math.min(h-1,y|0), i=(py*w+px)*4, l=.2126*S2L[src[i]]+.7152*S2L[src[i+1]]+.0722*S2L[src[i+2]], r=Math.min(pt*.75,pt*Math.sqrt((1-l)/Math.PI));
@@ -1495,7 +1521,8 @@ function dkFrame(img,fmt,o){ const w=img.width, h=img.height;
     if(F0[1]>=30) x.fillText('THEN AGAIN 400',pad+L*.3,band1); x.fillText(`${n}`,pad+L*.06,band1); x.fillText(`▸ ${n}A`,pad+L*.56,band2); x.fillText(`▸ ${n}`,pad+L*.04,band2);
     for(let k=0;k<14&&F0[1]>=30;k++){ if(dkRand(o.seed+k)()>.45) x.fillRect(pad+L*.74+k*.7*mm,band1-ts*.45,.38*mm,ts*.9); } }
   if(!port) return c; const r=document.createElement('canvas'); r.width=c.height; r.height=c.width; const rx=r.getContext('2d'); rx.translate(r.width,0); rx.rotate(Math.PI/2); rx.drawImage(c,0,0); return r; }
-const dkOpts=()=>({fmt:DK.fmt,dateOn:DK.dateOn,date:DK.date,seed:DK.seed});
+const dkSecond=()=>DK.sec==='none'?null:DK.sec==='same'?'same':(DK.secImg&&DK.secImg!==DK.src?DK.secImg:null);
+const dkOpts=()=>({fmt:DK.fmt,dateOn:DK.dateOn,date:DK.date,seed:DK.seed,second:dkSecond()});
 function dkBuild(L){ const o=dkOpts(); return dkFrame(dkProcess(dkBase(DK.fmt,L),DK.look,DK.p,o),DK.fmt,o); }
 function dkBefore(L){ const o=Object.assign(dkOpts(),{dateOn:false}); return dkFrame(dkBase(DK.fmt,L),DK.fmt,o); }
 function dkPaint(){ const a=DK.after; if(!a) return; dkc.width=a.width; dkc.height=a.height; dkx.clearRect(0,0,a.width,a.height); dkx.drawImage(a,0,0);
@@ -1540,14 +1567,20 @@ function dkThumbs(){ const st=$('dkStrip'); st.innerHTML=''; let grp=''; DK.thSr
   const gen=++dkThGen, src=DK.src, todo=LOOKS.slice(); const step=()=>{ if(gen!==dkThGen||!todo.length) return; const l=todo.shift(), b=st.querySelector(`button[data-l="${l.id}"]`);
     if(b){ const keep=DK.src; DK.src=src; let t; try{ t=dkProcess(dkBase('135',150),l,PP(l),{fmt:'none',dateOn:false,date:'',seed:3}); }catch(e){ t=null; } DK.src=keep; if(t){ t.className='th'; b.replaceChild(t,b.firstChild); } } setTimeout(step,0); }; step(); }
 let dkThGen=0;
-function dkSyncUI(){ DKS.forEach(([k,,,,st])=>{ const el=$('dk_'+k); el.value=DK.p[k]; el.nextElementSibling.textContent=(+DK.p[k]).toFixed(st>=1?0:st<.01?3:2); }); dkStockUI(); dkBandUI(); dkCurveEd();
+function dkRead(k,v,st){ const F=filmMeta(DK.p.film)||FILM0, fm=FMT_MM[DK.fmt]||FMT_MM['135'];
+  if(k==='hal') return v>0?(HAL[F.ah][0]*100*v).toFixed(1)+'%':'off';
+  if(k==='grain'){ if(!(v>0)) return 'off'; const um=fm[0], N=um*um/(GR_AREA*GR_SCALE[1]*v), pp=F.d0/F.dm; return 'σ '+(F.dm*Math.sqrt(pp*(1-GR_UNI[1]*pp)/N)).toFixed(3).replace(/^0/,''); }
+  if(k==='scatter') return v>0?(9.4*v).toFixed(1)+'µm':'off';
+  if(k==='exp'||k==='pe') return (v>0?'+':'')+(+v).toFixed(2);
+  return (+v).toFixed(st>=1?0:st<.01?3:2); }
+function dkSyncUI(){ DKS.forEach(([k,,,,st])=>{ const el=$('dk_'+k); el.value=DK.p[k]; el.nextElementSibling.textContent=dkRead(k,+DK.p[k],st); }); dkFilmCard(); dkStockUI(); dkBandUI(); dkCurveEd(); dkSecondUI(); ['dx','dxs'].forEach(k=>{ $('dk_'+k).disabled=DK.sec==='none'; });
   $('dkFmt').value=DK.fmt; $('dkDateOn').checked=DK.dateOn; $('dkDate').value=DK.date; { const b0=PP(DK.look), F=filmMeta(DK.p.film), pp=F&&DK.p.paper&&SPK.prof(DK.p.paper); $('dkCap').textContent=(F&&(DK.p.film!==b0.film||DK.p.paper!==b0.paper))?`Your own pairing: ${F.name}${pp?' printed on '+pp.info.name:F.pos?', a slide viewed directly':', the negative before it is printed'}. The table for it was just computed in this page from the measured film and paper data.`:DK.look.cap; }
   const rel=CASES.filter(c=>c.lk===DK.look.id||c.lk2===DK.look.id); $('dkCases').innerHTML=rel.length?'<span>The story behind it</span>'+rel.map(c=>`<a href="#${c.id}">${c.title}</a>`).join(''):'';
   [...$('dkStrip').querySelectorAll('button')].forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===DK.look.id)); }
-function dkSetLook(l){ if(!$('machine').hidden&&location.hash!=='#machine/'+l.id){ try{ history.replaceState(null,'','#machine/'+l.id); }catch(e){} } DK.look=l; DK.cur=l; DK.p=PP(l); DK.fmt=l.fmt; DK.dateOn=l.dateOn; DK.date=l.date; dkSyncUI(); dkDraw(); }
+function dkSetLook(l){ if(!$('machine').hidden&&location.hash!=='#machine/'+l.id){ try{ history.replaceState(null,'','#machine/'+l.id); }catch(e){} } DK.look=l; DK.cur=l; DK.p=PP(l); DK.sec='none'; DK.fmt=l.fmt; DK.dateOn=l.dateOn; DK.date=l.date; dkSyncUI(); dkDraw(); }
 DKS.forEach(([k,label,min,max,step,grp])=>{ const row=document.createElement('label'); row.className='dkrow'; row.htmlFor='dk_'+k;
   row.innerHTML=`<span>${label}</span><input type="range" id="dk_${k}" min="${min}" max="${max}" step="${step}"><output></output>`; $(grp).appendChild(row);
-  const el=row.querySelector('input'); el.addEventListener('input',()=>{ DK.p[k]=+el.value; el.nextElementSibling.textContent=(+el.value).toFixed(step>=1?0:step<.01?3:2); dkDraw(); });
+  const el=row.querySelector('input'); el.addEventListener('input',()=>{ DK.p[k]=+el.value; el.nextElementSibling.textContent=dkRead(k,+el.value,step); dkDraw(); });
   el.addEventListener('dblclick',()=>{ DK.p[k]=PP(DK.look)[k]; dkSyncUI(); dkDraw(); }); });
 $('dkFmt').innerHTML=DKF.map(([v,n])=>`<option value="${v}">${n}</option>`).join('');
 $('dkFmt').addEventListener('change',e=>{ DK.fmt=e.target.value; dkDraw(); });
@@ -1563,7 +1596,7 @@ $('dkCmp').addEventListener('click',()=>{ DK.cmp=!DK.cmp; dkc.classList.toggle('
 $('dkPick').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('dkFile').click(); } });
 /* the roll: every photo you open, each with its own settings, rating and colour tag */
 const dkState=()=>({look:DK.look,p:PP({p:DK.p}),fmt:DK.fmt,dateOn:DK.dateOn,date:DK.date,seed:DK.seed});
-function dkApply(st){ DK.look=st.look; DK.cur=st.look; DK.p=PP({p:st.p}); DK.fmt=st.fmt; DK.dateOn=st.dateOn; DK.date=st.date; if(st.seed) DK.seed=st.seed; }
+function dkApply(st){ if(!(st.p.dx>0)) DK.sec='none'; DK.look=st.look; DK.cur=st.look; DK.p=PP({p:st.p}); DK.fmt=st.fmt; DK.dateOn=st.dateOn; DK.date=st.date; if(st.seed) DK.seed=st.seed; }
 function dkPickRoll(i,quiet){ const R=DK.roll; if(!R[i]) return; if(R[DK.ri]&&DK.src===R[DK.ri].img) R[DK.ri].st=dkState(); DK.ri=i; DK.src=R[i].img; DK.own=true; DK.ownImg=R[i].img; DK.from=null; if(R[i].st) dkApply(R[i].st);
   if(quiet) return; dkSrcUI(); dkRollUI(); dkThumbs(); dkSyncUI(); dkDraw(); }
 const TAGS=['','#e5484d','#e8c93a','#4fb85a','#4a7be0'];
@@ -1637,6 +1670,27 @@ $('dkFilmSel').addEventListener('change',e=>{ const v=e.target.value, base=PP(DK
   dkSyncUI(); dkDraw(); });
 $('dkPaperSel').addEventListener('change',e=>{ DK.p.paper=e.target.value; dkSyncUI(); dkDraw(); });
 $('dkGradeSel').addEventListener('change',e=>{ DK.p.grade=e.target.value; dkDraw(); });
+/* the film's own data, shown right under the film picker: its three measured curves and the numbers read from them */
+function dkFilmCard(){ const box=$('dkFilmCard'), F=filmMeta(DK.p.film), P=DK.p.film&&SPK.ok()?SPK.prof(DK.p.film):null; box.hidden=!P; if(!P) return;
+  const cv=$('dkFilmPlot'), x=cv.getContext('2d'), W=cv.width, H=cv.height, m=6, lo=P.le[0], hi=P.le[P.n-1], top=Math.max(P.dmax[0],P.dmax[1],P.dmax[2])*1.05; x.clearRect(0,0,W,H); x.strokeStyle='#2c2823'; x.lineWidth=1; x.strokeRect(.5,.5,W-1,H-1);
+  const X=v=>m+(v-lo)/(hi-lo)*(W-2*m), Y=v=>H-m-v/top*(H-2*m); x.setLineDash([3,4]); x.beginPath(); x.moveTo(X(0),m); x.lineTo(X(0),H-m); x.stroke(); x.setLineDash([]);
+  x.globalCompositeOperation='lighter'; ['#ff5a4a','#5fe07a','#5a8cff'].forEach((col,c)=>{ x.strokeStyle=col; x.lineWidth=1.5; x.beginPath(); for(let j=0;j<P.n;j+=2){ const px=X(P.le[j]), py=Y(P.dc[j*3+c]); j?x.lineTo(px,py):x.moveTo(px,py); } x.stroke(); }); x.globalCompositeOperation='source-over';
+  const lk=SPK.leak(DK.p.film), rows=[['Type',F.pos?'Slide':F.bw?'Black and white negative':F.cine?'Cinema negative':'Colour negative'],['Curve slope',Math.abs(F.g).toFixed(2)],['Density',`${Math.max(0,P.dmin[1]).toFixed(2)} to ${F.dm.toFixed(2)}`],['Antihalation',['Strong','Weak','None'][F.ah]],['Film base',lk[1]<.8?'Orange mask':'Clear']];
+  $('dkFilmData').innerHTML=rows.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join(''); }
+/* accidents: which picture the second shot comes from */
+/* Any two different pictures can share one frame: another photo from the roll, a new file, or one of the site's own photographs. */
+function dkSecondUI(){ const sel=$('dkSecond'), esc=t=>String(t).replace(/[&<>"]/g,''), R=DK.roll; let h='<option value="none">None</option>';
+  R.forEach((e,i)=>{ if(e.img!==DK.src) h+=`<option value="r${i}">Photo ${i+1}: ${esc(e.name).slice(0,22)}</option>`; });
+  CASES.forEach(c=>{ const o=(PHOTOS[c.id]||{}).then; if(o&&o.raw) h+=`<option value="c${c.id}">${esc(c.title)}</option>`; });
+  if(DK.secFile) h+='<option value="own">The photo you opened</option>'; h+='<option value="file">Open another photo</option><option value="same">The same picture, slipped</option>'; sel.innerHTML=h; sel.value=[...sel.options].some(o=>o.value===DK.sec)?DK.sec:'none'; }
+function dkSecondSet(v,img){ DK.sec=v; DK.secImg=img||null; if(v==='none'){ DK.p.dx=0; DK.p.dxs=0; } else { if(!(DK.p.dx>0)) DK.p.dx=.7; if(v==='same'&&!DK.p.dxs) DK.p.dxs=.05; } dkSyncUI(); dkDraw(); }
+$('dkSecond').addEventListener('change',e=>{ const v=e.target.value; if(v==='file'){ e.target.value=DK.sec; $('dkFile2').click(); return; }
+  if(v[0]==='r'){ dkSecondSet(v,DK.roll[+v.slice(1)].img); return; }
+  if(v[0]==='c'){ const c=CASES.find(x=>'c'+x.id===v), im=rawOf(c,0); if(im.ok) dkSecondSet(v,im); else { im.addEventListener('load',()=>dkSecondSet(v,im),{once:true}); } return; }
+  dkSecondSet(v,null); });
+$('dkFile2').addEventListener('change',e=>{ const f=e.target.files[0]; e.target.value=''; if(!f) return; const go=img=>{ DK.secFile=img; dkSecondSet('own',img); };
+  if(RAWX.test(f.name)&&!/^image\/(jpeg|png|webp)$/.test(f.type)){ rawAny(f).then(go,()=>{ $('dkCap').textContent='That file could not be read as a picture.'; }); return; }
+  const img=new Image(); img.onload=()=>go(img); img.onerror=()=>{ $('dkCap').textContent='That file could not be read as a picture.'; }; img.src=URL.createObjectURL(f); });
 /* one colour at a time */
 [['h','Hue'],['s','Saturation'],['l','Lightness']].forEach(([k,label],i)=>{ const row=document.createElement('label'); row.className='dkrow'; row.htmlFor='dkH_'+k; row.innerHTML=`<span>${label}</span><input type="range" id="dkH_${k}" min="-1" max="1" step="0.01"><output></output>`; $('dkG_hsl').appendChild(row);
   const el=row.querySelector('input'); el.addEventListener('input',()=>{ DK.p.hsl[DK.band*3+i]=+el.value; el.nextElementSibling.textContent=(+el.value).toFixed(2); dkBandUI(true); dkDraw(); }); el.addEventListener('dblclick',()=>{ DK.p.hsl[DK.band*3+i]=0; dkBandUI(); dkDraw(); }); });
