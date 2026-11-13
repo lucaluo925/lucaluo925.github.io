@@ -185,3 +185,7 @@ Reviewed with `ocr delegate` (workspace mode), 1 of 1 reviewable file. Small cha
 ## 2026-11-12 · then-again/: two more entrance drafts for comparison
 
 Reviewed with `ocr delegate` (workspace mode), 1 of 1 reviewable file. Adds `#entrance/countdown` (a film leader counting 5 to 1 over the eight old photographs) and `#entrance/picture` (one object full screen, the old photograph through its own look on the left of a line that follows the pointer, today's photograph on the right). `#entrance` stays the two rolls of film. All three are drafts until Haoyuan picks one; the two not chosen should then be removed. Timers and the animation loop stop when the entrance closes. Tested in Playwright, no errors.
+
+## 2026-11-12 · then-again/: entrance settled
+
+Reviewed with `ocr delegate` (workspace mode), 1 of 1 reviewable file. Haoyuan chose the plain entrance. The countdown and full-screen picture drafts are removed (markup, script and styles), so `#entrance/countdown` and `#entrance/picture` now open the same single entrance. The two film rolls sit level and move more slowly. Tested: entrance opens from the address and from the menu, no errors.
