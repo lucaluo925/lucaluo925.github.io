@@ -148,3 +148,32 @@ Changed
 Kept on purpose
 - Blue halftone, lime and silver come from the two reference images Haoyuan supplied. Syne and the wide mono labels follow those references and the edge print on film.
 - Left rail, picture, strip of looks: the common layout for an editor. Kept because people already know where things are.
+
+## 2026-11-12 · then-again/: spectral engine in the page, Develop and Edit, roll, export, new entrance
+
+Reviewed with `ocr delegate` (workspace mode). Reviewable files: `then-again/index.html`, `then-again/tools/engine.js` (a readable copy of the engine that is inlined in the page), `then-again/tools/pack_profiles.py`. `data/profiles.json` is data and was checked by the parity test below.
+
+Changed
+- The film colour is no longer read from baked PNG tables. `engine.js` builds the 33³ table in the page for any film, paper and enlarger setting, from 28 spektrafilm profiles and SpektraLab's 4 black and white films, Multigrade paper and CineStill 800T.
+- Develop page: film, paper, paper grade, exposure, temperature, tint, print exposure, yellow and magenta filters, grain, halation, scatter, glare, couplers. Edit page: brightness, contrast, highlights, shadows, a point curve, temperature, vibrance, saturation, vignette, hue, saturation and lightness for eight colour bands. Frame page: nine film formats, slide mount, instant print, date back.
+- A roll of up to 24 photos with ratings, colour tags, per photo settings, copy and paste of settings, paste to all. Export as JPEG, PNG or WebP with quality and size, one photo or the whole roll.
+- The entrance is rebuilt from the site's own photographs as two rolls of film. This is a first draft waiting for Haoyuan's choice of reference.
+
+Verified
+- Parity: tables from the JavaScript engine against the earlier Python bake for four film and paper pairs differ by at most 2 of 255 (mean under 0.05).
+- Couplers leave the grey scale unchanged and raise the saturation of a red patch. More yellow filter makes the print bluer. Paper grade 00 is softer than grade 5.
+- Playwright on desktop and phone sizes: every case hand-off, look addresses, film and paper changes, edit tools, formats, roll, ratings, copy and paste, PNG export. No console errors.
+
+Found and fixed during the work
+- High: the coupler correction used the corrected curves to estimate the inhibitor, which moved the grey scale. It now uses the measured curves, as spektrafilm does.
+- High: the filter sliders had the wrong sign.
+- Medium: viewing a negative without paper went through the neutral correction and came out as noise. The negative is now shown as it is.
+- Medium: each redraw processed the photo twice. Switching photos could save the current settings into the wrong roll entry.
+- Medium: thumbnails for 21 looks were built in one block and froze the page. They now fill in one at a time.
+
+Not built (SpektraLab has these)
+- RAW decoding, 16 bit TIFF, HEIF and wide gamut export, Capture One catalogs, saved catalogs and albums, the Light Table, half frame pairs, colour wheels, channel mixer, diffusion filters, saved export recipes, Chinese and Japanese interface text.
+
+Not verified
+- No comparison against real SpektraLab or spektrafilm output. Our filters are smooth dye bands and the neutral balance is found by the page, so numbers differ from theirs.
+- Export at 4800 px on a phone. Batch export in Safari, which may block several downloads in a row.

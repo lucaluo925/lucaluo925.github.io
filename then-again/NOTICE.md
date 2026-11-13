@@ -49,3 +49,18 @@ were computed from. This site is not affiliated with or endorsed by those compan
 
 - Object photographs: Wikimedia Commons, credited one by one on the Sources page of the site.
 - Music: Rachmaninoff, Piano Concerto No. 2, second movement. Public domain recording from Musopen.
+
+## Update, 12 November 2026: the engine now runs in the page
+
+- `data/profiles.json` is a compact copy of the measured data in 28 spektrafilm profiles (CC BY-SA 4.0, Andrea Volpato)
+  and 5 profiles from SpektraLab's `engine/resources_product/` (Kodak Tri-X 400, Kodak T-Max 100, Fujifilm Neopan
+  Acros 100 II, Ilford HP5 Plus 400, Ilford Multigrade IV RC, plus the CineStill 800T alias and the Multigrade grade
+  table). SpektraLab is GPL-3.0-or-later. Values are rounded to four decimals by `tools/pack_profiles.py`; nothing else is changed.
+  The packed file is offered under CC BY-SA 4.0 for the spektrafilm part and GPL-3.0-or-later for the SpektraLab part.
+- `src/engine.js` is our own code (GPL-3.0-or-later). It builds a 33 x 33 x 33 table for the chosen film, paper and enlarger
+  setting. The DIR coupler strengths are the defaults in spektrafilm's `DirCouplersParams`.
+- The baked PNG tables for film stocks are no longer shipped. `lut/hald_polaroid_669.png` and
+  `lut/hald_polaroid_timezero.png` remain. `hald_trix400` and `hald_hp5` were removed because the black and white
+  looks now use the measured profiles.
+- The enlarger's yellow and magenta filters are modelled as smooth dye bands and the paper's neutral balance is found
+  by the page itself. spektrafilm uses measured filter spectra and stored neutral packs, so numbers will differ.
