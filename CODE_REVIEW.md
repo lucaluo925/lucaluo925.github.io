@@ -244,3 +244,17 @@ Checked
 Not verified
 - The leak's shape, depth and the 0.35 factor for slide film were set by looking. Only its colour comes from data.
 - No existing open project models a partial frame overlap or a physical light leak that we could check against. Jonas Wagner's analog-film-emulator (procedural noise leaks) is the reference for the shape idea. Its licence was not confirmed and none of its code is used.
+
+## 2026-11-23 — tower/ (Port Tower Christmas tree, gesture page)
+
+Added
+- `tower/index.html`: a single self-contained page (ASCII tower, hand gestures through the camera, Japanese announcement, gifts). Source and its own review log live outside this repo; this is the built copy.
+- Carries `<meta name="robots" content="noindex">` like the rest of the site. Not linked from any other page.
+
+Checked
+- Served locally at `/tower/`: page loads with no console errors, the share link round-trips names and gifts to a second tab, a malformed link does not break the page, and with a fake camera the page enters gesture mode.
+
+Not verified
+- Real camera on the live github.io origin.
+- The page loads MediaPipe Hands from cdn.jsdelivr.net at runtime; if that CDN is unreachable the page falls back to auto-play.
+- No background music file is included. The page has an upload control instead.
